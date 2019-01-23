@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from VoteWebCore.models import *
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -12,18 +13,13 @@ register_page = {
 }
 
 
-def index(request):
-    context = {}
-    context['cur_page'] = request.GET.get('p', '')
-    context['pages'] = register_page
-    return render(request, 'index.html', context=context)
-
-
+@login_required
 def quiz_list(request):
     context = {'quiz_list': TB_Quiz.objects.all()}
     return render(request, 'quiz_list.html', context)
 
 
+@login_required
 def quiz_task(request):
     context = {'is_found': False}
     quiz_no = request.GET.get('quiz_no', -1)
@@ -41,9 +37,12 @@ def quiz_save(request):
     task_no = request.GET.get('task_no', '-1')
     quest_no = request.GET.get('quest_no', '-1')
     answ_text = request.GET.get('answ_text', '')
-    answ_reask = request.GET.get('reask', '0')
+    # answ_reask = request.GET.get('reask', '0')
 
     json_response = {'ErrorCode': 0, 'ButtonID': quest_no}
+    if not request.user.is_authenticated:
+        json_response['ErrorCode'] = 403
+        return JsonResponse(json_response)
 
     if len(TB_Quiz.objects.filter(id=task_no)) == 0:  # task not found in DB
         json_response['ErrorCode'] = 404
