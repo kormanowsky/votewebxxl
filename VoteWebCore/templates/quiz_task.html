@@ -1,0 +1,30 @@
+{% load staticfiles %}
+<div>
+    <script src="{% static "js/ajax.js" %}">
+    </script>
+    {% if is_found %}
+        <table border="1px">
+            <tr bgcolor="#7fffd4">
+                <th>Quest</th>
+            </tr>
+            {% for quiz in quiz_test %}
+                <tr>
+                    <th>
+                        <p>{{ quiz.quiz_text_question }}</p>
+                    </th>
+                    <th id="quest_node_{{ quiz.quiz_no }}">
+                        <button id="Button_ID_{{ quiz.quiz_no }}_YES" onclick="QuizSaveOneClick({{ quiz.quiz_id.id }}, {{ quiz.quiz_no }}, 'YES')">
+                            {{ quiz.quiz_text_yes }}
+                        </button>
+                        <button id="Button_ID_{{ quiz.quiz_no }}_NO" onclick="QuizSaveOneClick({{ quiz.quiz_id.id }}, {{ quiz.quiz_no }}, 'YES')">
+                            {{ quiz.quiz_text_no }}
+                        </button>
+                        <p id="complete_txt_{{ quiz.quiz_no }}" style="visibility: hidden; color: green">Complete</p>
+                    </th>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <h1>Quiz Not found!</h1>
+    {% endif %}
+</div>
