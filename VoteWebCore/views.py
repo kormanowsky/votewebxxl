@@ -6,6 +6,8 @@ from django.shortcuts import render
 
 from VoteWebCore.models import *
 
+# from django.db.models import Q
+
 # Create your views here.
 
 register_page = {
@@ -18,6 +20,13 @@ register_page = {
 @login_required
 def quiz_list(request):
     context = {'quiz_list': TB_Quiz.objects.all()}
+    """ Not Work!!!!!!
+    for i in context['quiz_list']:
+        quiz_info = TB_QuizDiscret.objects.filter(quiz_id=context['quiz_list'][i]['id'])
+        complete_quiz_info = TB_QuizLog.objects.filter(quiz_id=context['quiz_list'][i]['id'], answ_user_id=request.user.id)
+        if quiz_info.size() == complete_quiz_info.size():
+            print('!!!!!')
+    """
     return render(request, 'quiz_list.html', context)
 
 
@@ -57,8 +66,13 @@ def quiz_save(request):
         json_response['Error'] = 'QuizNotFound'
         return JsonResponse(json_response)
 
-    item = TB_QuizLog(quiz_id=task_no, quiz_no=quest_no, result_text=answ_text, answ_user_id=1)
-    item.save()
+    # Проверка на повторное голосование, если человек уже голосовал ему будет отправлен код ошибки 2
+    if len(TB_QuizLog.objects.filter(answ_user_id=request.user.id, quiz_id=task_no, quiz_no=quest_no)):
+        json_response['ErrorCode'] = 2  # 2 - is duplicate error
+    else:
+        item = TB_QuizLog(quiz_id=task_no, quiz_no=quest_no, result_text=answ_text, answ_user_id=request.user.id)
+        item.save()
+
     return JsonResponse(json_response)
 
 
