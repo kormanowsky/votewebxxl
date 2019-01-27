@@ -28,4 +28,7 @@ urlpatterns = [
     path('login', auth_views.LoginView.as_view()),
     path('logout', views.logout),
     path('register', views.register),
+
+    # Test Argon
+    path('argon-test', views.argon_test)
 ]

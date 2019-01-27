@@ -74,3 +74,8 @@ def register(request):
         context['form'].save()
         return HttpResponseRedirect('/login')
     return render(request, 'registration/registration.html', context)
+
+
+# This is a view for testing Argon installation
+def argon_test(request):
+    return render(request, 'argon-test.html', dict())
