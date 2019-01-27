@@ -25,5 +25,5 @@ urlpatterns = [
     path('quiz_save', views.quiz_save),
 
     path('login', auth_views.LoginView.as_view()),
-    path('logout', auth_views.LogoutView.as_view(), {'next_page': '/login'}),
+    path('logout', views.logout),
 ]
