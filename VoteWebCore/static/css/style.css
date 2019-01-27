@@ -1,38 +1,72 @@
-body{
+body {
     background: #f6f3fa;
 }
-header{
+
+header {
     height: 64px;
     display: flex;
     align-items: center;
-    padding:0 56px;
+    padding: 0 56px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
 }
-header *{
+
+header * {
     color: #fff !important;
 }
-#top-logo, #top-auth{
-    width: 20%;
-    max-width:200px;
-}
-#top-logo-text{
+
+#top-logo-text {
     color: #fff;
-    font-weight:100;
+    font-weight: 100;
     font-size: 32px;
-    margin:0;
-    width:100%;
-}
-#top-auth{
-    margin-left:auto;
-}
-#top-auth p{
     margin: 0;
-    line-height:1.2;
-    padding:0 12px;
+    width: 100%;
 }
-.avatar{
+
+aside,
+.side {
+    width: 20%;
+    max-width: 250px;
+}
+
+.avatar {
     border-radius: 50%;
     width: auto;
 }
-.avatar-small{
-    height:48px;
+
+.avatar-small {
+    height: 48px;
+}
+
+.avatar-medium {
+    height: 80px;
+}
+
+.avatar-big {
+    height: 150px;
+}
+
+#root {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 112px 56px 0;
+}
+
+#root aside,
+#root main {
+    height: calc(100vh - 64px);
+    overflow: scroll;
+    padding-top: 48px;
+    padding-bottom: 48px;
+    margin-top: -48px;
+}
+
+aside i.la {
+    font-size: 1.33em;
 }
