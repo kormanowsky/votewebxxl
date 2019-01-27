@@ -78,4 +78,4 @@ def register(request):
 
 # This is a view for testing Argon installation
 def argon_test(request):
-    return render(request, 'argon-test.html', dict())
+    return render(request, 'basic.html', dict())

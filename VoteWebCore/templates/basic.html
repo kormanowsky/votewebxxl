@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Basic Page Template</title>
+    <!-- Этот файл - шаблон подключения всех необходимых ресурсов (не рекомендуется удалять до merge) -->
+    <!-- Подключение статики -->
+    {% load static %}
+    <!-- Шрифты -->
+    <link type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,700,800&amp;subset=cyrillic-ext" rel="stylesheet">
+    <!-- Стили -->
+    <link type="text/css" href='{% static "css/argon.css" %}' rel="stylesheet">
+    <link type="text/css" href='{% static "vendor/line-awesome/css/line-awesome.min.css" %}' rel="stylesheet">
+    <!-- Собственные стили -->
+    <link type="text/css" href='{% static "css/style.css" %}' rel="stylesheet">
+    <!-- jQuery и другие скрипты шапки -->
+    <script type="text/javascript" src='{% static "vendor/jquery/jquery.min.js" %}'></script>
+</head>
+<body>
+    <header class="bg-primary d-flex align-items-center text-white">
+        <div id="top-logo">
+            <h1 class="text-center text-while" id="top-logo-text">VoteWebXXL</h1>
+        </div>
+        <div id="top-search">
+            
+        </div>
+        <div id="top-auth">
+            <div class="d-flex align-items-center justify-content-between">
+                <img src="https://pp.userapi.com/c846524/v846524647/15b218/B-cPw9HFt7Y.jpg?ava=1" class="avatar avatar-small d-block">
+                <p>Михаил<br/>Кормановский</p>
+                <a href="/logout/"><i class="la la-sign-out"></i></a>
+            </div>
+        </div>
+    </header>
+    <aside id="left-column">
+        
+    </aside>
+    <main>
+
+    </main>
+    <aside id="right-column">
+
+    </aside>
+    <!-- Скрипты подвала -->
+    <script type="text/javascript" src='{% static "vendor/bootstrap/bootstrap.min.js" %}'></script>
+    <script type="text/javascript" src='{% static "js/argon.min.js" %}'></script>
+    <!-- Собственные скрипты -->
+</body>
+</html>
