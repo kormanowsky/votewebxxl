@@ -1,8 +1,9 @@
 from django.contrib.auth.models import User
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from VoteWebCore.models import *
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout as auth_logout
 
 # Create your views here.
 
@@ -33,6 +34,7 @@ def quiz_task(request):
     return render(request, 'quiz_task.html', context)
 
 
+@login_required
 def quiz_save(request):
     task_no = request.GET.get('task_no', '-1')
     quest_no = request.GET.get('quest_no', '-1')
@@ -57,3 +59,9 @@ def quiz_save(request):
     item = TB_QuizLog(quiz_id=task_no, quiz_no=quest_no, result_text=answ_text, answ_user_id=1)
     item.save()
     return JsonResponse(json_response)
+
+
+@login_required
+def logout(request):
+    auth_logout(request)
+    return HttpResponseRedirect('/login')
