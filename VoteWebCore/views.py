@@ -1,9 +1,10 @@
-from django.contrib.auth.models import User
-from django.http import JsonResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect
-from VoteWebCore.models import *
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.http import JsonResponse, HttpResponseRedirect
+from django.shortcuts import render
+
+from VoteWebCore.models import *
 
 # Create your views here.
 
@@ -65,3 +66,11 @@ def quiz_save(request):
 def logout(request):
     auth_logout(request)
     return HttpResponseRedirect('/login')
+
+
+def register(request):
+    context = {'form': UserCreationForm(request.POST)}
+    if context['form'].is_valid():
+        context['form'].save()
+        return HttpResponseRedirect('/login')
+    return render(request, 'registration/registration.html', context)
