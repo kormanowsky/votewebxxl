@@ -14,6 +14,16 @@ function QuizSaveResponse(data) {
         document.getElementById('Button_ID_' + data['ButtonID'] + '_YES').style.visibility = "hidden";
         document.getElementById('complete_txt_' + data['ButtonID']).style.visibility = "visible";
     }
+    else if (data['ErrorCode'] === 2) {
+        document.getElementById('Button_ID_' + data['ButtonID'] + '_NO').style.visibility = "hidden";
+        document.getElementById('Button_ID_' + data['ButtonID'] + '_YES').style.visibility = "hidden";
+        var complete_txt = document.getElementById('complete_txt_' + data['ButtonID']);
+        if (complete_txt) {
+            complete_txt.style.color = "#ff0000";
+            complete_txt.innerText = "Already done";
+            complete_txt.style.visibility = "visible";
+        }
+    }
 }
 
 function ajaxRequest(method, url, callback_function, httpParams) {
