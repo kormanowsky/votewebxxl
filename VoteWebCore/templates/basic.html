@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- Этот файл - шаблон любой страницы (не рекомендуется удалять до merge) -->
 
 <head>
     <meta charset="UTF-8">
     <title>Basic Page Template</title>
-    <!-- Этот файл - шаблон подключения всех необходимых ресурсов (не рекомендуется удалять до merge) -->
+    <!-- Мета-теги -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#5e35b1">
     <!-- Подключение статики -->
     {% load static %}
     <!-- Шрифты -->
@@ -26,30 +29,98 @@
                 <div class="row">
                     <!-- Название сайта -->
                     <div class="col-3 side" id="top-logo">
-                        <h1 class="text-center text-while" id="top-logo-text">VoteWebXXL</h1>
+                        <a href="/">
+                            <h1 class="text-center text-while" id="top-logo-text">VoteWebXXL</h1>
+                        </a>
                     </div>
                     <!-- Общее меню -->
                     <div class="col">
-                        <ul class="navbar-nav navbar-expand navbar-nav-hover align-items-lg-center">
-                            <li class="nav-item dropdown show">
-                                <a href="#" class="nav-link">
-                                    <i class="ni ni-ui-04 d-lg-none"></i>
-                                    <span class="nav-link-inner--text">Link A</span>
-                                </a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a href="#" class="nav-link">
-                                    <i class="ni ni-collection d-lg-none"></i>
-                                    <span class="nav-link-inner--text">Link B</span>
-                                </a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a href="#" class="nav-link">
-                                    <i class="ni ni-collection d-lg-none"></i>
-                                    <span class="nav-link-inner--text">Link C</span>
-                                </a>
-                            </li>
-                        </ul>
+                        <nav class="navbar navbar-expand-lg">
+                            <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                                <i class="navbar-toggler-icon la la-bars"></i>
+                            </button>
+                            <div class="collapse navbar-collapse" id="navbarNav">
+                                <div class="nav-item m-0 d-lg-none p-3 row">
+                                    <button type="button" class="navbar-toggler ml-auto" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="true" aria-label="Toggle navigation">
+                                          <i class="navbar-toggler-icon la la-close"></i>
+                                        </button>
+                                </div>
+                                <div class="nav-item m-0 px-3 d-flex d-lg-none align-items-center">
+                                    <!-- Данные текущего пользователя -->
+                                    <img src="{% if request.user.username and request.user.avatar %}https://pp.userapi.com/c846524/v846524647/15b218/B-cPw9HFt7Y.jpg?ava=1{% else %}https://bizraise.pro/wp-content/uploads/2014/09/no-avatar-300x300.png{%endif%}" class="avatar avatar-small d-block">
+                                    <p class="h6 ml-2 mt-2 lh-120 text-bold text-center">
+                                        {% if request.user.username %} Firstname
+                                        <br/>Lastname
+                                        <br/>
+                                        <span class="font-weight-300 small text-muted">@{{ request.user.username }}</span> {% else %} Anonymous
+                                        <br/>User {% endif %}
+                                    </p>
+                                </div>
+                                <ul class="navbar-nav navbar-nav-hover align-items-lg-center d-lg-none border-bottom">
+                                    {% if request.user.username %}
+                                    <li class="nav-item m-0">
+                                        <a href="/user" class="nav-link m-0 px-3 px-lg-4 pb-0 pt-1 pt-lg-0">
+                                            <span class="font-weight-300 small">Profile</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item m-0">
+                                        <a href="/feed" class="nav-link m-0 px-3 px-lg-4 pb-0 pt-1 pt-lg-0">
+                                            <span class="font-weight-300 small">Feed</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item m-0">
+                                        <a href="/quiz_list" class="nav-link m-0 px-3 px-lg-4 pb-0 pt-1 pt-lg-0">
+                                            <span class="font-weight-300 small">Quizzes</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item m-0">
+                                        <a href="/settings" class="nav-link m-0 px-3 px-lg-4 pb-0 pt-1 pt-lg-0">
+                                            <span class="font-weight-300 small">Settings</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item m-0">
+                                        <a href="/logout" class="nav-link m-0 px-3 px-lg-4 pb-2 pb-lg-0 pt-1 pt-lg-0">
+                                            <span class="font-weight-300 small">Log out</span>
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="nav-item m-0">
+                                        <a href="/about" class="nav-link m-0 px-3 px-lg-4 pb-0 pt-1 pt-lg-0">
+                                            <span class="font-weight-300 small">About</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item m-0">
+                                        <a href="/donate" class="nav-link m-0 px-3 px-lg-4 pb-2 pb-lg-0 pt-1 pt-lg-0">
+                                            <span class="font-weight-300 small">Donate</span>
+                                        </a>
+                                    </li>
+                                    {% endif %}
+
+                                </ul>
+                                <ul class="navbar-nav navbar-nav-hover align-items-lg-center">
+                                    <li class="nav-item m-0">
+                                        <a href="/about" class="nav-link m-0 px-3 px-lg-4 pb-0 pt-1 pt-lg-0">
+                                            <span class="font-weight-300 small">About</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item m-0">
+                                        <a href="/about/team" class="nav-link m-0 px-3 px-lg-4 pb-0 pt-1 pt-lg-0">
+                                            <span class="font-weight-300 small">Team</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item m-0">
+                                        <a href="/blog" class="nav-link m-0 px-3 px-lg-4 pb-0 pt-1 pt-lg-0">
+                                            <span class="font-weight-300 small">Blog</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item m-0">
+                                        <a href="/donate" class="nav-link m-0 px-3 px-lg-4 pb-3 pb-lg-0 pt-1 pt-lg-0">
+                                            <span class="font-weight-300 small">Donate</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -61,77 +132,83 @@
             <div class="container-fluid">
                 <div class="row">
                     <!-- Левая колонка -->
-                    <aside class="col-3 side">
+                    <aside class="col-3 side d-none d-lg-block">
                         <div class="w-100">
-                           <!-- Даннные текущего пользователя --> 
                             <div class="row">
                                 <div class="col-12">
                                     <div class="card shadow-sm">
                                         <div class="card-body">
-                                            <img src="https://pp.userapi.com/c846524/v846524647/15b218/B-cPw9HFt7Y.jpg?ava=1" class="shadow avatar avatar-medium d-block ml-auto mr-auto">
-                                            <p class="mt-2 lh-120 text-bold text-center">Михаил<br/>Кормановский</p>
-                                            <div class="d-flex align-items-center justify-content-between">
-                                                <a href="/profile/" title="Перейти на мою страницу"><i class="la la-user"></i></a>
-                                                <a href="/settings/" title="Перейти в Настройки"><i class="la la-cog"></i></a>
-                                                <a href="/logout/" title="Выйти из аккаунта"><i class="la la-sign-out"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <!-- Меню для авторизованных -->
-                            <div class="row mt-4">
-                                <div class="col-12">
-                                    <div class="card shadow-sm">
-                                        <div class="card-body">
-                                            <ul class="navbar-nav">
+                                            <!-- Даннные текущего пользователя -->
+                                            <img src="{% if request.user.username and request.user.avatar %}https://pp.userapi.com/c846524/v846524647/15b218/B-cPw9HFt7Y.jpg?ava=1{% else %}https://bizraise.pro/wp-content/uploads/2014/09/no-avatar-300x300.png{%endif%}" class="shadow avatar avatar-medium d-block ml-auto mr-auto">
+                                            <p class="h6 mt-3 mb-4 lh-120 text-bold text-center">
+                                                {% if request.user.username %} Firstname
+                                                <br/>Lastname
+                                                <br/>
+                                                <span class="font-weight-300 small text-muted">@{{ request.user.username }}</span> {% else %} Anonymous
+                                                <br/>User {% endif %}
+                                            </p>
+                                            <!-- Меню аккаунта -->
+                                            <ul class="navbar-nav border-top mt-4 ml--4 mr--4 pt-4 pl-4 pr-4">
+                                                {% if request.user.username %}
                                                 <li class="nav-item">
-                                                    <a href="" class="d-flex pb-3 align-items-center">
+                                                    <a href="/user" title="Go to my profile page" class="d-flex pb-3 align-items-center">
                                                         <i class="la la-user"></i>
-                                                        <p class="m-0 pl-3">Feed</p>
+                                                        <p class="h6 small text-muted m-0 pl-3">Profile</p>
                                                     </a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a href="" class="d-flex pb-3 align-items-center">
-                                                        <i class="la la-user"></i>
-                                                        <p class="m-0 pl-3">Votings</p>
+                                                    <a href="/feed" title="Go to newsfeed page" class="d-flex pb-3 align-items-center">
+                                                        <i class="la la-newspaper-o"></i>
+                                                        <p class="h6 small text-muted m-0 pl-3">Feed</p>
                                                     </a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a href="" class="d-flex pb-3 align-items-center">
-                                                        <i class="la la-user"></i>
-                                                        <p class="m-0 pl-3">Notifications</p>
+                                                    <a href="/quiz_list" title="Go to quiz list page" class="d-flex pb-3 align-items-center">
+                                                        <i class="la la-question"></i>
+                                                        <p class="h6 small text-muted m-0 pl-3">Quizzes</p>
                                                     </a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a href="" class="d-flex pb-3 align-items-center">
-                                                        <i class="la la-user"></i>
-                                                        <p class="m-0 pl-3">Something else</p>
+                                                    <a href="/settings" title="Go to newsfeed page" class="d-flex pb-3 align-items-center">
+                                                        <i class="la la-cog"></i>
+                                                        <p class="h6 small text-muted m-0 pl-3">Settings</p>
                                                     </a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a href="" class="d-flex align-items-center">
-                                                        <i class="la la-user"></i>
-                                                        <p class="m-0 pl-3">Something else 2</p>
+                                                    <a href="/logout" title="Go to quiz list page" class="d-flex align-items-center">
+                                                        <i class="la la-sign-out"></i>
+                                                        <p class="h6 small text-muted m-0 pl-3">Log out</p>
                                                     </a>
                                                 </li>
+                                                {% else %}
+                                                <li class="nav-item">
+                                                    <a href="/register" title="Register on this website" class="d-flex pb-3 align-items-center">
+                                                        <i class="la la-user-plus"></i>
+                                                        <p class="h6 small text-muted m-0 pl-3">Register</p>
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="/logout" title="Log in" class="d-flex align-items-center">
+                                                        <i class="la la-sign-in"></i>
+                                                        <p class="h6 small text-muted m-0 pl-3">Log in</p>
+                                                    </a>
+                                                </li>
+                                                {% endif %}
                                             </ul>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                             <!-- Копирайт -->
-                            <div class="row mt-4">
+                            <div class="row mt-3">
                                 <div class="col-12">
-                                    <p class="m-0 pl-4 small">&copy; 2019 The VoteWebXXL Team. All rights reserved.</p>
+                                    <p class="m-0 px-1 small">&copy; 2019 The VoteWebXXL Team. All rights reserved.</p>
                                 </div>
                             </div>
                         </div>
                     </aside>
                     <!-- Центральная колонка -->
-                    <main class="col">
+                    <main class="col-xs-12 col-md">
                         <div class="w-100">
                             <!-- Контент, разбитый на строки. На каждой странице тут разные строки! -->
                             <!-- Строка имеет класс .row, все, кроме первой, имеют дополнительно класс .mt-4 -->
@@ -186,15 +263,14 @@
                         </div>
                     </main>
                     <!-- Правая колонка -->
-                    <aside class="col-3 side">
+                    <aside class="col-12 col-md-3 side">
                         <div class="w-100">
                             <div class="row">
                                 <div class="col-12">
                                     <!-- Меню действий с отображаемым контентом. Например, если отображается голосование, можно изменить или удалить его -->
-                                    <ul class="mt-4 navbar-nav">
+                                    <ul class="mt-md-4 navbar-nav">
                                         <li class="nav-item">
                                             <a href="" class="d-flex pb-3 align-items-center">
-
                                                 <p class="m-0">Edit</p>
                                             </a>
                                         </li>
@@ -205,19 +281,16 @@
                                         </li>
                                         <li class="nav-item">
                                             <a href="" class="d-flex pb-3 align-items-center">
-
                                                 <p class="m-0">Remove</p>
                                             </a>
                                         </li>
                                         <li class="nav-item">
                                             <a href="" class="d-flex pb-3 align-items-center">
-
                                                 <p class="m-0">Content Action</p>
                                             </a>
                                         </li>
                                         <li class="nav-item">
                                             <a href="" class="d-flex align-items-center">
-
                                                 <p class="m-0">Another content action</p>
                                             </a>
                                         </li>
