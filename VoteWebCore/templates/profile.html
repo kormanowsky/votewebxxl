@@ -1,15 +1,16 @@
-{% extends "basic.html" %} 
+{% extends "basic.html" %}
+{# Шаблон страницы Профиль #}
 {% block content %}
 <div class="row">
     <div class="col-12">
         <div class="card overflow-hidden shadow-sm border-0 h-100">
             <div class="card-body align-items-center row mx-0">
-                <div class="col-xl-8 pr-0 pl-0 pl-xl-4">
-                    <div class="d-flex align-items-center justify-content-center justify-content-xl-start">
+                <div class="col-md-6 col-xl-8 pr-0 pl-0 pl-xxl-4">
+                    <div class="py-xl-4 d-flex align-items-center justify-content-center justify-content-xl-start">
                         <img id="profile-avatar" src="{% if request.user.username and request.user.avatar %}https://pp.userapi.com/c846524/v846524647/15b218/B-cPw9HFt7Y.jpg?ava=1{% else %}https://bizraise.pro/wp-content/uploads/2014/09/no-avatar-300x300.png{%endif%}" class="avatar avatar-big shadow-lg">
-                        <div id="profile-info" class="col-xl cw-auto ml-2">
+                        <div id="profile-info" class="w-auto ml-3 ml-xl-4">
                             <h4 class="lh-110 mb-1">
-                                Mikhail Kormanowsky
+                                Firstname Lastname
                             </h4>
                             <h6 class="font-weight-300 lh-100 mt-0">
                                 @{{ profile_owner.username }}
@@ -20,28 +21,28 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-4 pt-4 pt-xl-0 pl-0 pr-0 pr-xl-4">
+                <div class="col-md-6 col-xl-4 pt-4 pt-md-0 pl-0 pr-0 pr-xxl-4">
                     <div id="profile-stats">
-                        <ul id="profile-stats-list" class="w-100 d-flex align-items-center justify-content-around m-0 p-0">
-                            <li class="profile-stats-item pl-2 pl-md-3 pl-xl-4">
+                        <ul id="profile-stats-list" class="w-100 d-flex align-items-center justify-content-around justify-content-xl-end justify-content-xxl-around m-0 p-0">
+                            <li class="profile-stats-item pr-2 pr-md-3">
                                 <div>
                                     <p class="font-weight-700 lh-100 m-0 profile-stats-number text-center text-primary">100</p>
                                     <p class="lh-100 mt-2 profile-statis-description small text-center text-uppercase mb-0 mb-lg-3">Quizzes</p>
                                 </div>
                             </li>
-                            <li class="profile-stats-item pl-2 pl-md-3 pl-xl-4">
+                            <li class="profile-stats-item pr-2 pr-md-3">
                                 <div>
                                     <p class="font-weight-700 lh-100 m-0 profile-stats-number text-center text-primary">1.2K</p>
                                     <p class="lh-100 mt-2 profile-statis-description small text-center text-uppercase mb-0 mb-lg-3">Answers</p>
                                 </div>
                             </li>
-                            <li class="profile-stats-item pl-2 pl-md-3 pl-xl-4">
+                            <li class="profile-stats-item pr-2 pr-md-3">
                                 <div>
                                     <p class="font-weight-700 lh-100 m-0 profile-stats-number text-center text-primary">2K</p>
                                     <p class="lh-100 mt-2 profile-statis-description small text-center text-uppercase mb-0 mb-lg-3">Followers</p>
                                 </div>
                             </li>
-                            <li class="profile-stats-item pl-2 pl-md-3 pl-xl-4">
+                            <li class="profile-stats-item pr-2 pr-md-3 pr-xxl-0">
                                 <div>
                                     <p class="font-weight-700 lh-100 m-0 profile-stats-number text-center text-primary">1.1K</p>
                                     <p class="lh-100 mt-2 profile-statis-description small text-center text-uppercase mb-0 mb-lg-3">Following</p>
@@ -68,7 +69,7 @@
                             </div>
                         </div>
                         <div class="col pl-0 pr-2 profile-activity-main pt-3 pl-2">
-                            <h6 class="font-weight-300 small text-muted m-0">
+                            <h6 class="font-weight-300 text-muted m-0">
                                 <a href="#">Mikhail Kormanowsky</a> created new quiz <a href="#">Quiz #1009</a>
                             </h6>
                         </div>
@@ -85,7 +86,7 @@
                             </div>
                         </div>
                         <div class="col pl-0 pr-2 profile-activity-main pt-3 pl-2">
-                            <h6 class="font-weight-300 small text-muted m-0">
+                            <h6 class="font-weight-300 text-muted m-0">
                                 <a href="#">Mikhail Kormanowsky</a> answered in quiz <a href="#">Quiz #1009</a>
                             </h6>
                         </div>
@@ -134,4 +135,5 @@
             </div>
         </div>
     </div>
-    {% endblock content %}
+</div>
+{% endblock content %}

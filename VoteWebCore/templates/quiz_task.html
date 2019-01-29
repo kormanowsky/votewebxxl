@@ -1,7 +1,8 @@
+{% extends "basic.html" %}
+{% block content %}
 {% load staticfiles %}
 <div>
-    <script src="{% static "js/ajax.js" %}">
-    </script>
+    <script src='{% static "js/ajax.js" %}'></script>
     {% if is_found %}
         <table border="1px">
             <tr bgcolor="#7fffd4">
@@ -28,3 +29,4 @@
         <h1>Quiz Not found!</h1>
     {% endif %}
 </div>
+{% endblock content %}

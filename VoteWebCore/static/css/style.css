@@ -5,6 +5,7 @@
 html, body {
     background: #f6f3fa;
     min-width: 375px;
+    overflow: hidden;
 }
 
 header {
@@ -85,19 +86,15 @@ nav.navbar.navbar-expand-lg {
 }
 
 #root {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
     padding: 96px 0 0;
-    overflow: scroll;
+    overflow: hidden;
 }
 
 #root aside,
 #root main {
     height: auto;
-    overflow: scroll;
+    overflow-y: scroll;
+    overflow-x: hidden;
     padding-bottom: 48px;
     margin-top: -16px;
 }
@@ -176,17 +173,11 @@ li.nav-item:hover p.small {
         padding: 0 16px;
     }
     #root {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
         padding: 96px 16px 0;
     }
     #root aside,
     #root main {
         height: calc(100vh - 64px);
-        overflow: scroll;
         padding-top: 48px;
         padding-bottom: 48px;
         margin-top: -48px;
@@ -228,17 +219,11 @@ li.nav-item:hover p.small {
         background: #4527a0;
     }
     #root {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
         padding: 112px 56px 0;
     }
     #root aside,
     #root main {
         height: calc(100vh - 64px);
-        overflow: scroll;
         padding-top: 48px;
         padding-bottom: 48px;
         margin-top: -48px;
@@ -252,6 +237,15 @@ li.nav-item:hover p.small {
     .avatar-big {
         height: 120px;
     }
+    .profile-activity-main h6{
+        font-size: 80%;
+    }
+}
+
+@media(min-width: 1200px){
+    .avatar-big {
+        height: 150px;
+    }
     #profile-info h4{
         font-size:1.5rem;
     }
@@ -260,8 +254,20 @@ li.nav-item:hover p.small {
     }
 }
 
-@media(min-width: 1200px){
-    .avatar-big {
-        height: 150px;
+@media(min-width: 1280px){
+    .pl-xxl-4{
+        padding-left: 1.5rem !important;
+    }
+    .pr-xxl-4{
+        padding-right: 1.5rem !important;
+    }
+    .pr-xxl-0{
+        padding-right: 0 !important;
+    }
+    .justify-content-xxl-around{
+        justify-content: space-around !important;
+    }
+    .profile-activity-main h6{
+        font-size: 100%;
     }
 }

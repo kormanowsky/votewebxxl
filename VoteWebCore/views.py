@@ -17,7 +17,10 @@ register_page = {
 
 @login_required
 def quiz_list(request):
-    context = {'quiz_list': TB_Quiz.objects.all()}
+    context = {
+        "quiz_list": TB_Quiz.objects.all(),
+        "html_title": "Quiz List"
+    }
     return render(request, 'quiz_list.html', context)
 
 
@@ -99,7 +102,7 @@ def profile(request, username=None):
                 "Error": "UserNotFound"
         })
     context = {
-        "html_title": "@" + request.user.username + " | VoteWebXXL",
+        "html_title": "@" + request.user.username,
         "profile_owner": profile_owner, 
         "no_right_aside": True,
     }
