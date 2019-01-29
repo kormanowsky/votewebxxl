@@ -212,10 +212,10 @@
                         <div class="w-100">
                             <!-- Контент, разбитый на строки. На каждой странице тут разные строки! -->
                             <!-- Строка имеет класс .row, все, кроме первой, имеют дополнительно класс .mt-4 -->
-                            {% block content %}
-                            {% endblock content %}
+                            {% block content %} {% endblock content %}
                         </div>
                     </main>
+                    {% if not no_right_aside %}
                     <!-- Правая колонка -->
                     <aside class="col-12 col-md-3 side">
                         <div class="w-100">
@@ -230,13 +230,13 @@
                                         </li>
                                     -->
                                     <ul class="mt-md-4 navbar-nav">
-                                        {% block content_actions %}
-                                        {% endblock content_actions %}
+                                        {% block content_actions %} {% endblock content_actions %}
                                     </ul>
                                 </div>
                             </div>
                         </div>
                     </aside>
+                    {% endif %}
                 </div>
             </div>
         </div>

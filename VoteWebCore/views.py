@@ -100,6 +100,7 @@ def profile(request, username=None):
         })
     context = {
         "html_title": "@" + request.user.username + " | VoteWebXXL",
-        "profile_owner": profile_owner
+        "profile_owner": profile_owner, 
+        "no_right_aside": True,
     }
     return render(request, 'profile.html', context)

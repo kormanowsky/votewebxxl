@@ -2,8 +2,9 @@
     transition-duration: .2s;
 }
 
-body {
+html, body {
     background: #f6f3fa;
+    min-width: 375px;
 }
 
 header {
@@ -72,15 +73,15 @@ nav.navbar.navbar-expand-lg {
 }
 
 .avatar-small {
-    height: 48px;
+    height: 32px;
 }
 
 .avatar-medium {
-    height: 80px;
+    height: 48px;
 }
 
 .avatar-big {
-    height: 150px;
+    height: 80px;
 }
 
 #root {
@@ -135,20 +136,38 @@ li.nav-item:hover p.small {
     font-size: 90%;
 }
 
+
 /* Стили страницы Профиль */
 
-#profile-cover{
-    height: 250px;
+#profile-info h4{
+    font-size:1.2rem;
 }
 
-#profile-info{
-    margin-top:-70px;
-    z-index: 10;
+#profile-stats-list {
+    list-style: none;
 }
 
-#profile-info h5{
-    margin-top:85px;
+.profile-stats-number {
+    font-size: 125%;
 }
+
+.profile-activity-type {
+    font-size: 16px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    margin-top: -36px;
+    margin-left: -6px;
+}
+
+.profile-activity-right {
+    top: 12px;
+    right: 12px;
+}
+
 
 /* Адаптивность */
 
@@ -175,6 +194,21 @@ li.nav-item:hover p.small {
     .side {
         width: 20%;
         max-width: 250px;
+    }
+    .avatar-small {
+        height: 40px;
+    }
+    .avatar-medium {
+        height: 56px;
+    }
+    .avatar-big {
+        height: 96px;
+    }
+    #profile-info h4{
+        font-size:1.3rem;
+    }
+    .profile-stats-number {
+        font-size: 150%;
     }
 }
 
@@ -208,5 +242,26 @@ li.nav-item:hover p.small {
         padding-top: 48px;
         padding-bottom: 48px;
         margin-top: -48px;
+    }
+    .avatar-small {
+        height: 48px;
+    }
+    .avatar-medium {
+        height: 80px;
+    }
+    .avatar-big {
+        height: 120px;
+    }
+    #profile-info h4{
+        font-size:1.5rem;
+    }
+    .profile-stats-number {
+        font-size: 175%;
+    }
+}
+
+@media(min-width: 1200px){
+    .avatar-big {
+        height: 150px;
     }
 }
