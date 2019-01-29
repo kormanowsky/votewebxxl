@@ -79,3 +79,27 @@ def register(request):
 # This is a view for testing Argon installation
 def argon_test(request):
     return render(request, 'basic.html', dict())
+
+
+def profile(request, username=None):
+    if username is None:
+        if request.user.username:
+            username = request.user.username
+        else:
+            return JsonResponse({
+                "ErrorCode": 404,
+                "Error": "UserNotFound"
+            })
+    profile_owner = User.objects.filter(username=username)
+    if len(profile_owner) == 1:
+        profile_owner = profile_owner[0]
+    else:
+        return JsonResponse({
+                "ErrorCode": 404,
+                "Error": "UserNotFound"
+        })
+    context = {
+        "html_title": "@" + request.user.username + " | VoteWebXXL",
+        "profile_owner": profile_owner
+    }
+    return render(request, 'profile.html', context)

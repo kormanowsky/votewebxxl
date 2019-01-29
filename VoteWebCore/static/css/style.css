@@ -135,6 +135,20 @@ li.nav-item:hover p.small {
     font-size: 90%;
 }
 
+/* Стили страницы Профиль */
+
+#profile-cover{
+    height: 250px;
+}
+
+#profile-info{
+    margin-top:-70px;
+    z-index: 10;
+}
+
+#profile-info h5{
+    margin-top:85px;
+}
 
 /* Адаптивность */
 

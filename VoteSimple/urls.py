@@ -30,5 +30,8 @@ urlpatterns = [
     path('register', views.register),
 
     # Test Argon
-    path('argon-test', views.argon_test)
+    path('argon-test', views.argon_test),
+
+    # Profile Page
+    path('profile/<str:username>', views.profile)
 ]

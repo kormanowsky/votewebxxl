@@ -1,0 +1,35 @@
+{% extends "basic.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-9">
+        <div class="card overflow-hidden shadow-sm border-0 h-100">
+            <div class="card-body">
+                <div id="profile-cover" class="mx--4 mt--4 p-4 bg-primary"></div>
+                <div id="profile-info" class="overflow-visible position-relative row mx-0">
+                    <img src="{% if request.user.username and request.user.avatar %}https://pp.userapi.com/c846524/v846524647/15b218/B-cPw9HFt7Y.jpg?ava=1{% else %}https://bizraise.pro/wp-content/uploads/2014/09/no-avatar-300x300.png{%endif%}" class="avatar avatar-big shadow-lg">
+                    <div class="col">
+                        <h5 class="mb-1 lh-110">
+                            Михаил Кормановский
+                        </h5>
+                        <h6 class="mt-0 lh-100 font-weight-300">
+                            @{{ profile_owner.username }}
+                        </h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3">
+        <div class="card shadow-sm h-100">
+            <div class="card-body h-100 w-100 d-flex align-items-center justify-content-center text-muted">
+                Stats Here
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block content_actions %}
+
+{% endblock content_actions %}

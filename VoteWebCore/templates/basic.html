@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Basic Page Template</title>
+    <title>{{ html_title }}</title>
     <!-- Мета-теги -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#5e35b1">
@@ -59,7 +59,7 @@
                                 <ul class="navbar-nav navbar-nav-hover align-items-lg-center d-lg-none border-bottom">
                                     {% if request.user.username %}
                                     <li class="nav-item m-0">
-                                        <a href="/user" class="nav-link m-0 px-3 px-lg-4 pb-0 pt-1 pt-lg-0">
+                                        <a href="/profile/{{ request.user.username }}" class="nav-link m-0 px-3 px-lg-4 pb-0 pt-1 pt-lg-0">
                                             <span class="font-weight-300 small">Profile</span>
                                         </a>
                                     </li>
@@ -151,7 +151,7 @@
                                             <ul class="navbar-nav border-top mt-4 ml--4 mr--4 pt-4 pl-4 pr-4">
                                                 {% if request.user.username %}
                                                 <li class="nav-item">
-                                                    <a href="/user" title="Go to my profile page" class="d-flex pb-3 align-items-center">
+                                                    <a href="/profile/{{ request.user.username }}" title="Go to my profile page" class="d-flex pb-3 align-items-center">
                                                         <i class="la la-user"></i>
                                                         <p class="h6 small text-muted m-0 pl-3">Profile</p>
                                                     </a>
@@ -212,54 +212,8 @@
                         <div class="w-100">
                             <!-- Контент, разбитый на строки. На каждой странице тут разные строки! -->
                             <!-- Строка имеет класс .row, все, кроме первой, имеют дополнительно класс .mt-4 -->
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="card shadow-sm">
-                                        <div class="card-body">
-                                            <h1 class="pb-7">Hello, world!</h1>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mt-4">
-                                <div class="col-6">
-                                    <div class="card shadow-sm">
-                                        <div class="card-body">
-                                            <h1 class="pb-7">Hello, world!</h1>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="card shadow-sm">
-                                        <div class="card-body">
-                                            <h1 class="pb-7">Hello, world!</h1>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mt-4">
-                                <div class="col-4">
-                                    <div class="card shadow-sm">
-                                        <div class="card-body">
-                                            <h1 class="pb-7">Hello, world!</h1>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="card shadow-sm">
-                                        <div class="card-body">
-                                            <h1 class="pb-7">Hello, world!</h1>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="card shadow-sm">
-                                        <div class="card-body">
-                                            <h1 class="pb-7">Hello, world!</h1>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            {% block content %}
+                            {% endblock content %}
                         </div>
                     </main>
                     <!-- Правая колонка -->
@@ -268,32 +222,16 @@
                             <div class="row">
                                 <div class="col-12">
                                     <!-- Меню действий с отображаемым контентом. Например, если отображается голосование, можно изменить или удалить его -->
-                                    <ul class="mt-md-4 navbar-nav">
-                                        <li class="nav-item">
+                                    <!-- Код одного элемента: 
+                                    <li class="nav-item">
                                             <a href="" class="d-flex pb-3 align-items-center">
                                                 <p class="m-0">Edit</p>
                                             </a>
                                         </li>
-                                        <li class="nav-item">
-                                            <a href="" class="d-flex pb-3 align-items-center">
-                                                <p class="m-0">Share</p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="" class="d-flex pb-3 align-items-center">
-                                                <p class="m-0">Remove</p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="" class="d-flex pb-3 align-items-center">
-                                                <p class="m-0">Content Action</p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="" class="d-flex align-items-center">
-                                                <p class="m-0">Another content action</p>
-                                            </a>
-                                        </li>
+                                    -->
+                                    <ul class="mt-md-4 navbar-nav">
+                                        {% block content_actions %}
+                                        {% endblock content_actions %}
                                     </ul>
                                 </div>
                             </div>
