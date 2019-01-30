@@ -1,6 +1,4 @@
-{% extends "basic.html" %}
-{# Шаблон страницы Профиль #}
-{% block content %}
+{% extends "basic.html" %} {# Шаблон страницы Профиль #} {% block content %}
 <div class="row">
     <div class="col-12">
         <div class="card overflow-hidden shadow-sm border-0 h-100">
@@ -104,34 +102,11 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-12 col-xl-6 mt-4">
-                <div class="card shadow-sm" style="height: 300px;">
-                    <div class="card-body h-100 w-100 d-flex align-items-center justify-content-center text-muted">
-                        Quiz Here
-                    </div>
-                </div>
+            {% for item in quiz_list %}
+            <div class="col-12 col-lg-6 col-xl-4">
+                {% include "quiz.html" with quiz=item.quiz quiz_test=item.quiz_test quiz_small=1 %}
             </div>
-            <div class="col-12 col-xl-6 mt-4">
-                <div class="card shadow-sm" style="height: 300px;">
-                    <div class="card-body h-100 w-100 d-flex align-items-center justify-content-center text-muted">
-                        Quiz Here
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-xl-6 mt-4">
-                <div class="card shadow-sm" style="height: 300px;">
-                    <div class="card-body h-100 w-100 d-flex align-items-center justify-content-center text-muted">
-                        Quiz Here
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-xl-6 mt-4">
-                <div class="card shadow-sm" style="height: 300px;">
-                    <div class="card-body h-100 w-100 d-flex align-items-center justify-content-center text-muted">
-                        Quiz Here
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 </div>

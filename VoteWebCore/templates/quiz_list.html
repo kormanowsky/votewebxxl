@@ -1,9 +1,9 @@
-{% extends "basic.html" %}
-{% block content %}
-{% for item in quiz_list %}
+{% extends "basic.html" %} {% block content %}
 <div class="row">
+    {% for item in quiz_list %}
     <div class="col-12 col-lg-6 col-xl-4">
-{% include "quiz.html" with quiz=item.quiz quiz_test=item.quiz_test quiz_small=1 %}
-    </div></div>
-{% endfor %}
+        {% include "quiz.html" with quiz=item.quiz quiz_test=item.quiz_test quiz_small=1 %}
+    </div>
+    {% endfor %}
+</div>
 {% endblock content %}

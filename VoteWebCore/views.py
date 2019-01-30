@@ -126,6 +126,7 @@ def profile(request, username=None):
     context = {
         "html_title": "@" + request.user.username,
         "profile_owner": profile_owner, 
+        "quiz_list": TB_Quiz.objects.filter(quiz_owner=profile_owner.id),
         "no_right_aside": True,
     }
     return render(request, 'profile.html', context)
