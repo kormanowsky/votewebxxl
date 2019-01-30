@@ -38,7 +38,7 @@ def quiz_task(request):
     if len(quiz_item) != 1:
         return render(request, 'quiz_task.html', context)
 
-    context['quiz_test'] = TB_VoteDiscret.objects.filter(quiz_id=quiz_no)
+    context['quiz_test'] = TB_VoteDiscret.objects.filter(vote_id=quiz_no)
     print(context['quiz_test'])
     context['is_found'] = True
     return render(request, 'quiz_task.html', context)
@@ -79,10 +79,10 @@ def quiz_save(request):
     # TODO: Добавить проверку номера отвена на корректность
 
     # Проверка на повторное голосование, если человек уже голосовал ему будет отправлен код ошибки 2
-    if len(TB_VoteLog.objects.filter(answ_user_id=request.user.id, quiz_id=vote_no, quiz_no=vote_quest_no)):
+    if len(TB_VoteLog.objects.filter(answ_user_id=request.user.id, vote_id=vote_no, vote_no=vote_quest_no)):
         json_response['ErrorCode'] = 2  # 2 - is duplicate error
     else:
-        item = TB_VoteLog(quiz_id=vote_no, quiz_no=vote_quest_no, result_text=answ_text, answ_user_id=request.user.id)
+        item = TB_VoteLog(vote_id=vote_no, vote_no=vote_quest_no, answer_no=int(answ_text), answ_user_id=request.user.id)
         item.save()
 
     return JsonResponse(json_response)

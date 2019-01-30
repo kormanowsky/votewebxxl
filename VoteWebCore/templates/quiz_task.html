@@ -10,16 +10,16 @@
             {% for quiz in quiz_test %}
                 <tr>
                     <th>
-                        <p>{{ quiz.quiz_text_question }}</p>
+                        <p>{{ quiz.vote_text_question }}</p>
                     </th>
-                    <th id="quest_node_{{ quiz.quiz_no }}">
-                        <button id="Button_ID_{{ quiz.quiz_no }}_YES" onclick="QuizSaveOneClick({{ quiz.quiz_id.id }}, {{ quiz.quiz_no }}, 'YES')">
-                            {{ quiz.quiz_text_yes }}
+                    <th id="quest_node_{{ quiz.vote_no }}">
+                        <button id="Button_ID_{{ quiz.vote_no }}_YES" onclick="QuizSaveOneClick({{ quiz.vote_id.id }}, {{ quiz.vote_no }}, '1')">
+                            {{ quiz.vote_text_yes }}
                         </button>
-                        <button id="Button_ID_{{ quiz.quiz_no }}_NO" onclick="QuizSaveOneClick({{ quiz.quiz_id.id }}, {{ quiz.quiz_no }}, 'YES')">
-                            {{ quiz.quiz_text_no }}
+                        <button id="Button_ID_{{ quiz.vote_no }}_NO" onclick="QuizSaveOneClick({{ quiz.vote_id.id }}, {{ quiz.vote_no }}, '0')">
+                            {{ quiz.vote_text_no }}
                         </button>
-                        <p id="complete_txt_{{ quiz.quiz_no }}" style="visibility: hidden; color: green">Complete</p>
+                        <p id="complete_txt_{{ quiz.vote_no }}" style="visibility: hidden; color: green">Complete</p>
                     </th>
                 </tr>
             {% endfor %}
