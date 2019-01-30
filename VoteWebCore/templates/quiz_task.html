@@ -1,10 +1,10 @@
-{% extends "basic.html" %} {% block content %} {% if is_found %}
+{% extends "basic.html" %} {% block content %}
 <div class="row">
     <div class="col-12">
         {% include "quiz.html" with quiz=quiz quiz_test=quiz_test quiz_small=0 %}
     </div>
 </div>
-{% endif %} {% endblock content %} {% block content_actions %}
+{% endblock content %} {% block content_actions %}
 {% if quiz.quiz_owner == request.user.id %}
 <li class="nav-item">
     <a href="/quiz/{{ quiz.id }}/edit" class="d-flex pb-3 align-items-center">

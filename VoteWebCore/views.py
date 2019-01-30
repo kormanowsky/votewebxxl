@@ -86,18 +86,25 @@ def register(request):
         return HttpResponseRedirect('/login')
     return render(request, 'registration/registration.html', context)
 
+
 # New view for a single quiz
 @login_required
 def quiz(request, quiz_id=-1, action="index"):
     quiz_items = TB_Quiz.objects.filter(id=quiz_id)
     is_found = len(quiz_items) == 1
+    if not is_found:
+        return JsonResponse({
+            "ErrorCode": 404,
+            "Error": "QuizNotFound"
+        })
     context = {
         'quiz': quiz_items[0], 
-        'quiz_test': TB_QuizDiscret.objects.filter(quiz_id=quiz_id), 
-        'is_found': is_found
+        'quiz_test': TB_QuizDiscret.objects.filter(quiz_id=quiz_id),
+        'html_title': quiz_items[0].quiz_name
     }
     print("quiz_id", quiz_id, "action", action)
     return render(request, 'quiz_task.html', context)
+
 
 def profile(request, username=None):
     if username is None:
