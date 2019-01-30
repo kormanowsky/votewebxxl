@@ -7,7 +7,7 @@
             <div class="card-body align-items-center row mx-0">
                 <div class="col-md-6 col-xl-8 pr-0 pl-0 pl-xxl-4">
                     <div class="py-xl-4 d-flex align-items-center justify-content-center justify-content-xl-start">
-                        <img id="profile-avatar" src="{% if request.user.username and request.user.avatar %}https://pp.userapi.com/c846524/v846524647/15b218/B-cPw9HFt7Y.jpg?ava=1{% else %}https://bizraise.pro/wp-content/uploads/2014/09/no-avatar-300x300.png{%endif%}" class="avatar avatar-big shadow-lg">
+                        <img id="profile-avatar" src="{% if profile_owner.username and profile_owner.avatar %}https://pp.userapi.com/c846524/v846524647/15b218/B-cPw9HFt7Y.jpg?ava=1{% else %}https://bizraise.pro/wp-content/uploads/2014/09/no-avatar-300x300.png{%endif%}" class="avatar avatar-big shadow-lg">
                         <div id="profile-info" class="w-auto ml-3 ml-xl-4">
                             <h4 class="lh-110 mb-1">
                                 Firstname Lastname
@@ -59,7 +59,6 @@
     <div class="col-lg-4 col-xl-3">
         <div class="row">
             <div class="col-12">
-                <div id="profile-activity-line"></div>
                 <h5 class="pt-4 text-right h6">Activity</h5>
                 <div class="card profile-activity-item shadow-sm">
                     <div class="card-body row m-0 position-relative">

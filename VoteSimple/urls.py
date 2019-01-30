@@ -29,9 +29,11 @@ urlpatterns = [
     path('logout', views.logout),
     path('register', views.register),
 
-    # Test Argon
-    path('argon-test', views.argon_test),
 
     # Profile Page
-    path('profile/<str:username>', views.profile)
+    path('profile/<str:username>', views.profile),
+
+    # Single quiz
+    path('quiz/<int:quiz_id>', views.quiz),
+    path('quiz/<int:quiz_id>/<str:action>', views.quiz)
 ]

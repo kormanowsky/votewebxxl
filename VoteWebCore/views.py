@@ -17,8 +17,15 @@ register_page = {
 
 @login_required
 def quiz_list(request):
+    all_quizzes = TB_Quiz.objects.all()
+    context_quizzes = []
+    for quiz in all_quizzes:
+        context_quizzes.append({
+            "quiz": quiz, 
+            "quiz_test": TB_QuizDiscret.objects.filter(quiz_id=quiz.id)
+        })
     context = {
-        "quiz_list": TB_Quiz.objects.all(),
+        "quiz_list": context_quizzes,
         "html_title": "Quiz List"
     }
     return render(request, 'quiz_list.html', context)
@@ -31,11 +38,12 @@ def quiz_task(request):
     quiz_item = TB_Quiz.objects.filter(id=quiz_no)
     if len(quiz_item) != 1:
         return render(request, 'quiz_task.html', context)
-
+    context['quiz'] = quiz_item[0]
     context['quiz_test'] = TB_QuizDiscret.objects.filter(quiz_id=quiz_no)
     print(context['quiz_test'])
+    print(quiz_item[0].quiz_owner)
     context['is_found'] = True
-    return render(request, 'quiz_task.html', context)
+    return render(request, 'quiz_task.html', context) 
 
 
 @login_required
@@ -78,11 +86,18 @@ def register(request):
         return HttpResponseRedirect('/login')
     return render(request, 'registration/registration.html', context)
 
-
-# This is a view for testing Argon installation
-def argon_test(request):
-    return render(request, 'basic.html', dict())
-
+# New view for a single quiz
+@login_required
+def quiz(request, quiz_id=-1, action="index"):
+    quiz_items = TB_Quiz.objects.filter(id=quiz_id)
+    is_found = len(quiz_items) == 1
+    context = {
+        'quiz': quiz_items[0], 
+        'quiz_test': TB_QuizDiscret.objects.filter(quiz_id=quiz_id), 
+        'is_found': is_found
+    }
+    print("quiz_id", quiz_id, "action", action)
+    return render(request, 'quiz_task.html', context)
 
 def profile(request, username=None):
     if username is None:
