@@ -20,8 +20,7 @@ function QuizSaveResponse(data) {
             complete_txt.style.visibility = "visible";
         }
     }
-    document.getElementById('Button_ID_' + data['ButtonID'] + '_NO').style.visibility = "hidden";
-    document.getElementById('Button_ID_' + data['ButtonID'] + '_YES').style.visibility = "hidden";
+    document.getElementById('quest_form_' + data['ButtonID']).style.visibility = "hidden";
 }
 
 function ajaxRequest(method, url, callback_function, httpParams) {

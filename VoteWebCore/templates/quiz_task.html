@@ -7,22 +7,73 @@
             <tr bgcolor="#7fffd4">
                 <th>Quest</th>
             </tr>
-            {% for quiz in quiz_test %}
-                <tr>
-                    <th>
-                        <p>{{ quiz.vote_text_question }}</p>
-                    </th>
-                    <th id="quest_node_{{ quiz.vote_no }}">
-                        <button id="Button_ID_{{ quiz.vote_no }}_YES" onclick="QuizSaveOneClick({{ quiz.vote_id.id }}, {{ quiz.vote_no }}, '1')">
-                            {{ quiz.vote_text_yes }}
-                        </button>
-                        <button id="Button_ID_{{ quiz.vote_no }}_NO" onclick="QuizSaveOneClick({{ quiz.vote_id.id }}, {{ quiz.vote_no }}, '0')">
-                            {{ quiz.vote_text_no }}
-                        </button>
-                        <p id="complete_txt_{{ quiz.vote_no }}" style="visibility: hidden; color: green">Complete</p>
-                    </th>
-                </tr>
-            {% endfor %}
+            {% if vote_type == 0 %}
+                {% for quiz in quiz_test %}
+                    <tr>
+                        <th>
+                            <p>{{ quiz.vote_text_question }}</p>
+                        </th>
+                        <th id="quest_node_{{ quiz.vote_no }}">
+                            <div id="quest_form_{{ quiz.vote_no }}">
+
+                                <button onclick="QuizSaveOneClick({{ quiz.vote_id.id }}, {{ quiz.vote_no }}, '1')">
+                                    {{ quiz.vote_text_yes }}
+                                </button>
+                                <button onclick="QuizSaveOneClick({{ quiz.vote_id.id }}, {{ quiz.vote_no }}, '0')">
+                                    {{ quiz.vote_text_no }}
+                                </button>
+
+                            </div>
+                            <p id="complete_txt_{{ quiz.vote_no }}" style="visibility: hidden; color: green">Complete</p>
+                        </th>
+                    </tr>
+                {% endfor %}
+            {% elif vote_type == 1 %}
+                {% for vote_id, answer_list in vote_info.items %}
+                    {% for answer in answer_list %}
+                        <tr>
+                            {% for answer_id, answer_info in answer.items %}
+                                <th>
+                                    <p>{{ answer_info.QuestText }}</p>
+                                </th>
+                                <td id="quest_node_{{ answer_id }}">
+                                    {% for answ_id, answ_data in answer_info.AnswerInfo.items %}
+
+                                        <label>
+                                            {{ answ_data }}
+                                            <input name="check_box_{{ answer_id }}_{{ answ_id }}" type="checkbox">
+                                        </label>
+                                        <br>
+                                    {% endfor %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+
+                {% comment %}
+                {% for key_vote, vote_answer_list in vote_info.items %}
+                    {% for answer in vote_answer_list %}
+                        {% for key_answer, data_answer in answer.items %}
+                            {{ data_answer }}<br>
+                            {% for answer_node_key, answer_node_data in data_answer.items %}
+                                {% if answer_node_key == 'QuestText' %}
+                                    <th>
+                                        <p>{{ answer_node_key }}</p>
+                                    </th>
+                                    <td id="quest_node_{{ key_answer }}">
+                                        {% for foo in data_answer.AnswerInfo %}
+                                            {{ foo }}
+                                        {% endfor %}
+                                    </td>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+
+                    {% endfor %}
+                {% endfor %}
+                {% endcomment %}
+            {% endif %}
         </table>
     {% else %}
         <h1>Quiz Not found!</h1>

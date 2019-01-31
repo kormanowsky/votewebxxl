@@ -33,14 +33,60 @@ def quiz_list(request):
 @login_required
 def quiz_task(request):
     context = {'is_found': False}
-    quiz_no = request.GET.get('quiz_no', -1)
-    quiz_item = TB_Vote.objects.filter(id=quiz_no)
+    vote_id = request.GET.get('quiz_no', -1)
+    quiz_item = TB_Vote.objects.filter(id=vote_id)
     if len(quiz_item) != 1:
         return render(request, 'quiz_task.html', context)
 
-    context['quiz_test'] = TB_VoteDiscret.objects.filter(vote_id=quiz_no)
-    print(context['quiz_test'])
-    context['is_found'] = True
+    context['vote_type'] = quiz_item[0].vote_type
+    if context['vote_type'] == TB_Vote.VT_DISCRET:
+        context['quiz_test'] = TB_VoteDiscret.objects.filter(vote_id=vote_id)
+    elif context['vote_type'] == TB_Vote.VT_MULTI:
+        context['quiz_test'] = TB_VoteMulti.objects.filter(vote_id=vote_id)  # Берем само голосование
+        if len(context['quiz_test']):
+            vote_info = []
+
+            ###############################################################
+            # struct simple:
+            # $QuestNo: {
+            #            $QuestNumerate: {
+            #                             'QuestText':$QuestText,
+            #                              'AnswerInfo': {
+            #                                              $AnswNumerate:'$AnswerText'
+            #                                            }
+            #                             # TODO: Added quest answ
+            #                            }
+            #           }
+            ###############################################################
+
+            for i in context['quiz_test']:  # Начинаем брать вопросы у данного голосования
+                vote_info.append({i.quests_no: {}})  # Начинаем брать информацию о вопросе у голосвания
+                for quest_info in TB_VoteMulti_Quest.objects.all().filter(quests_no=i.quests_no):
+                    vote_info[-1][i.quests_no] = {'QuestText': quest_info.quest_text, 'AnswerInfo': {}}
+                    for quest_answ_info in TB_VoteMulti_Answer.objects.all().filter(quests_no=i.quests_no, quest_numerate=quest_info.quest_numerate):
+                        vote_info[-1][i.quests_no]['AnswerInfo'][
+                            quest_answ_info.answer_numerate] = quest_answ_info.answer_text
+            context['vote_info'] = {int(vote_id): vote_info}
+        """
+        if len(context['quiz_test']):
+            context['vote_quests'] = []
+            for i in context['quiz_test']:
+                i.quests = []
+                i.quests.append({'vote_info': TB_VoteMulti_Quest.objects.filter(quests_no=i.quests_no)[0],
+                                 'vote_answ': []})
+
+            for i in context['quiz_test']:
+                for j in i['quests']:
+                    j['vote_answ'].append(1)
+                    # TB_VoteMulti_Quest.objects.filter(quests_no=i['quests']['vote_answ']['vote_info'].quests_no,
+                    #                                  quest_numerate=i['quests']['vote_answ']['vote_info'].quest_numerate))
+        """
+    else:
+        return render(request, 'quiz_task.html', context)
+
+    if len(context['quiz_test']):
+        context['is_found'] = True
+
     return render(request, 'quiz_task.html', context)
 
 
