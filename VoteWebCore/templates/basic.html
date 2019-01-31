@@ -1,29 +1,6 @@
-<!DOCTYPE html>
-{# Основной шаблон #}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ html_title }} | VoteWebXXL</title>
-    <!-- Мета-теги: адаптивность и цвет адресной строки в мобильном Google Chrome -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#5e35b1">
-    <!-- Подключение статики -->
-    {% load static %}
-    <!-- Шрифты -->
-    <link type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,700,800&amp;subset=cyrillic-ext" rel="stylesheet">
-    <!-- Стили -->
-    <link type="text/css" href='{% static "css/argon.css" %}' rel="stylesheet">
-    <link type="text/css" href='{% static "vendor/line-awesome/css/line-awesome.min.css" %}' rel="stylesheet">
-    <link type="text/css" href='{% static "vendor/bootstrap-datepicker/css/bootstrap-datepicker.min.css" %}' rel="stylesheet">
-    <!-- Собственные стили -->
-    <link type="text/css" href='{% static "css/style.css" %}' rel="stylesheet">
-    <!-- jQuery и другие скрипты шапки -->
-    <script type="text/javascript" src='{% static "vendor/jquery/jquery.min.js" %}'></script>
-    <script src='{% static "js/ajax.js" %}'></script>
-</head>
-
-<body>
-    <!-- Шапка -->
+{% extends "base.html" %}
+{% block body %}
+ <!-- Шапка -->
     <header class="bg-primary d-flex align-items-center text-white shadow">
         <div class="w-100">
             <div class="container-fluid">
@@ -239,21 +216,4 @@
             </div>
         </div>
     </div>
-    <!-- Скрипты подвала -->
-    <script type="text/javascript" src='{% static "vendor/bootstrap/bootstrap.min.js" %}'></script>
-    <script type="text/javascript" src='{% static "js/argon.min.js" %}'></script>
-    <script type="text/javascript" src='{% static "vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js" %}'></script>
-    <!-- Собственные скрипты -->
-    <script>
-        // Установка ширины содержимого в 375px для тех экранов, которые меньше 375px
-        jQuery(function($){
-            var width = $(window).width();
-            if(width < 375){
-                var viewportTag = $('meta[name="viewport"]');
-                viewportTag.attr('content', viewportTag.attr('content').replace('device-width, initial-scale=1.0', '375'));
-            }
-        });
-    </script>
-</body>
-
-</html>
+{% endblock body %}

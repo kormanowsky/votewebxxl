@@ -1,14 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-</head>
-<body>
-<form action="/login" method="post">
-    {% csrf_token %}
-    {{ form }}
-    <input name="login" type="submit" value="Login in">
-</form>
-</body>
-</html>
+{% extends "base.html" %} {% block html_title %}Log in{% endblock html_title %} {% block body %}
+<div id="auth-root" class="bg-gradient-primary">
+    <div class="container h-100vh">
+        <div class="h-100 row align-items-center justify-content-center">
+            <div class="col-lg-5">
+                <h1 class="text-white mb-4 font-weight-100 text-center">WebVoteXXL</h1>
+                <div class="card shadow border-0">
+                    <div class="card-body px-lg-5 py-lg-5">
+                        <div class="text-center mb-4">
+                            <h4>Log in</h4>
+                        </div>
+                        <form role="form" action="/login?next={{ request.GET.next }}" method="post">
+                            {% csrf_token %}
+                            <div class="form-group mb-3">
+                                <div class="input-group input-group-alternative">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="la la-user"></i></span>
+                                    </div>
+                                    <input class="form-control" placeholder="Username" type="text" name="username">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group input-group-alternative">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="la la-key"></i></span>
+                                    </div>
+                                    <input class="form-control" placeholder="Password" type="password" name="password">
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary my-4">Log in</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-6">
+                        <a href="/login/forgot-password" class="text-white">
+                            <small>Forgot password?</small>
+                        </a>
+                    </div>
+                    <div class="col-6 text-right">
+                        <a href="/register" class="text-white">
+                            <small>Create new account</small>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 
+{{ form }}
+-->
+{% endblock body %}
