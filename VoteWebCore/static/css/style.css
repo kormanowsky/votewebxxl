@@ -2,7 +2,8 @@
     transition-duration: .2s;
 }
 
-html, body {
+html,
+body {
     background: #f6f3fa;
     min-width: 375px;
     overflow: hidden;
@@ -136,8 +137,8 @@ li.nav-item:hover p.small {
 
 /* Стили страницы Профиль */
 
-#profile-info h4{
-    font-size:1.2rem;
+#profile-info h4 {
+    font-size: 1.2rem;
 }
 
 #profile-stats-list {
@@ -163,6 +164,76 @@ li.nav-item:hover p.small {
 .profile-activity-right {
     top: 12px;
     right: 12px;
+}
+
+
+/* Стили страницы Список голосований */
+
+#quizzes-search,
+.quizzes-filter {
+    height: 48px;
+    border-radius: 24px;
+    overflow: hidden;
+    position: relative;
+}
+
+#quizzes-search-query,
+.quizzes-filter-query {
+    border: none;
+    width: calc(100% - 24px);
+    height: 48px;
+    line-height: 48px;
+    padding: 8px 16px;
+    outline: none !important;
+    margin-right: 48px;
+}
+
+#quizzes-search-btn,
+.quizzes-filter-icon {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    right: 4px;
+    top: 3px;
+    border-radius: 50%;
+    font-size: 20px;
+}
+
+.quizzes-filter-query {
+    margin-left: 24px;
+    margin-right: 0;
+}
+
+.quizzes-filter-icon {
+    right: auto;
+    left: 4px;
+}
+
+.datepicker table tr td span.active.active,
+.datepicker table tr td span.active.disabled,
+.datepicker table tr td span.active.disabled.active,
+.datepicker table tr td span.active.disabled.disabled,
+.datepicker table tr td span.active.disabled:active,
+.datepicker table tr td span.active.disabled:hover,
+.datepicker table tr td span.active.disabled:hover.active,
+.datepicker table tr td span.active.disabled:hover.disabled,
+.datepicker table tr td span.active.disabled:hover:active,
+.datepicker table tr td span.active.disabled:hover:hover,
+.datepicker table tr td span.active.disabled:hover[disabled],
+.datepicker table tr td span.active.disabled[disabled],
+.datepicker table tr td span.active:active,
+.datepicker table tr td span.active:hover,
+.datepicker table tr td span.active:hover.active,
+.datepicker table tr td span.active:hover.disabled,
+.datepicker table tr td span.active:hover:active,
+.datepicker table tr td span.active:hover:hover,
+.datepicker table tr td span.active:hover[disabled],
+.datepicker table tr td span.active[disabled],
+.datepicker table tr td.active,
+.datepicker table tr td.active.disabled,
+.datepicker table tr td.active.disabled:hover,
+.datepicker table tr td.active:hover {
+    background: #5e2eb4 !important;
 }
 
 
@@ -195,8 +266,8 @@ li.nav-item:hover p.small {
     .avatar-big {
         height: 96px;
     }
-    #profile-info h4{
-        font-size:1.3rem;
+    #profile-info h4 {
+        font-size: 1.3rem;
     }
     .profile-stats-number {
         font-size: 150%;
@@ -237,37 +308,37 @@ li.nav-item:hover p.small {
     .avatar-big {
         height: 120px;
     }
-    .profile-activity-main h6{
+    .profile-activity-main h6 {
         font-size: 80%;
     }
 }
 
-@media(min-width: 1200px){
+@media(min-width: 1200px) {
     .avatar-big {
         height: 150px;
     }
-    #profile-info h4{
-        font-size:1.5rem;
+    #profile-info h4 {
+        font-size: 1.5rem;
     }
     .profile-stats-number {
         font-size: 175%;
     }
 }
 
-@media(min-width: 1280px){
-    .pl-xxl-4{
+@media(min-width: 1280px) {
+    .pl-xxl-4 {
         padding-left: 1.5rem !important;
     }
-    .pr-xxl-4{
+    .pr-xxl-4 {
         padding-right: 1.5rem !important;
     }
-    .pr-xxl-0{
+    .pr-xxl-0 {
         padding-right: 0 !important;
     }
-    .justify-content-xxl-around{
+    .justify-content-xxl-around {
         justify-content: space-around !important;
     }
-    .profile-activity-main h6{
+    .profile-activity-main h6 {
         font-size: 100%;
     }
 }

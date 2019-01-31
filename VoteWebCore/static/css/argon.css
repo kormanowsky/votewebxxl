@@ -22,12 +22,14 @@ Colors changed from
     --secondary: #f4f5f7;
 }
 #233dd2
+#324cdd
 to
 :root{
     --primary: #5e35b1;
     --secondary: #03a9f4;
 }
 #9575C1
+#825bc8
 */
 :root
 {
@@ -3021,7 +3023,7 @@ fieldset:disabled a.btn
 {
     color: #fff;
     border-color: #5e35b1; 
-    background-color: #324cdd;
+    background-color: #825bc8;
 }
 .btn-primary:not(:disabled):not(.disabled):active:focus,
 .btn-primary:not(:disabled):not(.disabled).active:focus,
@@ -6228,7 +6230,7 @@ input[type='button'].btn-block
     text-decoration: none;
 
     color: #fff;
-    background-color: #324cdd;
+    background-color: #825bc8;
 }
 
 .badge-secondary
@@ -6457,7 +6459,7 @@ input[type='button'].btn-block
 }
 .alert-primary .alert-link
 {
-    color: #324cdd;
+    color: #825bc8;
 }
 
 .alert-secondary
@@ -7954,7 +7956,7 @@ a.bg-primary:focus,
 button.bg-primary:hover,
 button.bg-primary:focus
 {
-    background-color: #324cdd !important;
+    background-color: #825bc8 !important;
 }
 
 .bg-secondary
@@ -12338,7 +12340,7 @@ button.bg-darker:focus
 a.text-primary:hover,
 a.text-primary:focus
 {
-    color: #324cdd !important;
+    color: #825bc8 !important;
 }
 
 .text-secondary
@@ -12814,7 +12816,7 @@ a.bg-blue:focus,
 button.bg-blue:hover,
 button.bg-blue:focus
 {
-    background-color: #324cdd !important;
+    background-color: #825bc8 !important;
 }
 
 .bg-indigo
@@ -18083,7 +18085,7 @@ article h5 + figure
 .datepicker table tr td.range.day.disabled:hover
 {
     color: #8a98eb; 
-    background: #324cdd;
+    background: #825bc8;
 }
 .datepicker table tr td.range.highlighted.focused
 {

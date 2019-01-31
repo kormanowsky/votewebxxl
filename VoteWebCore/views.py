@@ -26,7 +26,8 @@ def quiz_list(request):
         })
     context = {
         "quiz_list": context_quizzes,
-        "html_title": "Quiz List"
+        "html_title": "Quiz List", 
+        "no_right_aside": True
     }
     return render(request, 'quiz_list.html', context)
 
