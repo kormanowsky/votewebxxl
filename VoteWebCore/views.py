@@ -5,6 +5,7 @@ from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render
 
 from VoteWebCore.models import *
+from VoteWebCore.functions import form_errors
 
 # Create your views here.
 
@@ -85,6 +86,7 @@ def register(request):
     if context['form'].is_valid():
         context['form'].save()
         return HttpResponseRedirect('/login')
+    context['errors'] = form_errors(context['form'])
     return render(request, 'registration/registration.html', context)
 
 
