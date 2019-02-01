@@ -5,6 +5,6 @@ def form_errors(form):
     errors = []
     for i in range(len(_errors)):
         err = _errors[i].strip()
-        if err.istitle():
+        if len(err) and err[0].isupper():
             errors.append(err)
     return errors

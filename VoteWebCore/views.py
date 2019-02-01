@@ -87,6 +87,7 @@ def register(request):
         context['form'].save()
         return HttpResponseRedirect('/login')
     context['errors'] = form_errors(context['form'])
+    print(context['errors'])
     return render(request, 'registration/registration.html', context)
 
 
