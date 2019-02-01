@@ -211,7 +211,7 @@ fabric.properties
 
 ### PyCharm Patch ###
 # Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
-
+.idea/
 # *.iml
 # modules.xml
 # .idea/misc.xml
@@ -247,3 +247,5 @@ $RECYCLE.BIN/
 
 # End of https://www.gitignore.io/api/linux,django,windows,pycharm
 
+# Document folder
+Document/
