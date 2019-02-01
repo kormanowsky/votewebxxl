@@ -94,7 +94,7 @@ nav.navbar.navbar-expand-lg {
 #root aside,
 #root main {
     height: auto;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
     padding-bottom: 48px;
     margin-top: -16px;

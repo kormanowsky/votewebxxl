@@ -35,5 +35,8 @@ urlpatterns = [
 
     # Single quiz
     path('quiz/<int:quiz_id>', views.quiz),
-    path('quiz/<int:quiz_id>/<str:action>', views.quiz)
+    path('quiz/<int:quiz_id>/<str:action>', views.quiz),
+
+    # Settings
+    path('settings', views.settings)
 ]

@@ -131,3 +131,11 @@ def profile(request, username=None):
         "no_right_aside": True,
     }
     return render(request, 'profile.html', context)
+
+
+@login_required
+def settings(request):
+    context = {
+        "html_title": "Settings"
+    }
+    return render(request, "settings.html", context)
