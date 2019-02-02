@@ -28,12 +28,11 @@ class TB_VoteLog(models.Model):
     vote_id = models.IntegerField()
     vote_no = models.IntegerField()
     answer_no = models.IntegerField(default=-1)
-    # result_text = models.CharField(max_length=256)
 
 
 class TB_VoteMulti(models.Model):
     vote_id = models.ForeignKey(to=TB_Vote, on_delete=models.CASCADE)
-    vote_no = models.IntegerField()
+    # vote_no = models.IntegerField()
     quests_no = models.IntegerField()
 
 

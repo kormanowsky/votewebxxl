@@ -54,7 +54,6 @@ def quiz_task(request):
             #                              'AnswerInfo': {
             #                                              $AnswNumerate:'$AnswerText'
             #                                            }
-            #                             # TODO: Added quest answ
             #                            }
             #           }
             ###############################################################
@@ -146,3 +145,39 @@ def register(request):
         context['form'].save()
         return HttpResponseRedirect('/login')
     return render(request, 'registration/registration.html', context)
+
+
+@login_required
+def save_vote_info(request):
+    vote_id = int(request.GET.get('vote_id', -1))
+    vote_no = int(request.GET.get('vote_no', -1))
+    quest_no = int(request.GET.get('quest_no', 0))
+    quest_answer = int(request.GET.get('quest_answer', 0))
+
+    find_vote_query = TB_Vote.objects.all().filter(vote_id=vote_id)
+    if not len(find_vote_query):  # not found vote
+        return JsonResponse({})
+
+    find_vote = find_vote_query[0]
+
+    save_log = TB_VoteLog()
+    save_log.answ_user_id = request.user.id
+    save_log.vote_id = vote_id
+    save_log.answer_no = quest_answer
+
+    if find_vote.vote_type == find_vote.VT_DISCRET:
+        save_log.vote_no = vote_no
+        if 0 < quest_answer > 1:
+            return JsonResponse({})
+
+        if not len(TB_VoteDiscret.objects.all().filter(vote_id=vote_id, vote_no=vote_no)):
+            return JsonResponse({})
+
+    elif find_vote.vote_type == find_vote.VT_MULTI:
+        save_log.vote_no = quest_no
+        if not len(TB_VoteMulti.objects.filter(vote_id=vote_id, quests_no=vote_no)):
+            return JsonResponse({})
+
+    # todo: Check already complete
+    save_log.save()
+    return JsonResponse({})
