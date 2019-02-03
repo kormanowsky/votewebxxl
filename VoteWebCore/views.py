@@ -142,3 +142,26 @@ def settings(request):
         "html_title": "Settings"
     }
     return render(request, "settings.html", context)
+
+
+def test_form(request):
+    context = {
+        "questions" : [
+            {
+                "id": 1, 
+                "text": "Question 1",
+                "answers": ["answer a", "answer b", "answer c"]
+            },
+            {
+                "id": 2,
+                "text": "Question 2",
+                "answers": ["answer a", "answer b", "answer c"]
+            },
+            {
+                "id": 3,
+                "text": "Question 3",
+                "answers": ["answer a", "answer b", "answer c"]
+            }
+        ]
+    }
+    return render(request, "form.html", context)

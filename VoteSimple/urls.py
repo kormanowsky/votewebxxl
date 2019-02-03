@@ -38,5 +38,8 @@ urlpatterns = [
     path('quiz/<int:quiz_id>/<str:action>', views.quiz),
 
     # Settings
-    path('settings', views.settings)
+    path('settings', views.settings),
+
+    # Test form
+    path('test-form', views.test_form)
 ]
