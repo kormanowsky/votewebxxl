@@ -228,24 +228,11 @@ def settings(request):
     return render(request, "settings.html", context)
 
 def test_form(request):
+    if request.method == "POST":
+        return render(request, "form.html", context)
+    voting = Voting.objects.filter(id=1)[0]
     context = {
-        "questions" : [
-            {
-                "id": 1, 
-                "text": "Question 1",
-                "answers": ["answer a", "answer b", "answer c"]
-            },
-            {
-                "id": 2,
-                "text": "Question 2",
-                "answers": ["answer a", "answer b", "answer c"]
-            },
-            {
-                "id": 3,
-                "text": "Question 3",
-                "answers": ["answer a", "answer b", "answer c"]
-            }
-        ]
+        "voting": voting
     }
     return render(request, "form.html", context)
 

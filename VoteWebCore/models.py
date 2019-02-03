@@ -1,9 +1,29 @@
 from django.contrib.auth.models import User
 from django.db import models
-from json import dumps as json_encode, load as json_decode
+from json import dumps as json_encode, loads as json_decode
 from VoteWebCore.functions import is_logged_in
 
+# Special field type for JSON
+class JSONField(models.CharField):
 
+    def from_db_value(self, value, expression, connection):
+        if value is None:
+            return value
+        return json_decode(value)
+
+    def to_python(self, value):
+        if isinstance(value, list):
+            return value
+
+        if value is None:
+            return value
+
+        return json_decode(value)
+
+    def get_prep_value(self, value):
+        return json_encode(value)
+
+# Voting
 class Voting(models.Model):
 
     owner = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True)
@@ -15,6 +35,7 @@ class Voting(models.Model):
         return Question.objects.filter(voting=self.id)
 
 
+# Question
 class Question(models.Model):
 
     # Question types
@@ -28,17 +49,7 @@ class Question(models.Model):
     voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE)
     type = models.IntegerField()
     text = models.CharField(max_length=300)
-    answers = models.CharField(max_length=10000)
-
-    # In __init__() we decode answers
-    def __init__(self, *args, **kwargs):
-        super(models.Model, self).__init__(self, *args, **kwargs)
-        self.answers = json_decode(self.answers)
-
-    # In save() we encode answers
-    def save(self, *args, **kwargs):
-        self.answers = json_encode(self.answers)
-        super(models.Model, self).save(*args, **kwargs)
+    answers = JSONField(max_length=10000)
 
     # Returns question statistics for diagram
     def stats(self):
@@ -55,7 +66,7 @@ class Question(models.Model):
             return False
         return len(Vote.objects.filter(question=self.id, creator=request.user.id)) == 1
 
-
+# Vote
 class Vote(models.Model):
 
     creator = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True)
