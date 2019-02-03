@@ -8,8 +8,6 @@ from VoteWebCore.forms import *
 from VoteWebCore.models import *
 from VoteWebCore.functions import form_errors
 
-# from django.db.models import Q
-
 # Create your views here.
 
 register_page = {
@@ -21,15 +19,15 @@ register_page = {
 
 @login_required
 def vote_list(request):
-    all_votezes = TB_Vote.objects.all()
-    context_votezes = []
-    for vote in all_votezes:
-        context_votezes.append({
+    all_votes = TB_Vote.objects.all()
+    context_votes = []
+    for vote in all_votes:
+        context_votes.append({
             "vote": vote, 
             "vote_test": TB_VoteDiscret.objects.filter(vote_id=vote.id)
         })
     context = {
-        "vote_list": context_votezes,
+        "vote_list": context_votes,
         "html_title": "Vote List", 
         "no_right_aside": True
     }
@@ -206,23 +204,25 @@ def profile(request, username=None):
 def settings(request):
     context = {
         "html_title": "Settings",
-        "form" : ChangeUserData(request.POST)
+        "form": ChangeUserDataForm(request.POST)
     }
-    if context['form'].is_valid():
-        if request.user.username != context['form'].username:
-            if len(User.objects.filter(username=context['form'].username)):
-                context['form'].add_error('user_name', 'User name already register')
-                return render(request, 'settings.html', context=context)
-            item = User.objects.filter(id=request.user.id)
-            if len(item):
-                item = item[0]
-                item.username = context['form'].username
-                item.first_name = context['form'].first_name
-                item.last_name = context['form'].last_name
-                item.email = context['form'].email
-                item.save()
-    return render(request, "settings.html", context)
+    form = context['form']
+    print(form)
+    if form.is_valid():
 
+        if request.user.username != form.username:
+            if len(User.objects.filter(username=context['form'].username)):
+                form.add_error('username', 'User name already register')
+                return render(request, 'settings.html', context=context)
+        item = User.objects.filter(id=request.user.id)
+        if len(item):
+            item = item[0]
+            item.username = form.username
+            item.first_name = form.first_name
+            item.last_name = form.last_name
+            item.email = form.email
+            item.save()
+    return render(request, "settings.html", context)
 
 def test_form(request):
     context = {
