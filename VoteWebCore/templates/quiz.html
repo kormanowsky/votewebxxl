@@ -7,7 +7,7 @@
             <div class="d-flex align-items-center">
                 <img src="{% if quiz.quiz_owner and quiz.quiz_owner.avatar %}https://pp.userapi.com/c846524/v846524647/15b218/B-cPw9HFt7Y.jpg?ava=1{% else %}https://bizraise.pro/wp-content/uploads/2014/09/no-avatar-300x300.png{%endif%}" class="avatar avatar-small shadow-sm">
                 <div class="ml-3">
-                    <p class="lh-100 font-weight-100 mb-1">Firstname&nbsp;Lastname</p>
+                    <p class="lh-100 font-weight-100 mb-1">{{ quiz.quiz_owner.first_name }}&nbsp;{{ quiz.quiz_owner.last_name }}</p>
                     <p class="lh-100 small h6 text-muted">@{{ quiz.quiz_owner.username }}</p>
                 </div>
             </div>
