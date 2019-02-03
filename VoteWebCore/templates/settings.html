@@ -24,7 +24,7 @@
                                     <i class="la la-at"></i>
                                 </span>
                             </div>
-                            <input type="text" class="form-control" name="username" id="input-username" placeholder="johndoe" value="{{ request.user.username }}">
+                            <input type="text" class="form-control" name="username" id="input-username" placeholder="johndoe" value="{{ request.user.username }}" required>
                         </div>
                     </div>
                     <div class="form-group">
@@ -35,7 +35,7 @@
                                     <i class="la la-envelope"></i>
                                 </span>
                             </div>
-                            <input type="text" class="form-control" name="username" id="input-username" placeholder="johndoe" value="{{ request.user.email }}">
+                            <input type="email" class="form-control" name="email" id="input-email" placeholder="johndoe@example.com" value="{{ request.user.email }}" required>
                         </div>
                     </div>
                 </div>
@@ -49,11 +49,11 @@
                 <div class="card-body">
                     <div class="form-group">
                         <label for="input-firstname">Firstname</label>
-                        <input type="text" class="form-control" name="firstname" id="input-firstname" placeholder="John">
+                        <input type="text" class="form-control" name="first_name" id="input-firstname" placeholder="John" value="{{ request.user.first_name }}" required>
                     </div>
                     <div class="form-group">
                         <label for="input-lastname">Lastname</label>
-                        <input type="text" class="form-control" name="lastname" id="input-lastname" placeholder="Doe">
+                        <input type="text" class="form-control" name="last_name" id="input-lastname" placeholder="Doe" value="{{ request.user.last_name }}" required>
                     </div>
                 </div>
 

@@ -8,3 +8,7 @@ def form_errors(form):
         if len(err) and err[0].isupper():
             errors.append(err)
     return errors
+
+def is_logged_in(request):
+    return request.user.username
+

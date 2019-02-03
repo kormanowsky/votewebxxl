@@ -9,7 +9,12 @@
                         <div class="text-center mb-4">
                             <h4>Log in</h4>
                         </div>
-                        <form role="form" action="/login?next={{ request.GET.next }}" method="post">
+                        {% if request.GET.register_success %}
+                        <div class="text-success mb-4">
+                            Your registration process has finished successfully. You may now log in.
+                        </div>
+                        {% endif %}
+                        <form role="form" action="/login?next={% if request.GET.next %}{{ request.GET.next }}{% else %}/vote_list{% endif %}" method="post">
                             {% csrf_token %}
                             <div class="form-group mb-3">
                                 <div class="input-group input-group-alternative">
@@ -34,12 +39,14 @@
                     </div>
                 </div>
                 <div class="row mt-3">
+                    <!--
                     <div class="col-6">
                         <a href="/login/forgot-password" class="text-white">
                             <small>Forgot password?</small>
                         </a>
                     </div>
-                    <div class="col-6 text-right">
+                    -->
+                    <div class="col-6 ml-auto text-right">
                         <a href="/register" class="text-white">
                             <small>Create new account</small>
                         </a>
@@ -49,7 +56,4 @@
         </div>
     </div>
 </div>
-<!-- 
-{{ form }}
--->
 {% endblock body %}

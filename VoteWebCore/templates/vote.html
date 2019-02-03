@@ -1,0 +1,111 @@
+{# Одно голосование. Для использования в циклах #}
+<div class="card shadow-sm">
+    <div class="card-body">
+        <p class="text-muted lh-110">Vote #{{ vote.id }}</p>
+        <h1 class="display-2 lh-110 mt-2 my-4"><a href="/vote/{{vote.id}}">{{ vote.vote_name }}</a></h1>
+        <a href="/profile/{{ vote.vote_owner.username }}/">
+            <div class="d-flex align-items-center">
+                <img src="{% if vote.vote_owner and vote.vote_owner.avatar %}https://pp.userapi.com/c846524/v846524647/15b218/B-cPw9HFt7Y.jpg?ava=1{% else %}https://bizraise.pro/wp-content/uploads/2014/09/no-avatar-300x300.png{%endif%}" class="avatar avatar-small shadow-sm">
+                <div class="ml-3">
+                    <p class="lh-100 font-weight-100 mb-1">{{ vote.vote_owner.first_name }}&nbsp;{{ vote.vote_owner.last_name }}</p>
+                    <p class="lh-100 small h6 text-muted">@{{ vote.vote_owner.username }}</p>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+{% if not vote_small %}
+<div class="row mb--4 mx-0">
+    <h5 class="pt-4 text-right h6 w-100">Questions</h5>
+</div>
+<div class="row">
+    {% for question in vote_test %}
+    <div class="col-12 col-md-6 col-xl-4">
+        <div class="card shadow-sm mt-4">
+            <div class="card-body">
+                <p class="text-muted lh-110 small">Question #{{ question.id }}</p>
+                <h3>{{ question.vote_text_question }}</h3>
+                <div class="d-flex justify-content-between align-items-center mt-4" id="quest_node_{{ vote.vote_no }}">
+                    <button class="col btn btn-outline-primary" id="Button_ID_{{ question.vote_no }}_YES" onclick="voteSaveOneClick({{ vote.id }}, {{ question.vote_no }}, 'YES')">
+                            {{ question.vote_text_yes }}
+                        </button>
+                    <button class="col btn btn-outline-primary" id="Button_ID_{{ question.vote_no }}_NO" onclick="voteSaveOneClick({{ vote.id }}, {{ question.vote_no }}, 'YES')">
+                            {{ question.vote_text_no }}
+                        </button>
+                </div>
+                <p id="complete_txt_{{ question.vote_no }}" class="d-none text-success m-0">Complete</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    <!-- fix this -->
+    {% if vote_type == 0 %}
+                {% for vote in vote_test %}
+                    <tr>
+                        <th>
+                            <p>{{ vote.vote_text_question }}</p>
+                        </th>
+                        <th id="quest_node_{{ vote.vote_no }}">
+                            <div id="quest_form_{{ vote.vote_no }}">
+
+                                <button onclick="voteSaveOneClick({{ vote.vote_id.id }}, {{ vote.vote_no }}, '1')">
+                                    {{ vote.vote_text_yes }}
+                                </button>
+                                <button onclick="voteSaveOneClick({{ vote.vote_id.id }}, {{ vote.vote_no }}, '0')">
+                                    {{ vote.vote_text_no }}
+                                </button>
+
+                            </div>
+                            <p id="complete_txt_{{ vote.vote_no }}" style="visibility: hidden; color: green">Complete</p>
+                        </th>
+                    </tr>
+                {% endfor %}
+            {% elif vote_type == 1 %}
+                {% for vote_id, answer_list in vote_info.items %}
+                    {% for answer in answer_list %}
+                        <tr>
+                            {% for answer_id, answer_info in answer.items %}
+                                <th>
+                                    <p>{{ answer_info.QuestText }}</p>
+                                </th>
+                                <td id="quest_node_{{ answer_id }}">
+                                    {% for answ_id, answ_data in answer_info.AnswerInfo.items %}
+
+                                        <label>
+                                            {{ answ_data }}
+                                            <input name="check_box_{{ answer_id }}_{{ answ_id }}" type="checkbox">
+                                        </label>
+                                        <br>
+                                    {% endfor %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+
+                {% comment %}
+                {% for key_vote, vote_answer_list in vote_info.items %}
+                    {% for answer in vote_answer_list %}
+                        {% for key_answer, data_answer in answer.items %}
+                            {{ data_answer }}<br>
+                            {% for answer_node_key, answer_node_data in data_answer.items %}
+                                {% if answer_node_key == 'QuestText' %}
+                                    <th>
+                                        <p>{{ answer_node_key }}</p>
+                                    </th>
+                                    <td id="quest_node_{{ key_answer }}">
+                                        {% for foo in data_answer.AnswerInfo %}
+                                            {{ foo }}
+                                        {% endfor %}
+                                    </td>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+
+                    {% endfor %}
+                {% endfor %}
+                {% endcomment %}
+            {% endif %}
+            <!-- endfix -->
+</div>
+{% endif %}
