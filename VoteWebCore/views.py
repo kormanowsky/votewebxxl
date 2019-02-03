@@ -234,8 +234,7 @@ def test_form(request):
     }
     if request.method == "POST":
         form = VoteForm(request.POST)
-        
-
+        print(form.parsed_answers())
         return render(request, "form.html", context)
     return render(request, "form.html", context)
 

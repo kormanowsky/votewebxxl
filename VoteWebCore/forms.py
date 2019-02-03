@@ -24,4 +24,11 @@ class SettingsForm(forms.Form):
 
 
 class VoteForm(forms.Form):
-    answers = forms.CharField(max_length=100)
+    def parsed_answers(self):
+        answers = {}
+        for key in self.data.keys():
+            if key.find("answers") == 0:
+                question_id = int(key.split("[")[1].split("]")[0])
+                answer = self.data[key]
+                answers[question_id] = answer
+        return answers

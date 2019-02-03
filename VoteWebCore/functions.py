@@ -11,4 +11,3 @@ def form_errors(form):
 
 def is_logged_in(request):
     return request.user.username
-
