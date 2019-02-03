@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render
 
+from VoteWebCore.forms import *
 from VoteWebCore.models import *
 
 # from django.db.models import Q
@@ -181,3 +182,22 @@ def save_vote_info(request):
     # todo: Check already complete
     save_log.save()
     return JsonResponse({})
+
+
+@login_required
+def update_user_info(request):
+    context = {'form': ChangeUserData(request.POST)}
+    if context['form'].is_valid():
+        if request.user.username != context['form'].user_name:
+            if len(User.objects.all().filter()):
+                context['form'].is_valid()
+                # todo: make form not valid, and return
+            item = User.objects.filter(id=request.user.id)
+            if len(item):
+                item = item[0]
+                item.username = context['form'].user_name
+                item.first_name = context['form'].first_name
+                item.last_name = context['form'].last_name
+                item.email = context['form'].email
+                item.save()
+    return render(request, 'update_info.html', context=context)
