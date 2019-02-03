@@ -205,8 +205,22 @@ def profile(request, username=None):
 @login_required
 def settings(request):
     context = {
-        "html_title": "Settings"
+        "html_title": "Settings",
+        "form" : ChangeUserData(request.POST)
     }
+    if context['form'].is_valid():
+        if request.user.username != context['form'].username:
+            if len(User.objects.filter(username=context['form'].username)):
+                context['form'].add_error('user_name', 'User name already register')
+                return render(request, 'settings.html', context=context)
+            item = User.objects.filter(id=request.user.id)
+            if len(item):
+                item = item[0]
+                item.username = context['form'].username
+                item.first_name = context['form'].first_name
+                item.last_name = context['form'].last_name
+                item.email = context['form'].email
+                item.save()
     return render(request, "settings.html", context)
 
 
@@ -266,23 +280,3 @@ def save_vote_info(request):
     # todo: Check already complete
     save_log.save()
     return JsonResponse({})
-
-
-@login_required
-def update_user_info(request):
-    context = {'form': ChangeUserData(request.POST)}
-    if context['form'].is_valid():
-        if request.user.username != context['form'].user_name:
-            if len(User.objects.all().filter()):
-                context['form'].add_error('user_name', 'User name already register')
-                return render(request, 'update_info.html', context=context)
-
-            item = User.objects.filter(id=request.user.id)
-            if len(item):
-                item = item[0]
-                item.username = context['form'].user_name
-                item.first_name = context['form'].first_name
-                item.last_name = context['form'].last_name
-                item.email = context['form'].email
-                item.save()
-    return render(request, 'update_info.html', context=context)
