@@ -207,21 +207,21 @@ def settings(request):
         "form": ChangeUserDataForm(request.POST)
     }
     form = context['form']
-    print(form)
     if form.is_valid():
-
-        if request.user.username != form.username:
-            if len(User.objects.filter(username=context['form'].username)):
+        formdata = form.cleaned_data
+        if request.user.username != formdata['username']:
+            if len(User.objects.filter(username=formdata['username'])):
                 form.add_error('username', 'User name already register')
-                return render(request, 'settings.html', context=context)
+                return render(request, 'settings.html', context)
         item = User.objects.filter(id=request.user.id)
         if len(item):
             item = item[0]
-            item.username = form.username
-            item.first_name = form.first_name
-            item.last_name = form.last_name
-            item.email = form.email
+            item.username = formdata['username']
+            item.first_name = formdata['first_name']
+            item.last_name = formdata['last_name']
+            item.email = formdata['email']
             item.save()
+            request.user = item
     return render(request, "settings.html", context)
 
 def test_form(request):
