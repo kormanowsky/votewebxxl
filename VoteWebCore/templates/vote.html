@@ -1,8 +1,8 @@
 {# Одно голосование. Для использования в циклах #}
 <div class="card shadow-sm">
     <div class="card-body">
-        <p class="text-muted lh-110">vote #{{ vote.id }}</p>
-        <h1 class="display-2 mt-2"><a href="/vote/{{vote.id}}">{{ vote.vote_name }}</a></h1>
+        <p class="text-muted lh-110">Vote #{{ vote.id }}</p>
+        <h1 class="display-2 lh-110 mt-2 my-4"><a href="/vote/{{vote.id}}">{{ vote.vote_name }}</a></h1>
         <a href="/profile/{{ vote.vote_owner.username }}/">
             <div class="d-flex align-items-center">
                 <img src="{% if vote.vote_owner and vote.vote_owner.avatar %}https://pp.userapi.com/c846524/v846524647/15b218/B-cPw9HFt7Y.jpg?ava=1{% else %}https://bizraise.pro/wp-content/uploads/2014/09/no-avatar-300x300.png{%endif%}" class="avatar avatar-small shadow-sm">
