@@ -1,8 +1,8 @@
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from django.http import JsonResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.http import JsonResponse
+from django.shortcuts import render, redirect
 
 from VoteWebCore.forms import *
 from VoteWebCore.models import *
@@ -142,16 +142,19 @@ def vote_save(request):
 @login_required
 def logout(request):
     auth_logout(request)
-    return HttpResponseRedirect('/login')
+    return redirect('/login')
 
 
 def register(request):
-    context = {'form': UserCreationForm(request.POST)}
-    if context['form'].is_valid():
-        context['form'].save()
-        return HttpResponseRedirect('/login')
-    context['errors'] = form_errors(context['form'])
-    print(context['errors'])
+    context = {
+        'form': UserCreationForm(request.POST)
+    }
+    if request.method == "POST":
+        if context['form'].is_valid():
+            context['form'].save()
+            return redirect('/login?register_success=1')
+        else:
+            context['errors'] = form_errors(context['form'])
     return render(request, 'registration/registration.html', context)
 
 
@@ -203,25 +206,26 @@ def profile(request, username=None):
 @login_required
 def settings(request):
     context = {
-        "html_title": "Settings",
-        "form": ChangeUserDataForm(request.POST)
+        "html_title": "Settings"
     }
-    form = context['form']
-    if form.is_valid():
-        formdata = form.cleaned_data
-        if request.user.username != formdata['username']:
-            if len(User.objects.filter(username=formdata['username'])):
-                form.add_error('username', 'User name already register')
-                return render(request, 'settings.html', context)
-        item = User.objects.filter(id=request.user.id)
-        if len(item):
-            item = item[0]
-            item.username = formdata['username']
-            item.first_name = formdata['first_name']
-            item.last_name = formdata['last_name']
-            item.email = formdata['email']
-            item.save()
-            request.user = item
+    if request.method == "POST":
+        form = ChangeUserDataForm(request.POST)
+        context['form'] = form
+        if form.is_valid():
+            formdata = form.cleaned_data
+            if request.user.username != formdata['username']:
+                if len(User.objects.filter(username=formdata['username'])):
+                    form.add_error('username', 'User name already register')
+                    return render(request, 'settings.html', context)
+            item = User.objects.filter(id=request.user.id)
+            if len(item):
+                item = item[0]
+                item.username = formdata['username']
+                item.first_name = formdata['first_name']
+                item.last_name = formdata['last_name']
+                item.email = formdata['email']
+                item.save()
+                request.user = item
     return render(request, "settings.html", context)
 
 def test_form(request):
