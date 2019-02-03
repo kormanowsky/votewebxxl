@@ -190,8 +190,9 @@ def update_user_info(request):
     if context['form'].is_valid():
         if request.user.username != context['form'].user_name:
             if len(User.objects.all().filter()):
-                context['form'].is_valid()
-                # todo: make form not valid, and return
+                context['form'].add_error('user_name', 'User name already register')
+                return render(request, 'update_info.html', context=context)
+
             item = User.objects.filter(id=request.user.id)
             if len(item):
                 item = item[0]
