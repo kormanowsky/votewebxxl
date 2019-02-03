@@ -12,10 +12,7 @@ class JSONField(models.CharField):
         return json_decode(value)
 
     def to_python(self, value):
-        if isinstance(value, list):
-            return value
-
-        if value is None:
+        if isinstance(value, list) or value is None:
             return value
 
         return json_decode(value)
