@@ -228,12 +228,15 @@ def settings(request):
     return render(request, "settings.html", context)
 
 def test_form(request):
-    if request.method == "POST":
-        return render(request, "form.html", context)
     voting = Voting.objects.filter(id=1)[0]
     context = {
         "voting": voting
     }
+    if request.method == "POST":
+        form = VoteForm(request.POST)
+        
+
+        return render(request, "form.html", context)
     return render(request, "form.html", context)
 
 @login_required

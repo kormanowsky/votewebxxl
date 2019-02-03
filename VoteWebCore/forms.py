@@ -22,3 +22,6 @@ class SettingsForm(forms.Form):
     last_name = forms.CharField(max_length=32)
     username = forms.CharField(max_length=32)
 
+
+class VoteForm(forms.Form):
+    answers = forms.CharField(max_length=100)
