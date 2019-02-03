@@ -1,6 +1,5 @@
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
@@ -147,7 +146,7 @@ def logout(request):
 
 def register(request):
     context = {
-        'form': UserCreationForm(request.POST)
+        'form': RegisterForm(request.POST)
     }
     if request.method == "POST":
         if context['form'].is_valid():
@@ -209,7 +208,7 @@ def settings(request):
         "html_title": "Settings"
     }
     if request.method == "POST":
-        form = ChangeUserDataForm(request.POST)
+        form = SettingsForm(request.POST)
         context['form'] = form
         if form.is_valid():
             formdata = form.cleaned_data
