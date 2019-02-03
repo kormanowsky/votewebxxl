@@ -13,45 +13,45 @@ from VoteWebCore.functions import form_errors
 # Create your views here.
 
 register_page = {
-    'Quiz': 'quiz',
+    'Vote': 'vote',
     'login': 'login',
     'logout': 'logout',
 }
 
 
 @login_required
-def quiz_list(request):
-    all_quizzes = TB_Quiz.objects.all()
-    context_quizzes = []
-    for quiz in all_quizzes:
-        context_quizzes.append({
-            "quiz": quiz, 
-            "quiz_test": TB_QuizDiscret.objects.filter(quiz_id=quiz.id)
+def vote_list(request):
+    all_votezes = TB_Vote.objects.all()
+    context_votezes = []
+    for vote in all_votezes:
+        context_votezes.append({
+            "vote": vote, 
+            "vote_test": TB_VoteDiscret.objects.filter(vote_id=vote.id)
         })
     context = {
-        "quiz_list": context_quizzes,
-        "html_title": "Quiz List", 
+        "vote_list": context_votezes,
+        "html_title": "Vote List", 
         "no_right_aside": True
     }
-    return render(request, 'quiz_list.html', context)
+    return render(request, 'vote_list.html', context)
 
 
 @login_required
-def quiz_task(request):
+def vote_task(request):
     context = {'is_found': False}
-    vote_id = request.GET.get('quiz_no', -1)
-    quiz_item = TB_Vote.objects.filter(id=vote_id)
-    if len(quiz_item) != 1:
-        return render(request, 'quiz_task.html', context)
-    quiz = quiz_item[0]
-    context['quiz'] = quiz
+    vote_id = request.GET.get('vote_no', -1)
+    vote_item = TB_Vote.objects.filter(id=vote_id)
+    if len(vote_item) != 1:
+        return render(request, 'vote_task.html', context)
+    vote = vote_item[0]
+    context['vote'] = vote
     context['is_found'] = True
-    context['vote_type'] = quiz.vote_type
-    if quiz.vote_type == TB_Vote.VT_DISCRET:
-        context['quiz_test'] = TB_VoteDiscret.objects.filter(vote_id=vote_id)
-    elif quiz.vote_type == TB_Vote.VT_MULTI:
-        context['quiz_test'] = TB_VoteMulti.objects.filter(vote_id=vote_id)  # Берем само голосование
-        if len(context['quiz_test']):
+    context['vote_type'] = vote.vote_type
+    if vote.vote_type == TB_Vote.VT_DISCRET:
+        context['vote_test'] = TB_VoteDiscret.objects.filter(vote_id=vote_id)
+    elif vote.vote_type == TB_Vote.VT_MULTI:
+        context['vote_test'] = TB_VoteMulti.objects.filter(vote_id=vote_id)  # Берем само голосование
+        if len(context['vote_test']):
             vote_info = []
 
             ###############################################################
@@ -66,7 +66,7 @@ def quiz_task(request):
             #           }
             ###############################################################
 
-            for i in context['quiz_test']:  # Начинаем брать вопросы у данного голосования
+            for i in context['vote_test']:  # Начинаем брать вопросы у данного голосования
                 vote_info.append({i.quests_no: {}})  # Начинаем брать информацию о вопросе у голосвания
                 for quest_info in TB_VoteMulti_Quest.objects.all().filter(quests_no=i.quests_no):
                     vote_info[-1][i.quests_no] = {'QuestText': quest_info.quest_text, 'AnswerInfo': {}}
@@ -75,30 +75,30 @@ def quiz_task(request):
                             quest_answ_info.answer_numerate] = quest_answ_info.answer_text
             context['vote_info'] = {int(vote_id): vote_info}
         """
-        if len(context['quiz_test']):
+        if len(context['vote_test']):
             context['vote_quests'] = []
-            for i in context['quiz_test']:
+            for i in context['vote_test']:
                 i.quests = []
                 i.quests.append({'vote_info': TB_VoteMulti_Quest.objects.filter(quests_no=i.quests_no)[0],
                                  'vote_answ': []})
 
-            for i in context['quiz_test']:
+            for i in context['vote_test']:
                 for j in i['quests']:
                     j['vote_answ'].append(1)
                     # TB_VoteMulti_Quest.objects.filter(quests_no=i['quests']['vote_answ']['vote_info'].quests_no,
                     #                                  quest_numerate=i['quests']['vote_answ']['vote_info'].quest_numerate))
         """
     else:
-        return render(request, 'quiz_task.html', context)
+        return render(request, 'vote_task.html', context)
 
-    if len(context['quiz_test']):
+    if len(context['vote_test']):
         context['is_found'] = True
 
-    return render(request, 'quiz_task.html', context)
+    return render(request, 'vote_task.html', context)
 
 
 @login_required
-def quiz_save(request):
+def vote_save(request):
     vote_no = int(request.GET.get('task_no', '-1'))
     vote_quest_no = int(request.GET.get('quest_no', '-1'))
     answ_text = int(request.GET.get('answ_text', '-1'))
@@ -124,9 +124,9 @@ def quiz_save(request):
         json_response['Error'] = 'TaskNotFound'
         return JsonResponse(json_response)
 
-    if len(query_vote_by_type) == 0:  # not found quiz No
+    if len(query_vote_by_type) == 0:  # not found vote No
         json_response['ErrorCode'] = 404
-        json_response['Error'] = 'QuizNotFound'
+        json_response['Error'] = 'VoteNotFound'
         return JsonResponse(json_response)
 
     # TODO: Добавить проверку номера отвена на корректность
@@ -157,23 +157,23 @@ def register(request):
     return render(request, 'registration/registration.html', context)
 
 
-# New view for a single quiz
+# New view for a single vote
 @login_required
-def quiz(request, quiz_id=-1, action="index"):
-    quiz_items = TB_Quiz.objects.filter(id=quiz_id)
-    is_found = len(quiz_items) == 1
+def vote(request, vote_id=-1, action="index"):
+    vote_items = TB_Vote.objects.filter(id=vote_id)
+    is_found = len(vote_items) == 1
     if not is_found:
         return JsonResponse({
             "ErrorCode": 404,
-            "Error": "QuizNotFound"
+            "Error": "VoteNotFound"
         })
     context = {
-        'quiz': quiz_items[0], 
-        'quiz_test': TB_QuizDiscret.objects.filter(quiz_id=quiz_id),
-        'html_title': quiz_items[0].quiz_name
+        'vote': vote_items[0], 
+        'vote_test': TB_VoteDiscret.objects.filter(vote_id=vote_id),
+        'html_title': vote_items[0].vote_name
     }
-    print("quiz_id", quiz_id, "action", action)
-    return render(request, 'quiz_task.html', context)
+    print("vote_id", vote_id, "action", action)
+    return render(request, 'vote_task.html', context)
 
 
 def profile(request, username=None):
@@ -196,7 +196,7 @@ def profile(request, username=None):
     context = {
         "html_title": "@" + request.user.username,
         "profile_owner": profile_owner, 
-        "quiz_list": TB_Quiz.objects.filter(quiz_owner=profile_owner.id),
+        "vote_list": TB_Vote.objects.filter(vote_owner=profile_owner.id),
         "no_right_aside": True,
     }
     return render(request, 'profile.html', context)
