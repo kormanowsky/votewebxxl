@@ -1,62 +1,62 @@
-{# Один Quiz. Для использования в циклах #}
+{# Одно голосование. Для использования в циклах #}
 <div class="card shadow-sm">
     <div class="card-body">
-        <p class="text-muted lh-110">Quiz #{{ quiz.id }}</p>
-        <h1 class="display-2 mt-2"><a href="/quiz/{{quiz.id}}">{{ quiz.quiz_name }}</a></h1>
-        <a href="/profile/{{ quiz.quiz_owner.username }}/">
+        <p class="text-muted lh-110">vote #{{ vote.id }}</p>
+        <h1 class="display-2 mt-2"><a href="/vote/{{vote.id}}">{{ vote.vote_name }}</a></h1>
+        <a href="/profile/{{ vote.vote_owner.username }}/">
             <div class="d-flex align-items-center">
-                <img src="{% if quiz.quiz_owner and quiz.quiz_owner.avatar %}https://pp.userapi.com/c846524/v846524647/15b218/B-cPw9HFt7Y.jpg?ava=1{% else %}https://bizraise.pro/wp-content/uploads/2014/09/no-avatar-300x300.png{%endif%}" class="avatar avatar-small shadow-sm">
+                <img src="{% if vote.vote_owner and vote.vote_owner.avatar %}https://pp.userapi.com/c846524/v846524647/15b218/B-cPw9HFt7Y.jpg?ava=1{% else %}https://bizraise.pro/wp-content/uploads/2014/09/no-avatar-300x300.png{%endif%}" class="avatar avatar-small shadow-sm">
                 <div class="ml-3">
-                    <p class="lh-100 font-weight-100 mb-1">{{ quiz.quiz_owner.first_name }}&nbsp;{{ quiz.quiz_owner.last_name }}</p>
-                    <p class="lh-100 small h6 text-muted">@{{ quiz.quiz_owner.username }}</p>
+                    <p class="lh-100 font-weight-100 mb-1">{{ vote.vote_owner.first_name }}&nbsp;{{ vote.vote_owner.last_name }}</p>
+                    <p class="lh-100 small h6 text-muted">@{{ vote.vote_owner.username }}</p>
                 </div>
             </div>
         </a>
     </div>
 </div>
-{% if not quiz_small %}
+{% if not vote_small %}
 <div class="row mb--4 mx-0">
     <h5 class="pt-4 text-right h6 w-100">Questions</h5>
 </div>
 <div class="row">
-    {% for question in quiz_test %}
+    {% for question in vote_test %}
     <div class="col-12 col-md-6 col-xl-4">
         <div class="card shadow-sm mt-4">
             <div class="card-body">
                 <p class="text-muted lh-110 small">Question #{{ question.id }}</p>
-                <h3>{{ question.quiz_text_question }}</h3>
-                <div class="d-flex justify-content-between align-items-center mt-4" id="quest_node_{{ quiz.quiz_no }}">
-                    <button class="col btn btn-outline-primary" id="Button_ID_{{ question.quiz_no }}_YES" onclick="QuizSaveOneClick({{ quiz.id }}, {{ question.quiz_no }}, 'YES')">
-                            {{ question.quiz_text_yes }}
+                <h3>{{ question.vote_text_question }}</h3>
+                <div class="d-flex justify-content-between align-items-center mt-4" id="quest_node_{{ vote.vote_no }}">
+                    <button class="col btn btn-outline-primary" id="Button_ID_{{ question.vote_no }}_YES" onclick="voteSaveOneClick({{ vote.id }}, {{ question.vote_no }}, 'YES')">
+                            {{ question.vote_text_yes }}
                         </button>
-                    <button class="col btn btn-outline-primary" id="Button_ID_{{ question.quiz_no }}_NO" onclick="QuizSaveOneClick({{ quiz.id }}, {{ question.quiz_no }}, 'YES')">
-                            {{ question.quiz_text_no }}
+                    <button class="col btn btn-outline-primary" id="Button_ID_{{ question.vote_no }}_NO" onclick="voteSaveOneClick({{ vote.id }}, {{ question.vote_no }}, 'YES')">
+                            {{ question.vote_text_no }}
                         </button>
                 </div>
-                <p id="complete_txt_{{ question.quiz_no }}" class="d-none text-success m-0">Complete</p>
+                <p id="complete_txt_{{ question.vote_no }}" class="d-none text-success m-0">Complete</p>
             </div>
         </div>
     </div>
     {% endfor %}
     <!-- fix this -->
     {% if vote_type == 0 %}
-                {% for quiz in quiz_test %}
+                {% for vote in vote_test %}
                     <tr>
                         <th>
-                            <p>{{ quiz.vote_text_question }}</p>
+                            <p>{{ vote.vote_text_question }}</p>
                         </th>
-                        <th id="quest_node_{{ quiz.vote_no }}">
-                            <div id="quest_form_{{ quiz.vote_no }}">
+                        <th id="quest_node_{{ vote.vote_no }}">
+                            <div id="quest_form_{{ vote.vote_no }}">
 
-                                <button onclick="QuizSaveOneClick({{ quiz.vote_id.id }}, {{ quiz.vote_no }}, '1')">
-                                    {{ quiz.vote_text_yes }}
+                                <button onclick="voteSaveOneClick({{ vote.vote_id.id }}, {{ vote.vote_no }}, '1')">
+                                    {{ vote.vote_text_yes }}
                                 </button>
-                                <button onclick="QuizSaveOneClick({{ quiz.vote_id.id }}, {{ quiz.vote_no }}, '0')">
-                                    {{ quiz.vote_text_no }}
+                                <button onclick="voteSaveOneClick({{ vote.vote_id.id }}, {{ vote.vote_no }}, '0')">
+                                    {{ vote.vote_text_no }}
                                 </button>
 
                             </div>
-                            <p id="complete_txt_{{ quiz.vote_no }}" style="visibility: hidden; color: green">Complete</p>
+                            <p id="complete_txt_{{ vote.vote_no }}" style="visibility: hidden; color: green">Complete</p>
                         </th>
                     </tr>
                 {% endfor %}

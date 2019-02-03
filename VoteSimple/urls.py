@@ -20,9 +20,9 @@ from VoteWebCore import views
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
-    path('quiz_list', views.quiz_list),
-    path('quiz_task', views.quiz_task),
-    path('quiz_save', views.quiz_save),
+    path('quiz_list', views.vote_list),
+    path('quiz_task', views.vote_task),
+    path('quiz_save', views.vote_save),
 
     # Auth module
     path('login', auth_views.LoginView.as_view()),
@@ -34,8 +34,8 @@ urlpatterns = [
     path('profile/<str:username>', views.profile),
 
     # Single quiz
-    path('quiz/<int:quiz_id>', views.quiz),
-    path('quiz/<int:quiz_id>/<str:action>', views.quiz),
+    path('quiz/<int:quiz_id>', views.vote),
+    path('quiz/<int:quiz_id>/<str:action>', views.vote),
 
     # Settings
     path('settings', views.settings),
