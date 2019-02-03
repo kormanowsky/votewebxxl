@@ -49,11 +49,11 @@
                 <div class="card-body">
                     <div class="form-group">
                         <label for="input-firstname">Firstname</label>
-                        <input type="text" class="form-control" name="firstname" id="input-firstname" placeholder="John">
+                        <input type="text" class="form-control" name="firstname" id="input-firstname" placeholder="John" value="{{ request.user.first_name }}">
                     </div>
                     <div class="form-group">
                         <label for="input-lastname">Lastname</label>
-                        <input type="text" class="form-control" name="lastname" id="input-lastname" placeholder="Doe">
+                        <input type="text" class="form-control" name="lastname" id="input-lastname" placeholder="Doe" value="{{ request.user.last_name }}">
                     </div>
                 </div>
 
