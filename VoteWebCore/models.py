@@ -43,10 +43,10 @@ class Question(models.Model):
     # Returns question statistics for diagram
     def stats(self):
         stats = {
-            "all": Vote.objects.filter(question=self.id),
+            "all": len(Vote.objects.filter(question=self.id)),
         }
         for answer in self.answers:
-            stats[answer] = Vote.objects.filter(question=self.id, answer=answer)
+            stats[answer] = len(Vote.objects.filter(question=self.id, answer=answer))
         return stats
 
     # Checks if current user has voted
