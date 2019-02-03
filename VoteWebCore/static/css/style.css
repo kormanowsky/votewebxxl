@@ -242,7 +242,7 @@ li.nav-item:hover p.small {
 #auth-root{
     min-height: 100vh;
     min-width: 100vw;
-    overflow: auto; 
+    overflow: auto;  
 }
 
 /* Адаптивность */
