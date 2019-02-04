@@ -144,7 +144,7 @@ def register(request):
 
 # New view for a single voting
 @login_required
-def voting(request, voting_id=-1, action="index"):
+def voting_single(request, voting_id=-1, action="index"):
     voting_items = Voting.objects.filter(id=voting_id)
     is_found = len(voting_items) == 1
     if not is_found:
@@ -154,10 +154,24 @@ def voting(request, voting_id=-1, action="index"):
         })
     voting = voting_items[0]
     context = {
-        'voting': voting,
-        'html_title': voting.title
+        "voting": voting,
+        'html_title': voting.title,
+        "show_form": 1
     }
-    return render(request, 'voting_single.html', context)
+    if request.method == "POST":
+        if not voting.current_user_voted(request):
+            form = VoteForm(request.POST)
+            answers = form.data["answers"]
+            for answer in answers:
+                vote = Vote(question=answer['question'], answer=answer['answer'], creator=request.user)
+                vote.save()
+        else:
+            pass
+            # TODO: Error! User cannot voting two times
+        context["show_form"] = 0
+    elif voting.current_user_voted(request):
+        context["show_form"] = 0
+    return render(request, "voting_single.html", context)
 
 
 def profile(request, username=None):
@@ -210,28 +224,6 @@ def settings(request):
                 item.save()
                 request.user = item
     return render(request, "settings.html", context)
-
-@login_required 
-def test_form(request):
-    voting = Voting.objects.filter(id=1)[0]
-    context = {
-        "voting": voting,
-        "show_form": 1
-    }
-    if request.method == "POST":
-        if not voting.current_user_votingd(request):
-            form = VoteForm(request.POST)
-            answers = form.data["answers"]
-            for answer in answers:
-                voting = Vote(question=answer['question'], answer=answer['answer'], creator=request.user)
-                voting.save()
-        else:
-            pass
-            # TODO: Error! User cannot voting two times
-        context["show_form"] = 0
-    elif voting.current_user_votingd(request):
-        context["show_form"] = 0
-    return render(request, "form.html", context)
 
 @login_required
 def save_voting_info(request):

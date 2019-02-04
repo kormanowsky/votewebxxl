@@ -33,12 +33,9 @@ urlpatterns = [
     path('profile/<str:username>', views.profile),
 
     # Single voting
-    path('voting/<int:voting_id>', views.voting),
-    path('voting/<int:voting_id>/<str:action>', views.voting),
+    path('voting/<int:voting_id>', views.voting_single),
+    path('voting/<int:voting_id>/<str:action>', views.voting_single),
 
     # Settings
     path('settings', views.settings),
-
-    # Test form
-    path('test-form', views.test_form)
 ]
