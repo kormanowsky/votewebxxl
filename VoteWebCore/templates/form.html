@@ -1,36 +1,27 @@
-{% extends "basic.html" %}
-{% block content %}
+{% extends "basic.html" %} {% block content %} {% if show_form %}
 <form action="/test-form" method="post">
     {% csrf_token %}
     <div class="row">
-        {% for question in voting.questions %}
-            {{ question.stats }}
+        {% for question in voting.questions %} {{ question.stats }}
         <div class="col-4">
             <div class="question question-type-{{ question.type }} card shadow-sm">
                 <div class="card-body">
                     <h2>{{ question.text }}</h2>
                     {% if question.type == question.QUESTION_BUTTONS %}
-                    <input type="hidden" name="answer_{{ question.id }}" value="">
-                    {% for answer in question.answers %}
+                    <input type="hidden" name="answer_{{ question.id }}" value=""> {% for answer in question.answers %}
                     <button onclick="return Votings.setCurrentButtonAnswer(this);" data-question-id="{{ question.id }}" type="button" class="btn btn-outline-primary" id="question_{{ question.id }}_answers_{{ forloop.counter }}">
                         {{ answer }}
-                    </button>
-                    {% endfor %}
-                    {% elif question.type == question.QUESTION_SINGLE_ANSWER %}
-                    {% for answer in question.answers %}
+                    </button> {% endfor %} {% elif question.type == question.QUESTION_SINGLE_ANSWER %} {% for answer in question.answers %}
                     <div class="custom-control custom-radio mb-3">
                         <input name="answer_{{ question.id }}" class="custom-control-input" id="question_{{ question.id }}_answers_{{ forloop.counter }}" value="{{answer}}" type="radio" required>
                         <label class="custom-control-label" for="question_{{ question.id }}_answers_{{ forloop.counter }}">{{ answer }}</label>
                     </div>
-                    {% endfor %}
-                    {% elif question.type == question.QUESTION_MULTIPLE_ANSWERS %}
-                    {% for answer in question.answers %}
+                    {% endfor %} {% elif question.type == question.QUESTION_MULTIPLE_ANSWERS %} {% for answer in question.answers %}
                     <div class="custom-control custom-checkbox mb-3">
                         <input class="custom-control-input" id="question_{{ question.id }}_answers_{{ forloop.counter }}" name="answer_{{ question.id }}[]" type="checkbox" value="{{ answer }}">
                         <label class="custom-control-label" for="question_{{ question.id }}_answers_{{ forloop.counter }}">{{ answer }}</label>
                     </div>
-                    {% endfor %}
-                    {% endif %}
+                    {% endfor %} {% endif %}
                 </div>
             </div>
         </div>
@@ -40,4 +31,18 @@
         </button>
     </div>
 </form>
+{% else %}
+<div class="row">
+    {% for question in voting.questions %}
+    <div class="col-4">
+        <div class="question question-type-{{ question.type }} card shadow-sm">
+            <div class="card-body">
+                <h2>{{ question.text }}</h2>
+                Stats: {{ question.stats }}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
 {% endblock content %}

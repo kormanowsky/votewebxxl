@@ -230,15 +230,22 @@ def settings(request):
 def test_form(request):
     voting = Voting.objects.filter(id=1)[0]
     context = {
-        "voting": voting
+        "voting": voting,
+        "show_form": 1
     }
     if request.method == "POST":
-        form = VoteForm(request.POST)
-        answers = form.data["answers"]
-        for answer in answers:
-            vote = Vote(question=answer['question'], answer=answer['answer'], creator=request.user.id)
-            vote.save()
-        return render(request, "form.html", context)
+        if not voting.current_user_voted(request):
+            form = VoteForm(request.POST)
+            answers = form.data["answers"]
+            for answer in answers:
+                vote = Vote(question=answer['question'], answer=answer['answer'], creator=request.user.id)
+                vote.save()
+        else:
+            pass
+            # TODO: Error! User cannot vote two times
+        context["show_form"] = 0
+    elif voting.current_user_voted(request):
+        context["show_form"] = 0
     return render(request, "form.html", context)
 
 @login_required
