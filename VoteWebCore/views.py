@@ -3,9 +3,6 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
-# https://github.com/bernii/querystring-parser
-from querystring_parser import parser
-
 from VoteWebCore.forms import *
 from VoteWebCore.models import *
 from VoteWebCore.functions import form_errors
@@ -236,7 +233,11 @@ def test_form(request):
         "voting": voting
     }
     if request.method == "POST":
-        form = VoteForm(parser.parse(request.POST.urlencode(), normalized=True))
+        form = VoteForm(request.POST)
+        answers = form.data["answers"]
+        for answer in answers:
+            vote = Vote(question=answer['question'], answer=answer['answer'], creator=request.user.id)
+            vote.save()
         return render(request, "form.html", context)
     return render(request, "form.html", context)
 

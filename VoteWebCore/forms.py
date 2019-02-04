@@ -1,6 +1,11 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
+from VoteWebCore.models import *
+
+# https://github.com/bernii/querystring-parser
+from querystring_parser import parser
+
 class RegisterForm(UserCreationForm):
     email = forms.EmailField()
     first_name = forms.CharField(max_length=32)
@@ -25,15 +30,21 @@ class SettingsForm(forms.Form):
 
 class VoteForm(forms.Form):
 
-    def __init__(self, rawData, *args, **kwargs):
-        super(VoteForm, self).__init__(*args, **kwargs)
-        print(rawData)
+    answers = dict()
 
-    def parsed_answers(self):
-        answers = {}
-        for key in self.data.keys():
-            if key.find("answers") == 0:
-                question_id = int(key.split("[")[1].split("]")[0])
-                answer = self.data[key]
-                answers[question_id] = answer
-        return answers
+    def __init__(self, raw_data, *args, **kwargs):
+        super(VoteForm, self).__init__(*args, **kwargs)
+        raw_answers = parser.parse(raw_data.urlencode(), normalized=True)
+        answers = []
+        for answer_key in raw_answers:
+            if answer_key != "csrfmiddlewaretoken":
+                question_id = int(answer_key[answer_key.find("_") + 1:])
+                question_answers = raw_answers[answer_key]
+                if not isinstance(question_answers, list):
+                    question_answers = [question_answers]
+                for answer in question_answers:
+                    answers.append({
+                        "question": Question(id=question_id),
+                        "answer": answer
+                    })
+        self.data["answers"] = answers

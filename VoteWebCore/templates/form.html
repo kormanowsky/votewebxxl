@@ -4,6 +4,7 @@
     {% csrf_token %}
     <div class="row">
         {% for question in voting.questions %}
+            {{ question.stats }}
         <div class="col-4">
             <div class="question question-type-{{ question.type }} card shadow-sm">
                 <div class="card-body">

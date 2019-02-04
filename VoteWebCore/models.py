@@ -32,6 +32,7 @@ class Voting(models.Model):
         return Question.objects.filter(voting=self.id)
 
 
+
 # Question
 class Question(models.Model):
 
