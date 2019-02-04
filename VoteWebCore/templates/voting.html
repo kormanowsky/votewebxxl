@@ -1,4 +1,8 @@
-{# Одно голосование. Для использования в циклах #}
+{# Одно голосование. Для использования в циклах #} 
+{% if show_form and not voting_small %}
+    <form action="/test-form" method="post">
+        {% csrf_token %} 
+{% endif %}
 <div class="card shadow-sm">
     <div class="card-body">
         <p class="text-muted lh-110">Voting #{{ voting.id }}</p>
@@ -15,97 +19,48 @@
     </div>
 </div>
 {% if not voting_small %}
-<div class="row mb--4 mx-0">
-    <h5 class="pt-4 text-right h6 w-100">Questions</h5>
-</div>
-<div class="row">
-    {% for question in voting.questions %}
-    <div class="col-12 col-md-6 col-xl-4">
-        <div class="card shadow-sm mt-4">
-            <div class="card-body">
-                <p class="text-muted lh-110 small">Question #{{ question.id }}</p>
-                <h3>{{ question.voting_text_question }}</h3>
-                <div class="d-flex justify-content-between align-items-center mt-4" id="quest_node_{{ voting.voting_no }}">
-                    <button class="col btn btn-outline-primary" id="Button_ID_{{ question.voting_no }}_YES" onclick="votingSaveOneClick({{ voting.id }}, {{ question.voting_no }}, 'YES')">
-                            {{ question.voting_text_yes }}
-                        </button>
-                    <button class="col btn btn-outline-primary" id="Button_ID_{{ question.voting_no }}_NO" onclick="votingSaveOneClick({{ voting.id }}, {{ question.voting_no }}, 'YES')">
-                            {{ question.voting_text_no }}
-                        </button>
-                </div>
-                <p id="complete_txt_{{ question.voting_no }}" class="d-none text-success m-0">Complete</p>
-            </div>
-        </div>
+    <div class="row mb--4 mx-0">
+        <h5 class="pt-4 text-right h6 w-100">Questions</h5>
     </div>
-    {% endfor %}
-    <!-- fix this -->
-    {% if voting_type == 0 %}
-                {% for voting in voting.questions %}
-                    <tr>
-                        <th>
-                            <p>{{ voting.voting_text_question }}</p>
-                        </th>
-                        <th id="quest_node_{{ voting.voting_no }}">
-                            <div id="quest_form_{{ voting.voting_no }}">
-
-                                <button onclick="votingSaveOneClick({{ voting.voting_id.id }}, {{ voting.voting_no }}, '1')">
-                                    {{ voting.voting_text_yes }}
-                                </button>
-                                <button onclick="votingSaveOneClick({{ voting.voting_id.id }}, {{ voting.voting_no }}, '0')">
-                                    {{ voting.voting_text_no }}
-                                </button>
-
-                            </div>
-                            <p id="complete_txt_{{ voting.voting_no }}" style="visibility: hidden; color: green">Complete</p>
-                        </th>
-                    </tr>
-                {% endfor %}
-            {% elif voting_type == 1 %}
-                {% for voting_id, answer_list in voting_info.items %}
-                    {% for answer in answer_list %}
-                        <tr>
-                            {% for answer_id, answer_info in answer.items %}
-                                <th>
-                                    <p>{{ answer_info.QuestText }}</p>
-                                </th>
-                                <td id="quest_node_{{ answer_id }}">
-                                    {% for answ_id, answ_data in answer_info.AnswerInfo.items %}
-
-                                        <label>
-                                            {{ answ_data }}
-                                            <input name="check_box_{{ answer_id }}_{{ answ_id }}" type="checkbox">
-                                        </label>
-                                        <br>
-                                    {% endfor %}
-                                </td>
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                {% endfor %}
-
-                {% comment %}
-                {% for key_voting, voting_answer_list in voting_info.items %}
-                    {% for answer in voting_answer_list %}
-                        {% for key_answer, data_answer in answer.items %}
-                            {{ data_answer }}<br>
-                            {% for answer_node_key, answer_node_data in data_answer.items %}
-                                {% if answer_node_key == 'QuestText' %}
-                                    <th>
-                                        <p>{{ answer_node_key }}</p>
-                                    </th>
-                                    <td id="quest_node_{{ key_answer }}">
-                                        {% for foo in data_answer.AnswerInfo %}
-                                            {{ foo }}
-                                        {% endfor %}
-                                    </td>
-                                {% endif %}
-                            {% endfor %}
-                        {% endfor %}
-
-                    {% endfor %}
-                {% endfor %}
-                {% endcomment %}
-            {% endif %}
-            <!-- endfix -->
-</div>
+    <div class="row">
+        {% for question in voting.questions %}
+            <div class="col-12 col-md-6 col-xl-4">
+                <div class="card shadow-sm mt-4">
+                    <div class="card-body">
+                        <p class="text-muted lh-110 small">Question #{{ question.id }}</p>
+                        <h3>{{ question.text }}</h3>
+                        {% if show_form %}
+                            {% if question.type == question.QUESTION_BUTTONS %}
+                                <input type="hidden" name="answer_{{ question.id }}" value=""> 
+                                {% for answer in question.answers %}
+                                    <button onclick="return Votings.setCurrentButtonAnswer(this);" data-question-id="{{ question.id }}" type="button" class="btn btn-outline-primary" id="question_{{ question.id }}_answers_{{ forloop.counter }}">
+                                        {{ answer }}
+                                    </button> 
+                                {% endfor %} 
+                            {% elif question.type == question.QUESTION_SINGLE_ANSWER %} 
+                                {% for answer in question.answers %}
+                                    <div class="custom-control custom-radio mb-3">
+                                        <input name="answer_{{ question.id }}" class="custom-control-input" id="question_{{ question.id }}_answers_{{ forloop.counter }}" value="{{answer}}" type="radio" required>
+                                        <label class="custom-control-label" for="question_{{ question.id }}_answers_{{ forloop.counter }}">{{ answer }}</label>
+                                    </div>
+                                {% endfor %} 
+                            {% elif question.type == question.QUESTION_MULTIPLE_ANSWERS %} 
+                                {% for answer in question.answers %}
+                                    <div class="custom-control custom-checkbox mb-3">
+                                        <input class="custom-control-input" id="question_{{ question.id }}_answers_{{ forloop.counter }}" name="answer_{{ question.id }}[]" type="checkbox" value="{{ answer }}">
+                                        <label class="custom-control-label" for="question_{{ question.id }}_answers_{{ forloop.counter }}">{{ answer }}</label>
+                                    </div>
+                                {% endfor %} 
+                            {% endif %}
+                        {% else %}
+                            <p>Stats: {{ question.stats }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %} 
+{% if show_form and not voting_small %}
+</form>
 {% endif %}
