@@ -20,9 +20,8 @@ from VoteWebCore import views
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
-    path('vote_list', views.vote_list),
-    path('vote_task', views.vote_task),
-    path('vote_save', views.vote_save),
+    path('votings', views.votings),
+    path('voting_save', views.voting_save),
 
     # Auth module
     path('login', auth_views.LoginView.as_view()),
@@ -33,9 +32,9 @@ urlpatterns = [
     # Profile Page
     path('profile/<str:username>', views.profile),
 
-    # Single vote
-    path('vote/<int:vote_id>', views.vote),
-    path('vote/<int:vote_id>/<str:action>', views.vote),
+    # Single voting
+    path('voting/<int:voting_id>', views.voting),
+    path('voting/<int:voting_id>/<str:action>', views.voting),
 
     # Settings
     path('settings', views.settings),
