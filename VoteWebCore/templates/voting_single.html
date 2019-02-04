@@ -1,36 +1,38 @@
-{% extends "basic.html" %} {% block content %}
-<div class="row">
-    <div class="col-12">
-        {% include "voting.html" with voting=voting vote=0 %}
+{% extends "basic.html" %} 
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            {% include "voting.html" with voting=voting voting_small=0 %}
+        </div>
     </div>
-</div>
-{% endblock content %} {% block content_actions %}
-{% if vote.vote_owner == request.user.id %}
-<li class="nav-item">
-    <a href="/voting/{{ vote.id }}/edit" class="d-flex pb-3 align-items-center">
-        <p class="m-0">Edit</p>
-    </a>
-</li>
-<li class="nav-item">
-    <a href="/voting/{{ vote.id }}/share" class="d-flex pb-3 align-items-center">
-        <p class="m-0">Share</p>
-    </a>
-</li>
-<li class="nav-item">
-    <a href="/voting/{{ vote.id }}/remove" class="text-danger d-flex pb-3 align-items-center">
-        <p class="m-0">Remove</p>
-    </a>
-</li>
-{% else %}
-<li class="nav-item">
-    <a href="/voting/{{ vote.id }}/share" class="d-flex pb-3 align-items-center">
-        <p class="m-0">Share</p>
-    </a>
-</li>
-<li class="nav-item">
-    <a href="/voting/{{ vote.id }}/report-abuse" class="text-danger d-flex pb-3 align-items-center">
-        <p class="m-0">Report abuse</p>
-    </a>
-</li>
-{% endif %}
+{% endblock content %}
+{% block content_actions %}
+    {% if voting.owner == request.user %}
+    <li class="nav-item">
+        <a href="/voting/{{ voting.id }}/edit" class="d-flex pb-3 align-items-center">
+            <p class="m-0">Edit</p>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="/voting/{{ voting.id }}/share" class="d-flex pb-3 align-items-center">
+            <p class="m-0">Share</p>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="/voting/{{ voting.id }}/remove" class="text-danger d-flex pb-3 align-items-center">
+            <p class="m-0">Remove</p>
+        </a>
+    </li>
+    {% else %}
+    <li class="nav-item">
+        <a href="/voting/{{ voting.id }}/share" class="d-flex pb-3 align-items-center">
+            <p class="m-0">Share</p>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="/voting/{{ voting.id }}/report-abuse" class="text-danger d-flex pb-3 align-items-center">
+            <p class="m-0">Report abuse</p>
+        </a>
+    </li>
+    {% endif %}
 {% endblock content_actions %}
