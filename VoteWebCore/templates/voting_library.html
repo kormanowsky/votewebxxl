@@ -4,31 +4,31 @@
         <div class="card">
             <div class="card-body shadow-sm">
                 <h1 class="display-1 text-center font-weight-100 mt-5 lh-130 mb-3">Vote Library</h1>
-                <p class="text-center font-weight-100 mb-4">Find something for you in a wide range of votes!</p>
-                <form action="/vote_list/" method="post">
+                <p class="text-center font-weight-100 mb-4">Find something for you in a wide range of votings!</p>
+                <form action="/votings/" method="post">
                     <div class="row">
-                        <div class="ml-auto mr-auto border mb-5 col-12 col-md-6 col-lg-4" id="votes-search">
+                        <div class="ml-auto mr-auto border mb-5 col-12 col-md-6 col-lg-4" id="votings-search">
                             <div class="card-body p-0">
-                                <input type="search" id="votes-search-query" name="query" placeholder="Enter your query...">
-                                <button type="submit" id="votes-search-btn" class="btn btn-primary d-flex p-0 align-items-center justify-content-center">
+                                <input type="search" id="votings-search-query" name="query" placeholder="Enter your query...">
+                                <button type="submit" id="votings-search-btn" class="btn btn-primary d-flex p-0 align-items-center justify-content-center">
                                     <i class="la la-search"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
                     <div class="row px-5 justify-content-around">
-                        <div class="border mb-5 votes-filter col-12 col-md-6 col-lg-4 col-xl-3" id="votes-filter-owner">
+                        <div class="border mb-5 votings-filter col-12 col-md-6 col-lg-4 col-xl-3" id="votings-filter-owner">
                             <div class="card-body p-0">
-                                <input type="search" class="votes-filter-query" id="votes-filter-query-owner" name="query" placeholder="Filter users...">
-                                <button onclick="return false;" type="button" id="votes-filter-icon-owner" class="votes-filter-icon btn btn-primary d-flex p-0 align-items-center justify-content-center">
+                                <input type="search" class="votings-filter-query" id="votings-filter-query-owner" name="query" placeholder="Filter users...">
+                                <button onclick="return false;" type="button" id="votings-filter-icon-owner" class="votings-filter-icon btn btn-primary d-flex p-0 align-items-center justify-content-center">
                                     <i class="la la-user"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="border mb-5 votes-filter col-12 col-md-6 col-lg-4 col-xl-3" id="votes-filter-date">
+                        <div class="border mb-5 votings-filter col-12 col-md-6 col-lg-4 col-xl-3" id="votings-filter-date">
                             <div class="card-body p-0">
-                                <input type="text" autocomplete="off" class="votes-filter-query datepicker" id="votes-filter-query-date" name="query" placeholder="Filter date...">
-                                <button onclick="return false;" type="button" id="votes-filter-icon-date" class="votes-filter-icon btn btn-primary d-flex p-0 align-items-center justify-content-center">
+                                <input type="text" autocomplete="off" class="votings-filter-query datepicker" id="votings-filter-query-date" name="query" placeholder="Filter date...">
+                                <button onclick="return false;" type="button" id="votings-filter-icon-date" class="votings-filter-icon btn btn-primary d-flex p-0 align-items-center justify-content-center">
                                     <i class="la la-calendar"></i>
                                 </button>
                             </div>
@@ -41,15 +41,15 @@
 </div>
 <h4 class="pt-4 text-center pb-3 mb--4">Results</h4>
 <div class="row">
-    {% for item in vote_list %}
+    {% for voting in votings %}
     <div class="col-12 col-lg-6 col-xl-4 mt-4">
-        {% include "vote.html" with vote=item.vote vote_test=item.vote_test vote_small=1 %}
+        {% include "voting.html" with voting=voting voting_small=1 %}
     </div>
     {% endfor %}
 </div>
 <script>
 jQuery(function($){
-    $(".votes-filter-query.datepicker").datepicker({
+    $(".votings-filter-query.datepicker").datepicker({
         format: 'dd.mm.yyyy',
     });
 });

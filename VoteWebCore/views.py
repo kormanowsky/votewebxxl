@@ -30,7 +30,7 @@ def vote_list(request):
         "html_title": "Vote List", 
         "no_right_aside": True
     }
-    return render(request, 'vote_list.html', context)
+    return render(request, 'voting_library.html', context)
 
 
 @login_required
@@ -39,7 +39,7 @@ def vote_task(request):
     vote_id = request.GET.get('vote_no', -1)
     vote_item = TB_Vote.objects.filter(id=vote_id)
     if len(vote_item) != 1:
-        return render(request, 'vote_task.html', context)
+        return render(request, 'voting_single.html', context)
     vote = vote_item[0]
     context['vote'] = vote
     context['is_found'] = True
@@ -86,12 +86,12 @@ def vote_task(request):
                     #                                  quest_numerate=i['quests']['vote_answ']['vote_info'].quest_numerate))
         """
     else:
-        return render(request, 'vote_task.html', context)
+        return render(request, 'voting_single.html', context)
 
     if len(context['vote_test']):
         context['is_found'] = True
 
-    return render(request, 'vote_task.html', context)
+    return render(request, 'voting_single.html', context)
 
 
 @login_required
@@ -173,7 +173,7 @@ def vote(request, vote_id=-1, action="index"):
         'html_title': vote_items[0].vote_name
     }
     print("vote_id", vote_id, "action", action)
-    return render(request, 'vote_task.html', context)
+    return render(request, 'voting_single.html', context)
 
 
 def profile(request, username=None):

@@ -102,13 +102,13 @@
     <div class="col-lg-8 col-xl-9">
         <div class="row mb--4">
             <div class="col-12">
-                <h5 class="pt-4 text-right h6">Quizzes</h5>
+                <h5 class="pt-4 text-right h6">Votings</h5>
             </div>
         </div>
         <div class="row">
-            {% for item in quiz_list %}
+            {% for voting in votings %}
             <div class="col-12 col-lg-6 col-xl-4">
-                {% include "quiz.html" with quiz=item.quiz quiz_test=item.quiz_test quiz_small=1 %}
+                {% include "voting.html" with voting=voting voting_small=1 %}
             </div>
             {% endfor %}
         </div>
