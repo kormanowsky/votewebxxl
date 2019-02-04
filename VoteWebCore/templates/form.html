@@ -9,7 +9,7 @@
                 <div class="card-body">
                     <h2>{{ question.text }}</h2>
                     {% if question.type == question.QUESTION_BUTTONS %}
-                    <input type="hidden" name="answer_{{ question.id }}" value="" required>
+                    <input type="hidden" name="answer_{{ question.id }}" value="">
                     {% for answer in question.answers %}
                     <button onclick="return Votings.setCurrentButtonAnswer(this);" data-question-id="{{ question.id }}" type="button" class="btn btn-outline-primary" id="question_{{ question.id }}_answers_{{ forloop.counter }}">
                         {{ answer }}
