@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 
 from VoteWebCore.forms import *
 from VoteWebCore.models import *
-from VoteWebCore.functions import form_errors
+from VoteWebCore.functions import *
 
 
 @login_required
@@ -158,7 +158,8 @@ def voting_single(request, voting_id=-1, action="index"):
         'html_title': voting.title,
         "show_form": 1
     }
-    if request.method == "POST":
+    # Actions 
+    if action == "save" and request.method == "POST":
         if not voting.current_user_voted(request):
             form = VoteForm(request.POST)
             answers = form.data["answers"]
@@ -168,8 +169,10 @@ def voting_single(request, voting_id=-1, action="index"):
         else:
             pass
             # TODO: Error! User cannot voting two times
-        context["show_form"] = 0
-    elif voting.current_user_voted(request):
+        return redirect("/voting/" + str(voting.id))
+    
+    # Do we need to show the form?
+    if voting.current_user_voted(request):
         context["show_form"] = 0
     return render(request, "voting_single.html", context)
 
@@ -177,7 +180,7 @@ def voting_single(request, voting_id=-1, action="index"):
 def profile(request, username=None):
     if username is None:
         if request.user.username:
-            username = request.user.username
+            return redirect("/profile/" + request.user.username)
         else:
             return JsonResponse({
                 "ErrorCode": 404,

@@ -1,6 +1,6 @@
 {# Одно голосование. Для использования в циклах #} 
 {% if show_form and not voting_small %}
-    <form action="/test-form" method="post">
+    <form action="/voting/{{ voting.id }}/save" method="post">
         {% csrf_token %} 
 {% endif %}
 <div class="card shadow-sm">
@@ -19,24 +19,26 @@
     </div>
 </div>
 {% if not voting_small %}
-    <div class="row mb--4 mx-0">
+    <!--<div class="row mb--4 mx-0">
         <h5 class="pt-4 text-right h6 w-100">Questions</h5>
-    </div>
+    </div>-->
     <div class="row">
         {% for question in voting.questions %}
             <div class="col-12 col-md-6 col-xl-4">
                 <div class="card shadow-sm mt-4">
                     <div class="card-body">
                         <p class="text-muted lh-110 small">Question #{{ question.id }}</p>
-                        <h3>{{ question.text }}</h3>
+                        <h3 class="mb-4">{{ question.text }}</h3>
                         {% if show_form %}
                             {% if question.type == question.QUESTION_BUTTONS %}
-                                <input type="hidden" name="answer_{{ question.id }}" value=""> 
-                                {% for answer in question.answers %}
-                                    <button onclick="return Votings.setCurrentButtonAnswer(this);" data-question-id="{{ question.id }}" type="button" class="btn btn-outline-primary" id="question_{{ question.id }}_answers_{{ forloop.counter }}">
-                                        {{ answer }}
-                                    </button> 
-                                {% endfor %} 
+                                <input type="hidden" name="answer_{{ question.id }}" value="">
+                                <div class="row mx-0">
+                                    {% for answer in question.answers %}
+                                        <button onclick="return Votings.setCurrentButtonAnswer(this);" data-question-id="{{ question.id }}" type="button" class="col btn btn-outline-primary" id="question_{{ question.id }}_answers_{{ forloop.counter }}">
+                                            {{ answer }}
+                                        </button>
+                                    {% endfor %}
+                                </div>
                             {% elif question.type == question.QUESTION_SINGLE_ANSWER %} 
                                 {% for answer in question.answers %}
                                     <div class="custom-control custom-radio mb-3">
@@ -62,5 +64,6 @@
     </div>
 {% endif %} 
 {% if show_form and not voting_small %}
+<button type="submit" class="btn btn-primary w-100 mt-4">Save votes</button>
 </form>
 {% endif %}
