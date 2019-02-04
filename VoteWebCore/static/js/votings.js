@@ -9,3 +9,7 @@ Votings.setCurrentButtonAnswer = function(element){
     $element.toggleClass("btn-outline-primary btn-primary");
     return false;
 }
+Votings.checkVotingForm = function(){
+    var $form = $('form');
+
+}

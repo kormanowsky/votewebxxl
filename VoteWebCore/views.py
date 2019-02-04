@@ -170,6 +170,13 @@ def voting_single(request, voting_id=-1, action="index"):
             pass
             # TODO: Error! User cannot voting two times
         return redirect("/voting/" + str(voting.id))
+    elif action == "report" and request.method == "POST":
+        form = ReportForm(request.POST)
+        if form.is_valid():
+            item = Report(voting=voting,
+                          creator=request.user, title=form.data['title'], message=form.data['message'])
+            item.save()
+        return JsonResponse({'is_valid': form.is_valid(), 'errors': form.errors})
 
     # Do we need to show the form?
     if voting.current_user_voted(request):
@@ -263,14 +270,3 @@ def save_voting_info(request):
     # todo: Check already complete
     save_log.save()
     return JsonResponse({})
-
-
-# new report url
-@login_required
-def report(request):
-    print(request.POST)
-    form = ReportForm(request.POST)
-    if form.is_valid():
-        item = Report(vote_id=form.data['vote_id'], user_id=request.user.id, title=form.data['title'], message=form.data['message'])
-        item.save()
-    return JsonResponse({'is_valid': form.is_valid(), 'errors': form.errors})

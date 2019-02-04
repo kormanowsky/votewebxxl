@@ -1,3 +1,13 @@
+function AjaxForm(element, success, error){
+    element.submit(function(event){
+        event.preventDefault();
+        var url = element.attr('action'),
+            data = element.serialize();
+        // TODO: check if request is successful in JSON
+        $.post(url, data, success, error);
+    })
+}
+
 function QuizSaveOneClick(task_no, quest_no, answ_text) {
     var request_param = {
         'task_no': task_no,
@@ -37,26 +47,31 @@ function makeGETParams(params) {
     }
     return url;
 }
-
-$('#send_report').click(function () {
-    $.post('/report', $('#test-report').serialize(), function (data) {
-        console.log(data);
-        $('#report-error').html('');
+// Rewrite this with AjaxForm
+jQuery(function($){
+    $('#report-form-errors').hide();
+    AjaxForm($("#report-form"), function(data){
+        $("#report-form-errors").html('');
         if ('is_valid' in data && 'errors' in data) {
             if (data['is_valid'] === false) {
-                var html_msg = '<ul>';
+                var errors_list = $('ul');
                 for (var key in data['errors']) {
-                    html_msg += '<li>';
-                    html_msg += data['errors'][key] + ': ' + key;
-                    html_msg += '</li>';
+                    var error_li = $('li');
+                    error_li.text(data['errors'][key] + ': ' + key);
+                    errors_list.append(error_li);
                 }
-                html_msg += '</ul>';
-                $('#report-error').html(html_msg);
-            }
-            else
-            {
-                $('#report-error').html('Success!');
+                $('#report-form-errors').addClass('text-danger').append(errors_list).show();
+            }else{
+                $('#report-form').hide();
+                $('#report-form-errors').addClass('text-success').html('Success!').show();
+                $('#reportModal .close').click(function(){
+                    setTimeout(function(){
+                        $('#report-form-errors').hide();
+                        $('#report-form').show();
+                        $('#report-form *').val('');
+                    }, 600);
+                });
             }
         }
-    })
+    });
 });

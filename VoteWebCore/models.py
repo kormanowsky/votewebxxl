@@ -86,9 +86,10 @@ class Vote(models.Model):
     answer = models.CharField(max_length=100)
 
 
+# Report
 class Report(models.Model):
-    user_id = models.IntegerField(default=-1)
-    vote_id = models.IntegerField()
+    creator = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
+    voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=256)
     message = models.CharField(max_length=512)
     # img = models.FileField()

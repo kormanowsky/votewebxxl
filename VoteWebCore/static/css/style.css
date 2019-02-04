@@ -135,6 +135,10 @@ li.nav-item:hover p.small {
     font-size: 90%;
 }
 
+textarea{
+    resize: none !important;
+}
+
 
 /* Стили страницы Профиль */
 

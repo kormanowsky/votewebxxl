@@ -51,6 +51,5 @@ class VoteForm(forms.Form):
 
 
 class ReportForm(forms.Form):
-    vote_id = forms.IntegerField()
     title = forms.CharField(max_length=256)
     message = forms.CharField(max_length=512)

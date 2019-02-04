@@ -37,7 +37,4 @@ urlpatterns = [
 
     # Settings
     path('settings', views.settings),
-
-    # report
-    path('report', views.report),
 ]
