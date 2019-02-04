@@ -24,6 +24,11 @@ class SettingsForm(forms.Form):
 
 
 class VoteForm(forms.Form):
+
+    def __init__(self, rawData, *args, **kwargs):
+        super(VoteForm, self).__init__(*args, **kwargs)
+        print(rawData)
+
     def parsed_answers(self):
         answers = {}
         for key in self.data.keys():

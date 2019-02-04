@@ -9,7 +9,7 @@
                 <div class="card-body">
                     <h2>{{ question.text }}</h2>
                     {% if question.type == question.QUESTION_BUTTONS %}
-                    <input type="hidden" name="answers[{{ question.id }}]" value="">
+                    <input type="hidden" name="answer_{{ question.id }}" value="" required>
                     {% for answer in question.answers %}
                     <button onclick="return Votings.setCurrentButtonAnswer(this);" data-question-id="{{ question.id }}" type="button" class="btn btn-outline-primary" id="question_{{ question.id }}_answers_{{ forloop.counter }}">
                         {{ answer }}
@@ -18,14 +18,14 @@
                     {% elif question.type == question.QUESTION_SINGLE_ANSWER %}
                     {% for answer in question.answers %}
                     <div class="custom-control custom-radio mb-3">
-                        <input name="answers[{{ question.id }}]" class="custom-control-input" id="question_{{ question.id }}_answers_{{ forloop.counter }}" value="{{answer}}" type="radio" required>
+                        <input name="answer_{{ question.id }}" class="custom-control-input" id="question_{{ question.id }}_answers_{{ forloop.counter }}" value="{{answer}}" type="radio" required>
                         <label class="custom-control-label" for="question_{{ question.id }}_answers_{{ forloop.counter }}">{{ answer }}</label>
                     </div>
                     {% endfor %}
                     {% elif question.type == question.QUESTION_MULTIPLE_ANSWERS %}
                     {% for answer in question.answers %}
                     <div class="custom-control custom-checkbox mb-3">
-                        <input class="custom-control-input" id="question_{{ question.id }}_answers_{{ forloop.counter }}" name="answers[{{ question.id }}][]" type="checkbox" value="{{ answer }}">
+                        <input class="custom-control-input" id="question_{{ question.id }}_answers_{{ forloop.counter }}" name="answer_{{ question.id }}[]" type="checkbox" value="{{ answer }}">
                         <label class="custom-control-label" for="question_{{ question.id }}_answers_{{ forloop.counter }}">{{ answer }}</label>
                     </div>
                     {% endfor %}
