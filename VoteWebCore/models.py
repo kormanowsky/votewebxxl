@@ -3,6 +3,7 @@ from django.db import models
 from json import dumps as json_encode, loads as json_decode
 from VoteWebCore.functions import is_logged_in
 
+
 # Special field type for JSON
 class JSONField(models.CharField):
 
@@ -20,6 +21,7 @@ class JSONField(models.CharField):
     def get_prep_value(self, value):
         return json_encode(value)
 
+
 # Voting
 class Voting(models.Model):
 
@@ -31,6 +33,15 @@ class Voting(models.Model):
     def questions(self):
         return Question.objects.filter(voting=self.id)
 
+    # Checks if user has voted
+    def user_voted(self, user):
+        return self.questions()[0].user_voted(user)
+
+    # Checks if current user has voted
+    def current_user_voted(self, request):
+        if not is_logged_in(request):
+            return False
+        return self.user_voted(request.user)
 
 
 # Question
@@ -58,11 +69,16 @@ class Question(models.Model):
             stats[answer] = len(Vote.objects.filter(question=self.id, answer=answer))
         return stats
 
+    # Checks if user has voted
+    def user_voted(self, user):
+        return len(Vote.objects.filter(question=self.id, creator=user.id)) == 1
+
     # Checks if current user has voted
     def current_user_voted(self, request):
         if not is_logged_in(request):
             return False
-        return len(Vote.objects.filter(question=self.id, creator=request.user.id)) == 1
+        return self.user_voted(request.user)
+
 
 # Vote
 class Vote(models.Model):
