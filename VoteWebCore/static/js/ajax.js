@@ -47,7 +47,7 @@ function makeGETParams(params) {
     }
     return url;
 }
-// Rewrite this with AjaxForm
+
 jQuery(function($){
     $('#report-form-errors').hide();
     AjaxForm($("#report-form"), function(data){
