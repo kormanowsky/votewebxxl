@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 {# Базовый шаблон #}
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>{% if html_title %}{{ html_title }}{% else %}{% block html_title %}{% endblock %}{% endif %} | VoteWebXXL</title>
@@ -20,6 +21,7 @@
     <!-- jQuery и другие скрипты шапки -->
     <script type="text/javascript" src='{% static "vendor/jquery/jquery.min.js" %}'></script>
     <script src='{% static "js/ajax.js" %}'></script>
+    <script src='{% static "js/votings.js" %}'></script>
 </head>
 
 <body>
@@ -31,9 +33,9 @@
     <!-- Собственные скрипты -->
     <script>
         // Установка ширины содержимого в 375px для тех экранов, которые меньше 375px
-        jQuery(function($){
+        jQuery(function($) {
             var width = $(window).width();
-            if(width < 375){
+            if (width < 375) {
                 var viewportTag = $('meta[name="viewport"]');
                 viewportTag.attr('content', viewportTag.attr('content').replace('device-width, initial-scale=1.0', '375'));
             }

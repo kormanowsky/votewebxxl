@@ -28,6 +28,7 @@ header {
     line-height: 64px;
     height: 64px;
     color: #fff;
+    outline: none !important;
 }
 
 .navbar li.nav-item a.nav-link {
@@ -94,7 +95,7 @@ nav.navbar.navbar-expand-lg {
 #root aside,
 #root main {
     height: auto;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
     padding-bottom: 48px;
     margin-top: -16px;
@@ -169,16 +170,16 @@ li.nav-item:hover p.small {
 
 /* Стили страницы Список голосований */
 
-#quizzes-search,
-.quizzes-filter {
+#votes-search,
+.votes-filter {
     height: 48px;
     border-radius: 24px;
     overflow: hidden;
     position: relative;
 }
 
-#quizzes-search-query,
-.quizzes-filter-query {
+#votes-search-query,
+.votes-filter-query {
     border: none;
     width: calc(100% - 24px);
     height: 48px;
@@ -188,8 +189,8 @@ li.nav-item:hover p.small {
     margin-right: 48px;
 }
 
-#quizzes-search-btn,
-.quizzes-filter-icon {
+#votes-search-btn,
+.votes-filter-icon {
     position: absolute;
     width: 40px;
     height: 40px;
@@ -199,12 +200,12 @@ li.nav-item:hover p.small {
     font-size: 20px;
 }
 
-.quizzes-filter-query {
+.votes-filter-query {
     margin-left: 24px;
     margin-right: 0;
 }
 
-.quizzes-filter-icon {
+.votes-filter-icon {
     right: auto;
     left: 4px;
 }
@@ -241,7 +242,7 @@ li.nav-item:hover p.small {
 #auth-root{
     min-height: 100vh;
     min-width: 100vw;
-    overflow: hidden;
+    overflow: auto;  
 }
 
 /* Адаптивность */

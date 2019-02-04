@@ -117,4 +117,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 LOGIN_URL = '/login'
-LOGIN_REDIRECT_URL = '/quiz_list'
+LOGIN_REDIRECT_URL = '/vote_list'

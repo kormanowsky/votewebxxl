@@ -8,14 +8,16 @@
                         <img id="profile-avatar" src="{% if profile_owner.username and profile_owner.avatar %}https://pp.userapi.com/c846524/v846524647/15b218/B-cPw9HFt7Y.jpg?ava=1{% else %}https://bizraise.pro/wp-content/uploads/2014/09/no-avatar-300x300.png{%endif%}" class="avatar avatar-big shadow-lg">
                         <div id="profile-info" class="w-auto ml-3 ml-xl-4">
                             <h4 class="lh-110 mb-1">
-                                Firstname Lastname
+                                {{ profile_owner.first_name }} {{ profile_owner.last_name }}
                             </h4>
                             <h6 class="font-weight-300 lh-100 mt-0">
                                 @{{ profile_owner.username }}
                             </h6>
+                            <!--
                             <div id="profile-actions" class="d-flex mt-2">
                                 <button class="btn btn-primary btn-sm">Follow</button>
                             </div>
+                            -->
                         </div>
                     </div>
                 </div>
@@ -34,6 +36,7 @@
                                     <p class="lh-100 mt-2 profile-statis-description small text-center text-uppercase mb-0 mb-lg-3">Answers</p>
                                 </div>
                             </li>
+                            <!--
                             <li class="profile-stats-item pr-2 pr-md-3">
                                 <div>
                                     <p class="font-weight-700 lh-100 m-0 profile-stats-number text-center text-primary">2K</p>
@@ -46,6 +49,7 @@
                                     <p class="lh-100 mt-2 profile-statis-description small text-center text-uppercase mb-0 mb-lg-3">Following</p>
                                 </div>
                             </li>
+                            -->
                         </ul>
                     </div>
                 </div>
@@ -67,7 +71,7 @@
                         </div>
                         <div class="col pl-0 pr-2 profile-activity-main pt-3 pl-2">
                             <h6 class="font-weight-300 text-muted m-0">
-                                <a href="#">Mikhail Kormanowsky</a> created new quiz <a href="#">Quiz #1009</a>
+                                <a href="#">{{ profile_owner.first_name }} {{ profile_owner.last_name }}</a> created new quiz <a href="#">Quiz #1009</a>
                             </h6>
                         </div>
                         <div class="position-absolute profile-activity-right text-right">
@@ -84,7 +88,7 @@
                         </div>
                         <div class="col pl-0 pr-2 profile-activity-main pt-3 pl-2">
                             <h6 class="font-weight-300 text-muted m-0">
-                                <a href="#">Mikhail Kormanowsky</a> answered in quiz <a href="#">Quiz #1009</a>
+                                <a href="#">{{ profile_owner.first_name }} {{ profile_owner.last_name }}</a> answered in quiz <a href="#">Quiz #1009</a>
                             </h6>
                         </div>
                         <div class="position-absolute profile-activity-right text-right">
