@@ -227,6 +227,7 @@ def settings(request):
                 request.user = item
     return render(request, "settings.html", context)
 
+@login_required 
 def test_form(request):
     voting = Voting.objects.filter(id=1)[0]
     context = {
@@ -238,7 +239,7 @@ def test_form(request):
             form = VoteForm(request.POST)
             answers = form.data["answers"]
             for answer in answers:
-                vote = Vote(question=answer['question'], answer=answer['answer'], creator=request.user.id)
+                vote = Vote(question=answer['question'], answer=answer['answer'], creator=request.user)
                 vote.save()
         else:
             pass

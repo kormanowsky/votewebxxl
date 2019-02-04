@@ -71,7 +71,7 @@ class Question(models.Model):
 
     # Checks if user has voted
     def user_voted(self, user):
-        return len(Vote.objects.filter(question=self.id, creator=user.id)) == 1
+        return len(Vote.objects.filter(question=self.id, creator=user.id)) > 0
 
     # Checks if current user has voted
     def current_user_voted(self, request):
