@@ -24,7 +24,6 @@ class JSONField(models.CharField):
 
 # Voting
 class Voting(models.Model):
-
     owner = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True)
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
     title = models.CharField(max_length=300)
@@ -46,7 +45,6 @@ class Voting(models.Model):
 
 # Question
 class Question(models.Model):
-
     # Question types
     # Question with two buttons (usually 'yes' and 'no')
     QUESTION_BUTTONS = 0
@@ -82,8 +80,15 @@ class Question(models.Model):
 
 # Vote
 class Vote(models.Model):
-
     creator = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True)
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
     question = models.ForeignKey(to=Question, on_delete=models.CASCADE)
     answer = models.CharField(max_length=100)
+
+
+class Report(models.Model):
+    user_id = models.IntegerField(default=-1)
+    vote_id = models.IntegerField()
+    title = models.CharField(max_length=256)
+    message = models.CharField(max_length=512)
+    # img = models.FileField()

@@ -5,9 +5,9 @@ function QuizSaveOneClick(task_no, quest_no, answ_text) {
         'answ_text': answ_text
     };
     return $.ajax({
-        url: "/quiz_save", 
-        method: "GET", 
-        data: request_param, 
+        url: "/quiz_save",
+        method: "GET",
+        data: request_param,
         success: QuizSaveResponse,
     });
 }
@@ -37,3 +37,26 @@ function makeGETParams(params) {
     }
     return url;
 }
+
+$('#send_report').click(function () {
+    $.post('/report', $('#test-report').serialize(), function (data) {
+        console.log(data);
+        $('#report-error').html('');
+        if ('is_valid' in data && 'errors' in data) {
+            if (data['is_valid'] === false) {
+                var html_msg = '<ul>';
+                for (var key in data['errors']) {
+                    html_msg += '<li>';
+                    html_msg += data['errors'][key] + ': ' + key;
+                    html_msg += '</li>';
+                }
+                html_msg += '</ul>';
+                $('#report-error').html(html_msg);
+            }
+            else
+            {
+                $('#report-error').html('Success!');
+            }
+        }
+    })
+});

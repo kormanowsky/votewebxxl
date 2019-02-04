@@ -170,7 +170,7 @@ def voting_single(request, voting_id=-1, action="index"):
             pass
             # TODO: Error! User cannot voting two times
         return redirect("/voting/" + str(voting.id))
-    
+
     # Do we need to show the form?
     if voting.current_user_voted(request):
         context["show_form"] = 0
@@ -191,12 +191,12 @@ def profile(request, username=None):
         profile_owner = profile_owner[0]
     else:
         return JsonResponse({
-                "ErrorCode": 404,
-                "Error": "UserNotFound"
+            "ErrorCode": 404,
+            "Error": "UserNotFound"
         })
     context = {
         "html_title": "@" + request.user.username,
-        "profile_owner": profile_owner, 
+        "profile_owner": profile_owner,
         "votings": Voting.objects.filter(owner=profile_owner.id),
         "no_right_aside": True,
     }
@@ -227,6 +227,7 @@ def settings(request):
                 item.save()
                 request.user = item
     return render(request, "settings.html", context)
+
 
 @login_required
 def save_voting_info(request):
@@ -262,3 +263,14 @@ def save_voting_info(request):
     # todo: Check already complete
     save_log.save()
     return JsonResponse({})
+
+
+# new report url
+@login_required
+def report(request):
+    print(request.POST)
+    form = ReportForm(request.POST)
+    if form.is_valid():
+        item = Report(vote_id=form.data['vote_id'], user_id=request.user.id, title=form.data['title'], message=form.data['message'])
+        item.save()
+    return JsonResponse({'is_valid': form.is_valid(), 'errors': form.errors})

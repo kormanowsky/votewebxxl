@@ -28,7 +28,6 @@ urlpatterns = [
     path('logout', views.logout),
     path('register', views.register),
 
-
     # Profile Page
     path('profile/<str:username>', views.profile),
 
@@ -38,4 +37,7 @@ urlpatterns = [
 
     # Settings
     path('settings', views.settings),
+
+    # report
+    path('report', views.report),
 ]
