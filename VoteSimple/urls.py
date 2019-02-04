@@ -21,7 +21,6 @@ from VoteWebCore import views
 urlpatterns = [
     # path('admin/', admin.site.urls),
     path('votings', views.votings),
-    path('voting_save', views.voting_save),
 
     # Auth module
     path('login', auth_views.LoginView.as_view()),
@@ -37,4 +36,7 @@ urlpatterns = [
 
     # Settings
     path('settings', views.settings),
+
+    # Voting create
+    path('voting/create', views.voting_create)
 ]
