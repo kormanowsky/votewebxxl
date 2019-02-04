@@ -170,16 +170,16 @@ li.nav-item:hover p.small {
 
 /* Стили страницы Список голосований */
 
-#votes-search,
-.votes-filter {
+#votings-search,
+.votings-filter {
     height: 48px;
     border-radius: 24px;
     overflow: hidden;
     position: relative;
 }
 
-#votes-search-query,
-.votes-filter-query {
+#votings-search-query,
+.votings-filter-query {
     border: none;
     width: calc(100% - 24px);
     height: 48px;
@@ -189,8 +189,8 @@ li.nav-item:hover p.small {
     margin-right: 48px;
 }
 
-#votes-search-btn,
-.votes-filter-icon {
+#votings-search-btn,
+.votings-filter-icon {
     position: absolute;
     width: 40px;
     height: 40px;
@@ -200,12 +200,12 @@ li.nav-item:hover p.small {
     font-size: 20px;
 }
 
-.votes-filter-query {
+.votings-filter-query {
     margin-left: 24px;
     margin-right: 0;
 }
 
-.votes-filter-icon {
+.votings-filter-icon {
     right: auto;
     left: 4px;
 }
