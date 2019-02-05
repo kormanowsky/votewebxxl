@@ -130,8 +130,13 @@ def voting_create(request):
     if request.method == "POST":
         form = CreateVotingForm(request.POST)
         if form.is_valid():
-            formdata = form.cleaned_data
-            # ...
+            formdata = form.data
+            voting = Voting(owner=request.user, title=formdata['title'])
+            voting.save()
+            for questiondata in formdata['questions']:
+                question=Question(voting=voting, type=questiondata['type'], answers=questiondata['answers'], text=questiondata['text'])
+                question.save()
+            return redirect("/voting/" + str(voting.id))
         else:
             return JsonResponse({})
     else:

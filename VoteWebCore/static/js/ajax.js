@@ -5,7 +5,18 @@ function AjaxForm(element, success, error){
             data = element.serialize();
         // TODO: check if request is successful in JSON
         $.post(url, data, success, error);
-    })
+    });
+}
+
+function ClearForm(element, afterClear){
+    element.find(":input").not('[type="radio"], [type="checkbox"], [type="hidden"]').val("");
+    element.find("input[type='radio'], input[type='checkbox']").each(function(i, e){
+        e.checked = false;
+    });
+    if(typeof afterClear === "function"){
+        afterClear();
+    }
+    return false;
 }
 
 function QuizSaveOneClick(task_no, quest_no, answ_text) {
@@ -68,7 +79,7 @@ jQuery(function($){
                     setTimeout(function(){
                         $('#report-form-errors').hide();
                         $('#report-form').show();
-                        $('#report-form *').val('');
+                        ClearForm($("#report-form"));
                     }, 600);
                 });
             }

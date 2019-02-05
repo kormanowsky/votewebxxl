@@ -1,6 +1,6 @@
 {% extends "basic.html" %}
 {% block content %}
-<form action="/settings" method="post">
+<form action="/voting/create" method="post" onsubmit="return Votings.creation.checkForm(this);">
     {% csrf_token %}
     <div class="row">
         <div class="col align-items-center d-flex">
@@ -34,7 +34,11 @@
             </div>
         </div>
     </div>
-    <div class="row" id="questions"></div>
+    <div class="row" id="questions">
+        <div id="no-questions" class="col-12">
+            <h5 class="p-5 text-center">Click Add to add a question</h5>
+        </div>
+    </div>
 </form>
 <!-- Modal -->
 <div class="modal fade" id="addQuestionModal" tabindex="-1" role="dialog" aria-labelledby="addQuestionModalLabel" aria-hidden="true">
