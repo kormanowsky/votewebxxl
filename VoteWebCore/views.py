@@ -69,6 +69,9 @@ def voting_single(request, voting_id=-1, action="index"):
                           creator=request.user, title=form.data['title'], message=form.data['message'])
             item.save()
         return JsonResponse({'is_valid': form.is_valid(), 'errors': form.errors})
+    elif action == "remove":
+        voting.delete()
+        return redirect('/votings')
 
     # Do we need to show the form?
     if voting.current_user_voted(request):
