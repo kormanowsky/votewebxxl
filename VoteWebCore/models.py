@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from json import dumps as json_encode, loads as json_decode
-from VoteWebCore.functions import is_logged_in
+from VoteWebCore.functions import *
 
 
 # Special field type for JSON
@@ -41,6 +41,10 @@ class Voting(models.Model):
         if not is_logged_in(request):
             return False
         return self.user_voted(request.user)
+
+    # Returns human time difference between current time and voting creation time
+    def creation_time_diff(self):
+        return datetime_human_diff(datetime.utcnow(), self.datetime_created.replace(tzinfo=None))
 
 
 # Question
@@ -93,3 +97,16 @@ class Report(models.Model):
     title = models.CharField(max_length=256)
     message = models.CharField(max_length=512)
     # img = models.FileField()
+
+# Activity of user
+def get_activity(user, max_items=5):
+    max_items = int(max_items)
+    votings = Voting.objects.filter(owner=user).order_by('-datetime_created')[:max_items]
+    activity_items = []
+    for voting in votings:
+        if voting.datetime_created:
+            activity_items.append({
+                "type": "new-voting",
+                "voting": voting,
+            })
+    return activity_items

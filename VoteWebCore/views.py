@@ -92,10 +92,13 @@ def profile(request, username=None):
             "ErrorCode": 404,
             "Error": "UserNotFound"
         })
+
     context = {
         "html_title": "@" + request.user.username,
         "profile_owner": profile_owner,
-        "votings": Voting.objects.filter(owner=profile_owner.id),
+        "votings": Voting.objects.filter(owner=profile_owner.id).order_by("-datetime_created"),
+        "votes": Vote.objects.filter(creator=profile_owner.id),
+        "activity": get_activity(profile_owner),
         "no_right_aside": True,
     }
     return render(request, 'profile.html', context)
