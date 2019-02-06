@@ -1,6 +1,8 @@
+from json import dumps as json_encode, loads as json_decode
+
 from django.contrib.auth.models import User
 from django.db import models
-from json import dumps as json_encode, loads as json_decode
+
 from VoteWebCore.functions import is_logged_in
 
 
@@ -92,4 +94,5 @@ class Report(models.Model):
     voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=256)
     message = models.CharField(max_length=512)
+    is_checked = models.BooleanField(default=False)  # is moderator check this report
     # img = models.FileField()
