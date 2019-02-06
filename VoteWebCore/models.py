@@ -40,9 +40,9 @@ class Voting(models.Model):
     owner = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True)
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
     title = models.CharField(max_length=300)
-    status = models.IntegerField(default=Voting.VOTING_PUBLIC)
-    open_stats = models.BooleanField(default=Voting.VOTING_STATS_OPEN)
-    datetime_closed = models.DateTimeField(blank=True)
+    status = models.IntegerField(default=0)
+    open_stats = models.BooleanField(default=True)
+    datetime_closed = models.DateTimeField(null=True, blank=True)
 
     # Returns list of all voting questions
     def questions(self):
@@ -122,7 +122,7 @@ class Report(models.Model):
     title = models.CharField(max_length=256)
     message = models.CharField(max_length=512)
     # img = models.FileField()
-    status = models.IntegerField(default=Report.REPORT_WAITING)
+    status = models.IntegerField(default=0)
 
 # Activity of user
 def get_activity(user, max_items=5):
