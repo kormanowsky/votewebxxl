@@ -91,7 +91,7 @@ def voting_single(request, voting_id=-1, action="index"):
     elif action == "report" and request.method == "POST":
         form = ReportForm(request.POST)
         if form.is_valid():
-            item = Report(status=Report.WAITING, voting=voting,
+            item = Report(status=Report.REPORT_WAITING, voting=voting,
                           creator=request.user, title=form.data['title'], message=form.data['message'])
             item.save()
         return JsonResponse({'is_valid': form.is_valid(), 'errors': form.errors})
