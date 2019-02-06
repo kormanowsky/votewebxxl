@@ -35,6 +35,11 @@ def get_question(request, id=0):
 # Save question 
 @login_required
 def save_question(request):
+    if request.method != "POST":
+        return JsonResponse({
+            "ErrorCode": 403, 
+            "Error": "NotAllowedMethodError"
+        })
     form = QuestionForm(request.POST)
     if form.is_valid():
         if form.data['question_id']:
