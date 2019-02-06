@@ -41,6 +41,8 @@ def voting_save(request):
         if not formdata['voting_id']:
             voting = Voting(owner=request.user, title=formdata['title'])
             voting.save()
+            activity_item = ActivityItem(user=request.user, voting=voting, type=ActivityItem.ACTIVITY_NEW_VOTING)
+            activity_item.save()
         else:
             voting = Voting.objects.filter(id=formdata['voting_id'])
             if not len(voting) or not voting[0].owner == request.user:
@@ -82,6 +84,8 @@ def voting_single(request, voting_id=-1, action="index"):
             for answer in answers:
                 vote = Vote(question=answer['question'], answer=answer['answer'], creator=request.user)
                 vote.save()
+            activity_item = ActivityItem(user=request.user, voting=voting, type=ActivityItem.ACTIVITY_VOTE)
+            activity_item.save()
         else:
             return JsonResponse({
                 "ErrorCode": 403,
