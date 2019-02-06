@@ -171,7 +171,18 @@ textarea{
     right: 12px;
 }
 
+.tab-content > .row{
+    display: none;
+}
 
+.tab-content > .row.active{
+    display: flex;
+}
+
+.nav-pills .nav-link i:not(.fa){
+    top: 0;
+    font-size: 133%;
+}
 /* Стили страницы Список голосований */
 
 #votings-search,

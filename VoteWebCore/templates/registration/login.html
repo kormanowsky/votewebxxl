@@ -14,7 +14,7 @@
                             Your registration process has finished successfully. You may now log in.
                         </div>
                         {% endif %}
-                        <form role="form" action="/login?next={% if request.GET.next %}{{ request.GET.next }}{% else %}/vote_list{% endif %}" method="post">
+                        <form role="form" action="/login?next={% if request.GET.next %}{{ request.GET.next }}{% else %}/votings{% endif %}" method="post">
                             {% csrf_token %}
                             <div class="form-group mb-3">
                                 <div class="input-group input-group-alternative">

@@ -1,8 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django.core.files import File
 
 from VoteWebCore.models import *
-
 # https://github.com/bernii/querystring-parser
 from querystring_parser import parser
 
@@ -53,3 +53,32 @@ class VoteForm(forms.Form):
 class ReportForm(forms.Form):
     title = forms.CharField(max_length=256)
     message = forms.CharField(max_length=512)
+
+
+class CreateVotingForm(forms.Form):
+    title = forms.CharField(max_length=300)
+    questions = list()
+
+    def __init__(self, raw_data, *args, **kwargs):
+        super(CreateVotingForm, self).__init__(*args, **kwargs)
+        parsed_data = parser.parse(raw_data.urlencode(), normalized=True)
+        del parsed_data['csrfmiddlewaretoken']
+        for i, question in enumerate(parsed_data['questions']):
+            parsed_data['questions'][i]['type'] = int(question['type'])
+        self.data = parsed_data
+
+    def is_valid(self):
+        for question in self.data['questions']:
+            if not 0 <= question['type'] <= 2:
+                return False
+        return True
+
+
+class LoadImgForm(forms.Form):
+    file = forms.ImageField()
+
+    def add_photo(self, photo_file):
+        with open(photo_file) as f:
+            my_file = File(f)
+            filename = "filename.jpg"
+            self.photo_file.save(filename, my_file)

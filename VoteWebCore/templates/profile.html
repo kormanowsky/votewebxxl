@@ -32,8 +32,8 @@
                             </li>
                             <li class="profile-stats-item pr-2 pr-md-3">
                                 <div>
-                                    <p class="font-weight-700 lh-100 m-0 profile-stats-number text-center text-primary">1.2K</p>
-                                    <p class="lh-100 mt-2 profile-statis-description small text-center text-uppercase mb-0 mb-lg-3">Answers</p>
+                                    <p class="font-weight-700 lh-100 m-0 profile-stats-number text-center text-primary">{{ votes|length }}</p>
+                                    <p class="lh-100 mt-2 profile-statis-description small text-center text-uppercase mb-0 mb-lg-3">Vote{% if votes|length != 1 %}s{%endif %}</p>
                                 </div>
                             </li>
                             <!--
@@ -57,61 +57,73 @@
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-lg-4 col-xl-3">
-        <div class="row">
-            <div class="col-12">
-                <h5 class="pt-4 text-right h6">Activity</h5>
-                <div class="card profile-activity-item shadow-sm">
-                    <div class="card-body row m-0 position-relative">
-                        <div class="position-absolute profile-activity-left col px-0">
-                            <div class="profile-activity-type shadow text-white bg-primary">
-                                <i class="la la-question"></i>
+<div class="row mt-4 mb-0">
+    <div class="col-12">
+        <div class="nav-wrapper">
+            <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
+                <li class="nav-item">
+                    <a class="d-flex align-items-center justify-content-center nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true"><i class="mr-2 la la-home"></i>Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="d-flex align-items-center justify-content-center nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false"><i class="mr-2 la la-user"></i>Activity</a>
+                </li>
+                <li class="nav-item">
+                    <a class="d-flex align-items-center justify-content-center nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-3-tab" data-toggle="tab" href="#tabs-icons-text-3" role="tab" aria-controls="tabs-icons-text-3" aria-selected="false"><i class="mr-2 la la-question"></i>Votings</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="tab-content" id="myTabContent">
+    <div class="row active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
+        <div class="col-lg-4 col-xl-3">
+            <div class="row">
+                <div class="col-12">
+                    <h5 class="pt-4 text-right h6 mb--4 pb-2">Activity</h5>
+                    {% for item in activity %}
+                    <div class="card profile-activity-item shadow-sm mt-4">
+                        <div class="card-body row m-0 position-relative">
+                            <div class="position-absolute profile-activity-left col px-0">
+                                <div class="profile-activity-type shadow text-white bg-primary">
+                                    <i class="la la-{% if item.type == 'new-voting' %}question{% else %}check-square{% endif %}"></i>
+                                </div>
+                            </div>
+                            <div class="col pl-0 pr-2 profile-activity-main pt-3 pl-2">
+                                <h6 class="font-weight-300 text-muted m-0">
+                                    <a href="#">{{ profile_owner.first_name }} {{ profile_owner.last_name }}</a> {% if item.type == 'new-voting' %}created new voting{% else %}voted in{% endif %} <a href="/voting/{{ item.voting.id }}">{{ item.voting.title }}</a>
+                                </h6>
+                            </div>
+                            <div class="position-absolute profile-activity-right text-right">
+                                <p class="font-weight-700 small text-muted timestamp">{{ item.voting.creation_time_diff }}</p>
                             </div>
                         </div>
-                        <div class="col pl-0 pr-2 profile-activity-main pt-3 pl-2">
-                            <h6 class="font-weight-300 text-muted m-0">
-                                <a href="#">{{ profile_owner.first_name }} {{ profile_owner.last_name }}</a> created new quiz <a href="#">Quiz #1009</a>
-                            </h6>
-                        </div>
-                        <div class="position-absolute profile-activity-right text-right">
-                            <p class="font-weight-700 small text-muted timestamp">2 min</p>
-                        </div>
                     </div>
+                    {% endfor %}
                 </div>
-                <div class="card profile-activity-item shadow-sm mt-4">
-                    <div class="card-body row m-0 position-relative">
-                        <div class="position-absolute profile-activity-left col px-0">
-                            <div class="profile-activity-type shadow text-white bg-primary">
-                                <i class="la la-check-square"></i>
-                            </div>
-                        </div>
-                        <div class="col pl-0 pr-2 profile-activity-main pt-3 pl-2">
-                            <h6 class="font-weight-300 text-muted m-0">
-                                <a href="#">{{ profile_owner.first_name }} {{ profile_owner.last_name }}</a> answered in quiz <a href="#">Quiz #1009</a>
-                            </h6>
-                        </div>
-                        <div class="position-absolute profile-activity-right text-right">
-                            <p class="font-weight-700 small text-muted timestamp">7 min</p>
-                        </div>
-                    </div>
+            </div>
+        </div>
+        <div class="col-lg-8 col-xl-9">
+            <div class="row mb--4">
+                <div class="col-12">
+                    <h5 class="pt-4 text-right h6">Votings</h5>
                 </div>
+            </div>
+            <div class="row">
+                {% for voting in votings %}
+                <div class="col-12 col-xl-6 mt-4">
+                    {% include "voting.html" with voting=voting voting_small=1 %}
+                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
-    <div class="col-lg-8 col-xl-9">
-        <div class="row mb--4">
-            <div class="col-12">
-                <h5 class="pt-4 text-right h6">Votings</h5>
-            </div>
+    <div class="row" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab"></div>
+    <div class="row" id="tabs-icons-text-3" role="tabpanel" aria-labelledby="tabs-icons-text-3-tab">
+        {% for voting in votings %}
+        <div class="col-12 col-lg-6 mt-4">
+            {% include "voting.html" with voting=voting voting_small=1 %}
         </div>
-        <div class="row">
-            {% for voting in votings %}
-            <div class="col-12 col-lg-6 col-xl-4">
-                {% include "voting.html" with voting=voting voting_small=1 %}
-            </div>
-            {% endfor %}
-        </div>
+        {% endfor %}
     </div>
 </div>
 {% endblock content %}

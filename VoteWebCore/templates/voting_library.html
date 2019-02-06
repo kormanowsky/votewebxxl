@@ -35,6 +35,15 @@
                         </div>
                     </div>
                 </form>
+                <div class="text-center">
+                    <p>or</p>
+                </div>
+                <div class="d-flex mb-5">
+                    <div class="ml-auto mr-auto">
+                        <a href="/voting/create" class="d-inline-block btn btn-primary">Create your own voting now</a>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -48,10 +57,10 @@
     {% endfor %}
 </div>
 <script>
-jQuery(function($){
-    $(".votings-filter-query.datepicker").datepicker({
-        format: 'dd.mm.yyyy',
+    jQuery(function($) {
+        $(".votings-filter-query.datepicker").datepicker({
+            format: 'dd.mm.yyyy',
+        });
     });
-});
 </script>
 {% endblock content %}
