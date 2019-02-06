@@ -14,7 +14,7 @@
     </a>
 </li>
 <li class="nav-item">
-    <a href="/voting/{{ voting.id }}/share" class="d-flex pb-3 align-items-center">
+    <a href="#" class="d-flex pb-3 align-items-center" data-toggle="modal" data-target="#shareModal">
         <p class="m-0">Share</p>
     </a>
 </li>
@@ -25,7 +25,7 @@
 </li>
 {% else %}
 <li class="nav-item">
-    <a href="/voting/{{ voting.id }}/share" class="d-flex pb-3 align-items-center">
+    <a href="#" class="d-flex pb-3 align-items-center" data-toggle="modal" data-target="#shareModal">
         <p class="m-0">Share</p>
     </a>
 </li>
@@ -69,4 +69,36 @@
     </div>
 </div>
 {% endif %}
+<!-- Modal -->
+<div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="shareModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="shareModalLabel">Share</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="input-link">Copy link</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="input-link" value="http://{{ request.get_host }}/voting/{{ voting.id }}" readonly>
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <a href="#" onclick="return (function(){ $('#input-link')[0].select(); document.execCommand('copy'); $('#input-link').blur(); return false; })();" class=""><i class="la la-clipboard"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="input-message">Share with social networks </label>
+                    <div>
+                        <a href="https://vk.com/share.php?url=http://{{ request.get_host }}/voting/{{ voting.id }}&title={{ html_title }} | VoteWebXXL"><img src="https://vk.com/images/share_32.png" width=32 height=32></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content_actions %}
