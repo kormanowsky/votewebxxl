@@ -24,9 +24,25 @@ class JSONField(models.CharField):
 
 # Voting
 class Voting(models.Model):
+
+    # Voting statuses
+    # Public voting (visible to logged in users)
+    VOTING_PUBLIC = 0
+    # Banned voting (banned by admins because of reports)
+    VOTING_BANNED = 1
+
+    # Voting stats statuses
+    # Closed stats
+    VOTING_STATS_CLOSED = False
+    # Open stats
+    VOTING_STATS_OPEN = True
+
     owner = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True)
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
     title = models.CharField(max_length=300)
+    status = models.IntegerField(default=Voting.VOTING_PUBLIC)
+    open_stats = models.BooleanField(default=Voting.VOTING_STATS_OPEN)
+    datetime_closed = models.DateTimeField(blank=True)
 
     # Returns list of all voting questions
     def questions(self):
@@ -92,11 +108,21 @@ class Vote(models.Model):
 
 # Report
 class Report(models.Model):
+
+    # Report statuses
+    # Report that is waiting for resolution
+    REPORT_WAITING = 0
+    # Report that was declined by admins
+    REPORT_DECLINED = 1
+    # Report that was accepted by admins
+    REPORT_ACCEPTED = 2
+
     creator = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
     voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=256)
     message = models.CharField(max_length=512)
     # img = models.FileField()
+    status = models.IntegerField(default=Report.REPORT_WAITING)
 
 # Activity of user
 def get_activity(user, max_items=5):
