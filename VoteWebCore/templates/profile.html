@@ -85,24 +85,10 @@
             <div class="row">
                 <div class="col-12">
                     <h5 class="pt-4 text-right h6 mb--4 pb-2">Activity</h5>
-                    {% for item in activity %}
-                    <div class="card profile-activity-item shadow-sm mt-4">
-                        <div class="card-body row m-0 position-relative">
-                            <div class="position-absolute profile-activity-left col px-0">
-                                <div class="profile-activity-type shadow text-white bg-primary">
-                                    <i class="la la-{% if item.type == 'new-voting' %}question{% else %}check-square{% endif %}"></i>
-                                </div>
-                            </div>
-                            <div class="col pl-0 pr-2 profile-activity-main pt-3 pl-2">
-                                <h6 class="font-weight-300 text-muted m-0">
-                                    <a href="#">{{ profile_owner.first_name }} {{ profile_owner.last_name }}</a> {% if item.type == 'new-voting' %}created new voting{% else %}voted in{% endif %} <a href="/voting/{{ item.voting.id }}">{{ item.voting.title }}</a>
-                                </h6>
-                            </div>
-                            <div class="position-absolute profile-activity-right text-right">
-                                <p class="font-weight-700 small text-muted timestamp">{{ item.voting.creation_time_diff }}</p>
-                            </div>
-                        </div>
-                    </div>
+                    {% for item in activity_small %}
+                        {% include "activity_item.html" with item=item %}
+                    {% empty %}
+                    <p class="text-center my-5">No activity</p>
                     {% endfor %}
                 </div>
             </div>
@@ -114,19 +100,35 @@
                 </div>
             </div>
             <div class="row masonry-wrapper">
-                {% for voting in votings %}
+                {% for voting in votings_small %}
                 <div class="masonry-item col-12 col-xl-6 mt-4">
                     {% include "voting.html" with voting=voting voting_small=1 %}
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <p class="text-center my-5">No votings</p>
                 </div>
                 {% endfor %}
             </div>
         </div>
     </div>
-    <div class="row" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab"></div>
+    <div class="row masonry-wrapper" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
+        {% for activity_item in activity %}
+            {% include "activity_item.html" with item=activity_item %}
+        {% empty %}
+        <div class="col-12">
+            <p class="text-center my-5">No activity</p>
+        </div>
+        {% endfor %}
+    </div>
     <div class="row masonry-wrapper" id="tabs-icons-text-3" role="tabpanel" aria-labelledby="tabs-icons-text-3-tab">
         {% for voting in votings %}
         <div class="col-12 col-lg-6 mt-4 masonry-item">
             {% include "voting.html" with voting=voting voting_small=1 %}
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="text-center my-5">No votings</p>
         </div>
         {% endfor %}
     </div>
@@ -134,6 +136,7 @@
     <div class="row mt-4" id="tabs-icons-text-4" role="tabpanel" aria-labelledby="tabs-icons-text-4-tab">
         <div class="col-12">
             <div class="card shadow-sm">
+                {% if profile_owner_reports.count %}
                 <div class="table-responsive">
                     <table class="table align-items-center table-flush">
                         <thead class="thead-light">
@@ -152,7 +155,9 @@
                                 <td>{{ report.id }}</td>
                                 <td>{{ report.datetime_created }}</td>
                                 <td><a href="/voting/{{ report.voting.id }}">{{ report.voting.title }}</a></td>
-                                <td><p class="mb-1">{{ report.title }}</p>{{ report.message }}</td>
+                                <td>
+                                    <p class="mb-1">{{ report.title }}</p>{{ report.message }}
+                                </td>
                                 <td>{{ report.status }}</td>
                                 <td class="td-actions text-right">
                                     <a href="#" class="d-block text-danger">
@@ -164,6 +169,11 @@
                         </tbody>
                     </table>
                 </div>
+                {% else %}
+                <div class="card-body">
+                    <p class="text-center my-5">No reports</p>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>

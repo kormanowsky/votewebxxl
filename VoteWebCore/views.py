@@ -142,13 +142,18 @@ def profile(request, username=None):
         reports = Report.objects.filter(creator=profile_owner)
     else:
         reports = None
+    activity = ActivityItem.objects.filter(user=profile_owner.id).order_by('-datetime_created')
+    votings = Voting.objects.filter(owner=profile_owner.id).order_by("-datetime_created")
+    activity_small = activity[:5]
+    votings_small = votings[:5]
     context = {
         "html_title": "@" + request.user.username,
         "profile_owner": profile_owner,
         "profile_owner_reports": reports,
-        "votings": Voting.objects.filter(owner=profile_owner.id).order_by("-datetime_created"),
-        "votes": Vote.objects.filter(creator=profile_owner.id),
-        "activity": get_activity(profile_owner),
+        "votings": votings,
+        "votings_small": votings_small,
+        "activity": activity,
+        "activity_small": activity_small,
         "no_right_aside": True,
     }
     return render(request, 'profile.html', context)
