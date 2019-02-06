@@ -70,6 +70,11 @@
                 <li class="nav-item">
                     <a class="d-flex align-items-center justify-content-center nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-3-tab" data-toggle="tab" href="#tabs-icons-text-3" role="tab" aria-controls="tabs-icons-text-3" aria-selected="false"><i class="mr-2 la la-question"></i>Votings</a>
                 </li>
+                {% if request.user == profile_owner %}
+                <li class="nav-item">
+                    <a class="d-flex align-items-center justify-content-center nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-4-tab" data-toggle="tab" href="#tabs-icons-text-4" role="tab" aria-controls="tabs-icons-text-3" aria-selected="false"><i class="mr-2 la la-exclamation"></i>Reports</a>
+                </li>
+                {% endif %}
             </ul>
         </div>
     </div>
@@ -125,5 +130,43 @@
         </div>
         {% endfor %}
     </div>
+    {% if request.user == profile_owner %}
+    <div class="row mt-4" id="tabs-icons-text-4" role="tabpanel" aria-labelledby="tabs-icons-text-4-tab">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="table-responsive">
+                    <table class="table align-items-center table-flush">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Datetime of creation</th>
+                                <th>Voting</th>
+                                <th>Content</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for report in profile_owner_reports %}
+                            <tr>
+                                <td>{{ report.id }}</td>
+                                <td>{{ report.datetime_created }}</td>
+                                <td><a href="/voting/{{ report.voting.id }}">{{ report.voting.title }}</a></td>
+                                <td><p class="mb-1">{{ report.title }}</p>{{ report.message }}</td>
+                                <td>{{ report.status }}</td>
+                                <td class="td-actions text-right">
+                                    <a href="#" class="d-block text-danger">
+                                        Remove report
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock content %}

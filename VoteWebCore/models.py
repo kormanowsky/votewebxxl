@@ -122,8 +122,23 @@ class Report(models.Model):
     voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=256)
     message = models.CharField(max_length=512)
+    datetime_created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     # img = models.FileField()
     status = models.IntegerField(default=0)
+
+# Activity item
+class ActivityItem(models.Model):
+
+    # Activity item types
+    # New voting
+    ACTIVITY_NEW_VOTING = 0
+    # Vote in voting
+    ACTIVITY_VOTE = 1
+
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    type = models.IntegerField(default=0)
+    datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
+    voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE)
 
 # Activity of user
 def get_activity(user, max_items=5):

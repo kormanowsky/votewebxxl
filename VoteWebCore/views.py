@@ -134,10 +134,14 @@ def profile(request, username=None):
             "ErrorCode": 404,
             "Error": "UserNotFound"
         })
-
+    if profile_owner == request.user:
+        reports = Report.objects.filter(creator=profile_owner)
+    else:
+        reports = None
     context = {
         "html_title": "@" + request.user.username,
         "profile_owner": profile_owner,
+        "profile_owner_reports": reports,
         "votings": Voting.objects.filter(owner=profile_owner.id).order_by("-datetime_created"),
         "votes": Vote.objects.filter(creator=profile_owner.id),
         "activity": get_activity(profile_owner),
