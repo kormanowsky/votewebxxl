@@ -26,6 +26,7 @@ urlpatterns = [
     path('login', auth_views.LoginView.as_view()),
     path('logout', views.logout),
     path('register', views.register),
+    path('remove-account', views.remove_account),
 
     # Profile Page
     path('profile/<str:username>', views.profile),

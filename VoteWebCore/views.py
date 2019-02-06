@@ -149,3 +149,10 @@ def voting_create(request):
         return render(request, "voting_create.html", {
             "html_title": "Create Voting"
         })
+
+@login_required
+def remove_account(request):
+    request.user.delete()
+    return render(request, "registration/remove-account.html", {
+        "html_title": "Remove Account"
+    })
