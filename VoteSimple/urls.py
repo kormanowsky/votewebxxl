@@ -41,5 +41,5 @@ urlpatterns = [
     path('voting/create', views.voting_create),
 
     # test upload file
-    path('test_upload_photo', views.load_img)
+    path('upload_img', views.upload)
 ]

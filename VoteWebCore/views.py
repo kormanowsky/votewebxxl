@@ -157,14 +157,12 @@ def voting_create(request):
         })
 
 
-def load_img(request):
+def upload(request):
+    file_path = ''
     if request.method == 'POST':
-        print(request.POST)
-        print(request.FILES)
         form = LoadImgForm(request.POST, request.FILES)
         if form.is_valid():
-            # save_upload_file(request.FILES['file'])
-            print(file_to_base64(request.FILES['file']))
+            file_path = save_upload_file(request.FILES['file'])
     else:
-        form = LoadImgForm()
-    return render(request, 'load-img-form.html', {'form': form})
+        return JsonResponse({})
+    return JsonResponse({'is_valid': form.is_valid(), 'errors': form.errors, 'file_path': file_path})
