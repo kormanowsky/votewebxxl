@@ -73,7 +73,8 @@ class Question(models.Model):
     # Question with checkboxes
     QUESTION_MULTIPLE_ANSWERS = 2
 
-    voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE)
+    owner = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True, default=None, blank=True)
+    voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE, null=True, blank=True)
     type = models.IntegerField()
     text = models.CharField(max_length=300)
     answers = JSONField(max_length=10000)

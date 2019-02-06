@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib.auth import views as auth_views
 from django.urls import path
 
-from VoteWebCore import views
+from VoteWebCore import views, api_views
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
@@ -39,5 +39,9 @@ urlpatterns = [
     path('settings', views.settings),
 
     # Voting create
-    path('voting/create', views.voting_create)
+    path('voting/create', views.voting_create),
+    
+    # Ajax API
+    path('api/get-question/<int:id>', views.get_question),
+    path('api/save-question', views.save_question),
 ]

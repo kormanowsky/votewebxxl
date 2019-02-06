@@ -1,0 +1,62 @@
+<div class="modal fade" id="questionModal" tabindex="-1" role="dialog" aria-labelledby="questionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="questionModalLabel">Add question</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="/voting/create/new-question" method="post" id="question-form">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="input-text">Question text</label>
+                        <div class="input-group">
+                            <textarea rows="5" class="form-control" id="input-text" placeholder="Write your question text here" required></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Question type</label>
+                        <label class="small text-light">If you choose Buttons question type and create more than 3 possible answers, question type will be changed to Single Answer. If you choose Multiple Answers question type and create less than 3 possible answers, question type will be changed to Single Answer.</label>
+                        <div class="custom-control custom-radio mb-3">
+                            <input class="custom-control-input input-question-type" name="question-type" id="input-question_type_0" value="0" type="radio" required>
+                            <label class="custom-control-label" for="input-question_type_0">Buttons</label>
+                        </div>
+                        <div class="custom-control custom-radio mb-3">
+                            <input class="custom-control-input input-question-type" name="question-type" id="input-question_type_1" value="1" type="radio" required>
+                            <label class="custom-control-label" for="input-question_type_1">Single Answer</label>
+                        </div>
+                        <div class="custom-control custom-radio mb-3">
+                            <input class="custom-control-input input-question-type" name="question-type" id="input-question_type_2" value="2" type="radio" required>
+                            <label class="custom-control-label" for="input-question_type_2">Multiple Answers</label>
+                        </div>
+                    </div>
+                    <label for="input-text">Possible answers</label>
+                    <div class="form-group" id="form-group-answers">
+
+                        <div class="input-group">
+                            <input type="text" class="input-possible-answer form-control" placeholder="Yes">
+                            <div class="input-group-append">
+                                <button onclick="return Votings.edit.removePossibleAnswerInput(this);" class="btn btn-outline-danger"><i class="la la-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="input-group mt-2">
+                            <input type="text" class="input-possible-answer form-control" placeholder="No">
+                            <div class="input-group-append">
+                                <button onclick="return Votings.edit.removePossibleAnswerInput(this);" class="btn btn-outline-danger"><i class="la la-times"></i></button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <button type="button" onclick="return Votings.edit.addPossibleAnswerInput();" class="btn btn-outline-primary mt-2 w-100">
+                        Add possible answer
+                    </button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="return Votings.edit.saveQuestion(this);" class="btn btn-primary" id="question-form-submit">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
