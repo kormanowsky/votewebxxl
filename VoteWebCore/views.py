@@ -4,8 +4,8 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
 from VoteWebCore.forms import *
-from VoteWebCore.models import *
 from VoteWebCore.functions import *
+from VoteWebCore.models import *
 
 
 @login_required
@@ -17,10 +17,12 @@ def votings(request):
     }
     return render(request, 'voting_library.html', context)
 
+
 @login_required
 def logout(request):
     auth_logout(request)
     return redirect('/login')
+
 
 def register(request):
     context = {
@@ -33,6 +35,7 @@ def register(request):
         else:
             context['errors'] = form_errors(context['form'])
     return render(request, 'registration/registration.html', context)
+
 
 # New view for a single voting
 @login_required
@@ -78,6 +81,7 @@ def voting_single(request, voting_id=-1, action="index"):
         context["show_form"] = 0
     return render(request, "voting_single.html", context)
 
+
 def profile(request, username=None):
     if username is None:
         if request.user.username:
@@ -106,6 +110,7 @@ def profile(request, username=None):
     }
     return render(request, 'profile.html', context)
 
+
 @login_required
 def settings(request):
     context = {
@@ -131,6 +136,7 @@ def settings(request):
                 request.user = item
     return render(request, "settings.html", context)
 
+
 @login_required
 def voting_create(request):
     if request.method == "POST":
@@ -140,7 +146,7 @@ def voting_create(request):
             voting = Voting(owner=request.user, title=formdata['title'])
             voting.save()
             for questiondata in formdata['questions']:
-                question=Question(voting=voting, type=questiondata['type'], answers=questiondata['answers'], text=questiondata['text'])
+                question = Question(voting=voting, type=questiondata['type'], answers=questiondata['answers'], text=questiondata['text'])
                 question.save()
             return redirect("/voting/" + str(voting.id))
         else:
@@ -149,3 +155,16 @@ def voting_create(request):
         return render(request, "voting_create.html", {
             "html_title": "Create Voting"
         })
+
+
+def load_img(request):
+    if request.method == 'POST':
+        print(request.POST)
+        print(request.FILES)
+        form = LoadImgForm(request.POST, request.FILES)
+        if form.is_valid():
+            # save_upload_file(request.FILES['file'])
+            print(file_to_base64(request.FILES['file']))
+    else:
+        form = LoadImgForm()
+    return render(request, 'load-img-form.html', {'form': form})
