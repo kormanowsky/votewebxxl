@@ -19,6 +19,35 @@ function ClearForm(element, afterClear){
     return false;
 }
 
+function InitMasonry(){
+    $(".masonry-wrapper").each(function(i, e){
+        $(e).masonry({
+            itemSelector: ".masonry-item"
+        })
+    });
+
+    var navPillsLinks = $(".nav-pills a"),
+        masonryLayouted = false;
+    if(navPillsLinks.length){
+        navPillsLinks.each(function(i, link){
+            $(link).click(function(){
+                // Leave this as is
+                setTimeout(LayoutMasonry, 1);
+            });
+        });
+    }
+
+    $(window).on('resize', function(){
+        LayoutMasonry();
+    });
+}
+
+function LayoutMasonry(){
+    $(".masonry-wrapper").each(function(i, e){
+        $(e).masonry('layout')
+    });
+}
+
 function QuizSaveOneClick(task_no, quest_no, answ_text) {
     var request_param = {
         'task_no': task_no,
