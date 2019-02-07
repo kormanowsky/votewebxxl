@@ -127,6 +127,9 @@ class Report(models.Model):
     # img = models.FileField()
     status = models.IntegerField(default=0)
 
+    def status_str(self):
+        return ["Waiting", "Declined", "Accepted"][self.status]
+
 
 # Activity item
 class ActivityItem(models.Model):
