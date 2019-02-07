@@ -1,6 +1,6 @@
 {# Одно голосование. Для использования в циклах #}
 {% votingstatus voting request as status %}
-{% if status == voting.VOTING_OPEN and not voting_small %}
+{% if status >= voting.VOTING_OPEN and not voting_small %}
 <form action="/voting/{{ voting.id }}/save" method="post">
     {% csrf_token %}
     {% endif %}
@@ -42,7 +42,7 @@
                 <div class="card-body">
                     <p class="text-muted lh-110 small">Question #{{ question.id }}</p>
                     <h3 class="mb-4">{{ question.text }}</h3>
-                    {% if status == voting.VOTING_OPEN %}
+                    {% if status >= voting.VOTING_OPEN %}
                     {% if question.type == question.QUESTION_BUTTONS %}
                     <input type="hidden" name="answer_{{ question.id }}" value="">
                     <div class="row mx-0">
@@ -91,7 +91,7 @@
         {% endif %}
     </div>
     {% endif %}
-    {% if status == voting.VOTING_OPEN and not voting_small %}
+    {% if status >= voting.VOTING_OPEN and not voting_small %}
     <button type="submit" class="btn btn-primary w-100 mt-4">Save votes</button>
 </form>
 {% endif %}
