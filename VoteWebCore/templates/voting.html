@@ -1,4 +1,4 @@
-{# Одно голосование. Для использования в циклах #} 
+{# Одно голосование. Для использования в циклах #}
 {% if show_form and not voting_small %}
     <form action="/voting/{{ voting.id }}/save" method="post">
         {% csrf_token %} 
@@ -9,7 +9,7 @@
         <h1 class="display-2 lh-110 mt-2 my-4"><a href="/voting/{{voting.id}}">{{ voting.title }}</a></h1>
         <a href="/profile/{{ voting.owner.username }}">
             <div class="d-flex align-items-center">
-                <img src="{% if voting.owner and voting.owner.avatar %}https://pp.userapi.com/c846524/v846524647/15b218/B-cPw9HFt7Y.jpg?ava=1{% else %}https://bizraise.pro/wp-content/uploads/2014/09/no-avatar-300x300.png{%endif%}" class="avatar avatar-small shadow-sm">
+                <img src="{% avatar request voting.owner %}" class="avatar avatar-small shadow-sm">
                 <div class="ml-3">
                     <p class="lh-100 font-weight-100 mb-1">{{ voting.owner.first_name }}&nbsp;{{ voting.owner.last_name }}</p>
                     <p class="lh-100 small h6 text-muted">@{{ voting.owner.username }}</p>

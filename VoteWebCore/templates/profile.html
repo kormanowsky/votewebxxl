@@ -5,7 +5,7 @@
             <div class="card-body align-items-center row mx-0">
                 <div class="col-md-6 col-xl-8 pr-0 pl-0 pl-xxl-4">
                     <div class="py-xl-4 d-flex align-items-center justify-content-center justify-content-xl-start">
-                        <img id="profile-avatar" src="{% if profile_owner.username and profile_owner.avatar %}https://pp.userapi.com/c846524/v846524647/15b218/B-cPw9HFt7Y.jpg?ava=1{% else %}https://bizraise.pro/wp-content/uploads/2014/09/no-avatar-300x300.png{%endif%}" class="avatar avatar-big shadow-lg">
+                        <img id="profile-avatar" src="{% avatar request profile_owner %}" class="avatar avatar-big shadow-lg">
                         <div id="profile-info" class="w-auto ml-3 ml-xl-4">
                             <h4 class="lh-110 mb-1">
                                 {{ profile_owner.first_name }} {{ profile_owner.last_name }}

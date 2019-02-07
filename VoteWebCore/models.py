@@ -163,3 +163,13 @@ class Image(models.Model):
         if role_str == "avatar":
             return cls.IMAGE_ROLE_AVATAR
         return -1
+
+    @classmethod
+    def get_avatar_url(cls, request, user=None):
+        if not user:
+            user = request.user
+        avatar_url = "https://bizraise.pro/wp-content/uploads/2014/09/no-avatar-300x300.png"
+        image = Image.objects.filter(owner=user, role=Image.IMAGE_ROLE_AVATAR)
+        if len(image):
+            avatar_url = 'http://' + request.get_host() + image[0].data.url
+        return avatar_url

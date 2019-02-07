@@ -2,6 +2,8 @@ from dateutil import *
 from random import randint
 from uuid import uuid4
 
+from VoteWebCore.models import *
+
 # Useful functions
 def form_errors(form):
     errors_str = form.errors.as_text()

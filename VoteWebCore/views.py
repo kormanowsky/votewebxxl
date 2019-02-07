@@ -6,7 +6,6 @@ from django.shortcuts import render, redirect
 from VoteWebCore.forms import *
 from VoteWebCore.models import *
 from VoteWebCore.functions import *
-#from VoteWebCore.api_views import *
 
 @login_required
 def votings(request):
@@ -166,7 +165,7 @@ def profile(request, username=None):
 @login_required
 def settings(request):
     context = {
-        "html_title": "Settings"
+        "html_title": "Settings",
     }
     if request.method == "POST":
         form = SettingsForm(request.POST)
@@ -195,7 +194,7 @@ def voting_create(request):
         return voting_save(request)
     else:
         return render(request, "voting_create.html", {
-            "html_title": "Create Voting"
+            "html_title": "Create Voting", 
         })
 
 @login_required

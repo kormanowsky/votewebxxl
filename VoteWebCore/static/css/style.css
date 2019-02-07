@@ -77,14 +77,17 @@ nav.navbar.navbar-expand-lg {
 
 .avatar-small {
     height: 32px;
+    width: 32px;
 }
 
 .avatar-medium {
     height: 48px;
+    width: 48px;
 }
 
 .avatar-big {
     height: 80px;
+    width: 80px;
 }
 
 #root {
@@ -292,14 +295,17 @@ textarea {
 
     .avatar-small {
         height: 40px;
+        width: 40px;
     }
 
     .avatar-medium {
         height: 56px;
+        width: 56px;
     }
 
     .avatar-big {
         height: 96px;
+        width: 96px;
     }
 
     #profile-info h4 {
@@ -344,14 +350,17 @@ textarea {
 
     .avatar-small {
         height: 48px;
+        width: 48px;
     }
 
     .avatar-medium {
         height: 80px;
+        width: 80px;
     }
 
     .avatar-big {
         height: 120px;
+        width: 120px;
     }
 
     .profile-activity-main h6 {
@@ -362,6 +371,7 @@ textarea {
 @media(min-width: 1200px) {
     .avatar-big {
         height: 150px;
+        width: 150px;
     }
 
     #profile-info h4 {
