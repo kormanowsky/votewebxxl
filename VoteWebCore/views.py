@@ -9,9 +9,13 @@ from VoteWebCore.functions import *
 
 @login_required
 def votings(request):
+    # Можно даже сделать форму VotingsSearchForm
+    # в Request.GET приходят параметры owner, title, datetime_created_from, datetime_created_to
+    # надо сформировать QuerySet из голосований (Voting.objects.filter)
+    # обязательно exclude(banned=1) !
     context = {
         "votings": Voting.objects.exclude(banned=1),
-        "html_title": "Voting Library",
+        "html_title": "Votings",
         "no_right_aside": True
     }
     return render(request, 'votings.html', context)
