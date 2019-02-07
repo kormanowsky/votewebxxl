@@ -37,9 +37,7 @@ function InitMasonry(){
         });
     }
 
-    $(window).on('resize', function(){
-        LayoutMasonry();
-    });
+    $(window).on('resize', LayoutMasonry);
 }
 
 function LayoutMasonry(){
@@ -89,6 +87,7 @@ function makeGETParams(params) {
 }
 
 jQuery(function($){
+    // Report form
     $('#report-form-errors').hide();
     AjaxForm($("#report-form"), function(data){
         $("#report-form-errors").html('');

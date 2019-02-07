@@ -67,7 +67,7 @@ Votings.edit = {
         return false;
     }, 
     closeQuestionModal: function(){
-        
+        $("#questionModal .close").click();
     },
     saveQuestion: function (element) {
         var question_data = {
@@ -164,7 +164,7 @@ Votings.edit = {
                 }
                 $(".row#questions").append($qWrap);
                 Votings.edit.clearQuestion();
-                $("#questionModal .close").click();
+                Votings.edit.closeQuestionModal();
                 return false;
             }
         });

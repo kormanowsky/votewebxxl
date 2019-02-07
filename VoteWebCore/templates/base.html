@@ -24,6 +24,7 @@
     <script type="text/javascript" src='{% static "vendor/jquery/jquery.min.js" %}'></script>
     <script src='{% static "js/ajax.js" %}'></script>
     <script src='{% static "js/votings.js" %}'></script>
+    <script src='{% static "js/upload.js" %}'></script>
 </head>
 
 <body>
@@ -44,6 +45,10 @@
             }
             // Инициализация карточек
             InitMasonry();
+            // Загрузки картинок
+            $(".upload-image").each(function(index, input){
+                window.Upload.init($(input));
+            });
         });
     </script>
 </body>
