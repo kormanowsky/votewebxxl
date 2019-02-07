@@ -45,9 +45,47 @@
             }
             // Инициализация карточек
             InitMasonry();
-            // Загрузки картинок
-            $(".upload-image").each(function(index, input){
+            // Загрузка картинок
+            $(".upload-image").each(function(index, input) {
                 window.Upload.init($(input));
+            });
+            // Опасные действия
+            $(".dangerous-action").each(function(i, e) {
+                // Сброс атрибута onclick
+                if (e.onclick) {
+                    var onclick = e.onclick;
+                    $(e).click(function(event) {
+                        onclick.apply(e, event);
+                    });
+                    e.onclick = '';
+                    $(e).attr('onclick', '');
+                }
+                // Запоминание и сброс обработчиков, показ модального окна
+                var eventListeners = jQuery._data(e, 'events').click,
+                    actionConfirmed = false, 
+                    showConfirmationModal = function(event) {
+                        // Проверка, хочет ли пользователь совершить действие
+                        actionConfirmed = confirm('do you really want to do that?');
+                    }, 
+                    newEventListeners = [showConfirmationModal];
+                // Создание новых обработчиков
+                for(var i in eventListeners){
+                    var listener = eventListeners[i];
+                    if(typeof listener === "object"){
+                        var handler = listener.handler;
+                        newEventListeners.push(function(event){
+                            if(actionConfirmed){
+                                handler(e, event);
+                            }
+                        });
+                    }
+                }
+                // Сброс старых обработчиков
+                $(e).off('click');
+                // Установка новых обработчиков
+                for(var i in newEventListeners){
+                    $(e).click(newEventListeners[i]);
+                }
             });
         });
     </script>

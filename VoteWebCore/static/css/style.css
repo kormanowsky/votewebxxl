@@ -1,5 +1,7 @@
 * {
     transition-duration: .2s;
+    white-space: normal !important;
+    word-break: break-word !important;
 }
 
 html,
@@ -192,6 +194,10 @@ textarea {
     font-size: 133%;
 }
 
+table td{
+    white-space: normal !important;
+}
+
 /* Стили страницы Список голосований */
 
 #votings-search,
@@ -369,6 +375,9 @@ textarea {
 }
 
 @media(min-width: 1200px) {
+    table{
+        table-layout: fixed !important;
+    }
     .avatar-big {
         height: 150px;
         width: 150px;
