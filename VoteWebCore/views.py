@@ -205,8 +205,3 @@ def remove_account(request):
     return render(request, "registration/remove_account.html", {
         "html_title": "Remove Account"
     })
-
-def test_upload(request):
-    return render(request, "load-img-form.html", {
-        "form": LoadImgForm()
-    })

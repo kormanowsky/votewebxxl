@@ -48,6 +48,4 @@ urlpatterns = [
     path('api/get-question/<int:id>', api_views.get_question),
     path('api/save-question', api_views.save_question),
     path('api/upload/<str:upload_as>', api_views.upload),
-
-    path('tuf', views.test_upload)
 ]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
