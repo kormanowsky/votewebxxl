@@ -10,7 +10,7 @@ from VoteWebCore.functions import *
 @login_required
 def votings(request):
     context = {
-        "votings": Voting.objects.all(),
+        "votings": Voting.objects.exclude(status=Voting.VOTING_BANNED),
         "html_title": "Voting Library",
         "no_right_aside": True
     }
@@ -145,8 +145,8 @@ def profile(request, username=None):
         reports = Report.objects.filter(creator=profile_owner)
     else:
         reports = None
-    activity = ActivityItem.objects.filter(user=profile_owner.id).order_by('-datetime_created')
-    votings = Voting.objects.filter(owner=profile_owner.id).order_by("-datetime_created")
+    activity = ActivityItem.objects.filter(user=profile_owner.id).exclude(voting__status=Voting.VOTING_BANNED).order_by('-datetime_created')
+    votings = Voting.objects.filter(owner=profile_owner.id).exclude(status=Voting.VOTING_BANNED).order_by("-datetime_created")
     activity_small = activity[:5]
     votings_small = votings[:5]
     context = {
