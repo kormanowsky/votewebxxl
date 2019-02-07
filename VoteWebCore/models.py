@@ -64,6 +64,16 @@ class Voting(models.Model):
     def creation_time_diff(self):
         return datetime_human_diff(datetime.utcnow(), self.datetime_created.replace(tzinfo=None))
 
+    # Returns datetime_created in dd.mm.yyyy
+    def datetime_created_str(self):
+        return self.datetime_created.strftime("%d.%m.%Y")
+
+    # Returns datetime_closed in dd.mm.yyyy
+    def datetime_closed_str(self):
+        if not self.datetime_closed:
+            return None
+        return self.datetime_closed.strftime("%d.%m.%Y")
+
 
 # Question
 class Question(models.Model):

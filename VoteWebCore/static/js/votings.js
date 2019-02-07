@@ -178,7 +178,7 @@ Votings.edit = {
         return false;
     },
     removeQuestion: function (element) {
-        $(element).parent().parent().parent().remove();
+        $(element).parent().parent().parent().parent().remove();
         if($("#questions").children().length == 0){
             $("#questions").html('<div id="no-questions" class="col-12"><h5 class="p-5 text-center">Click Add to add a question</h5></div>');
         }

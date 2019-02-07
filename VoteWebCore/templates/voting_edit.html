@@ -14,13 +14,34 @@
         <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-header bg-white">
-                    <h3 class="text-muted text-uppercase h6 font-weight-700 mb-0">Voting info</h3>
+                    <h3 class="text-muted text-uppercase h6 font-weight-700 mb-0">Voting settings</h3>
                 </div>
                 <div class="card-body">
                     <div class="form-group">
                         <label for="input-title">Title</label>
                         <div class="input-group">
                             <input type="text" class="form-control" name="title" id="input-title" placeholder="Name your voting" value="{{ voting.title }}" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="input-title">Datetime of closing (leave blank to make your voting open forever)</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control datepicker" data-date-start-date="{% formatteddate 'tomorrow' %}" data-date-format="dd.mm.yyyy" name="datetime_closed" id="input-datetime_closed" value="{% if voting.datetime_closed %}{{ voting.datetime_closed_str }}{% endif %}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="input-title">Private voting stats</label>
+                        <div class="input-group">
+                            <div class="custom-control custom-radio mb-3">
+                                <input name="open_stats" class="custom-control-input" id="open_stats_yes" value="0" type="radio" required>
+                                <label class="custom-control-label" for="open_stats_yes">Enabled</label>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <div class="custom-control custom-radio mb-3">
+                                <input name="open_stats" class="custom-control-input" id="open_stats_no" value="1" type="radio" required checked>
+                                <label class="custom-control-label" for="open_stats_no">Disabled</label>
+                            </div>
                         </div>
                     </div>
                 </div>

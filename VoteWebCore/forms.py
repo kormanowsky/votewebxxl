@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from VoteWebCore.models import *
 from VoteWebCore.functions import *
 
+from dateutil.tz import tzutc
 # https://github.com/bernii/querystring-parser
 from querystring_parser import parser
 
@@ -60,6 +61,9 @@ class SaveVotingForm(forms.Form):
     title = forms.CharField(max_length=300)
     questions = list()
     voting_id = forms.IntegerField()
+    datetime_closed = forms.DateField()
+    open_stats = forms.BooleanField()
+
 
     def __init__(self, raw_data, *args, **kwargs):
         super(SaveVotingForm, self).__init__(*args, **kwargs)
@@ -69,8 +73,14 @@ class SaveVotingForm(forms.Form):
             parsed_data['questions'] = [parsed_data['questions']]
         for i, question in enumerate(parsed_data['questions']):
             parsed_data['questions'][i] = int(question)
-        print(parsed_data)
         parsed_data['voting_id'] = int(parsed_data['voting_id'])
+        if(len(parsed_data['datetime_closed'])):
+            day, month, year = list(map(int, parsed_data['datetime_closed'].split(".")))
+            datetime_closed = datetime(year=year, month=month, day=day, hour=0, minute=0, second=0, microsecond=0, tzinfo=tzutc())
+            parsed_data['datetime_closed'] = datetime_closed
+        else:
+            parsed_data['datetime_closed'] = None
+        parsed_data['open_stats'] = parsed_data['open_stats'] == '1'
         self.data = parsed_data
 
     def is_valid(self):

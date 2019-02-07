@@ -102,8 +102,16 @@ function AddConfirmationModal(e) {
         });
         $(e).removeAttr('onclick');
     }
+    // Сброс атрибута href 
+    if ($(e).attr("href") && $(e).attr("href") != "#"){
+        var href = $(e).attr("href");
+        $(e).click(function(event){
+            window.location = href;
+        });
+        $(e).attr('href', '#');
+    }
     // Запоминание обработчиков
-    var eventListeners = jQuery._data(e, 'events').click,
+    var eventListeners = jQuery._data(e, 'events') ? jQuery._data(e, 'events').click : [],
         newEventListeners = [];
     // Создание новых обработчиков
     for (var i in eventListeners) {

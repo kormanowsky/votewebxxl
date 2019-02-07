@@ -66,7 +66,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
             'builtins': [
-                'VoteWebCore.templatetags.images'
+                'VoteWebCore.templatetags.images', 
+                'VoteWebCore.templatetags.dates'
             ]
         },
     },

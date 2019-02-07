@@ -243,6 +243,10 @@ table td {
     left: 4px;
 }
 
+.datepicker{
+    padding: 10px 12px !important;
+}
+
 .datepicker table tr td span.active.active,
 .datepicker table tr td span.active.disabled,
 .datepicker table tr td span.active.disabled.active,

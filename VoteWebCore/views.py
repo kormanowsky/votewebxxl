@@ -41,7 +41,10 @@ def voting_save(request):
     if form.is_valid():
         formdata = form.data
         if not formdata['voting_id']:
-            voting = Voting(owner=request.user, title=formdata['title'])
+            voting = Voting(owner=request.user,
+                            title=formdata['title'],
+                            datetime_closed=formdata['datetime_closed'],
+                            open_stats=formdata['open_stats'])
             voting.save()
             activity_item = ActivityItem(user=request.user, voting=voting, type=ActivityItem.ACTIVITY_NEW_VOTING)
             activity_item.save()
@@ -52,7 +55,11 @@ def voting_save(request):
                     "ErrorCode": 403,
                     "Error": "NotAllowedError"
                 })
+            voting.update(datetime_closed=formdata['datetime_closed'],
+                          title=formdata['title'],
+                          open_stats=formdata['open_stats'])
             voting = voting[0]
+            voting.questions().update(voting=None)
         for question_id in formdata['questions']:
             Question.objects.filter(id=question_id).update(voting=voting)
         return redirect("/voting/" + str(voting.id))
@@ -108,18 +115,19 @@ def voting_single(request, voting_id=-1, action="index"):
         else:
             return JsonResponse({"ErrorCode": 403, "Error": "NotAllowedError"})
     elif action == "edit":
-        if request.method == "POST":
-            return voting_save(request)
-        elif voting.owner == request.user:
-            return render(request, "voting_edit.html", {
-                "html_title": "Edit | " + voting.title,
-                "voting": voting
-            })
+        if voting.owner == request.user:
+            if request.method == "POST":
+                return voting_save(request)
+            else:
+                return render(request, "voting_edit.html", {
+                    "html_title": "Edit | " + voting.title,
+                    "voting": voting
+                })
         else:
             return JsonResponse({"ErrorCode": 403, "Error": "NotAllowedError"})
 
     # Do we need to show the form?
-    if voting.current_user_voted(request):
+    if voting.current_user_voted(request) or voting.status != Voting.VOTING_PUBLIC:
         context["show_form"] = 0
     return render(request, "voting_single.html", context)
 

@@ -20,44 +20,56 @@
 </div>
 {% if not voting_small %}
     <div class="row">
-        {% for question in voting.questions %}
-            <div class="col-12 col-md-6 col-xl-4">
-                <div class="card shadow-sm mt-4">
-                    <div class="card-body">
-                        <p class="text-muted lh-110 small">Question #{{ question.id }}</p>
-                        <h3 class="mb-4">{{ question.text }}</h3>
-                        {% if show_form %}
-                            {% if question.type == question.QUESTION_BUTTONS %}
-                                <input type="hidden" name="answer_{{ question.id }}" value="">
-                                <div class="row mx-0">
+        {% if voting.status == voting.VOTING_PUBLIC %}
+            {% for question in voting.questions %}
+                <div class="col-12 col-md-6 col-xl-4">
+                    <div class="card shadow-sm mt-4">
+                        <div class="card-body">
+                            <p class="text-muted lh-110 small">Question #{{ question.id }}</p>
+                            <h3 class="mb-4">{{ question.text }}</h3>
+                            {% if show_form %}
+                                {% if question.type == question.QUESTION_BUTTONS %}
+                                    <input type="hidden" name="answer_{{ question.id }}" value="">
+                                    <div class="row mx-0">
+                                        {% for answer in question.answers %}
+                                            <button onclick="return Votings.setCurrentButtonAnswer(this);" data-question-id="{{ question.id }}" type="button" class="col btn btn-outline-primary" id="question_{{ question.id }}_answers_{{ forloop.counter }}">
+                                                {{ answer }}
+                                            </button>
+                                        {% endfor %}
+                                    </div>
+                                {% elif question.type == question.QUESTION_SINGLE_ANSWER %} 
                                     {% for answer in question.answers %}
-                                        <button onclick="return Votings.setCurrentButtonAnswer(this);" data-question-id="{{ question.id }}" type="button" class="col btn btn-outline-primary" id="question_{{ question.id }}_answers_{{ forloop.counter }}">
-                                            {{ answer }}
-                                        </button>
-                                    {% endfor %}
-                                </div>
-                            {% elif question.type == question.QUESTION_SINGLE_ANSWER %} 
-                                {% for answer in question.answers %}
-                                    <div class="custom-control custom-radio mb-3">
-                                        <input name="answer_{{ question.id }}" class="custom-control-input" id="question_{{ question.id }}_answers_{{ forloop.counter }}" value="{{answer}}" type="radio" required>
-                                        <label class="custom-control-label" for="question_{{ question.id }}_answers_{{ forloop.counter }}">{{ answer }}</label>
-                                    </div>
-                                {% endfor %} 
-                            {% elif question.type == question.QUESTION_MULTIPLE_ANSWERS %} 
-                                {% for answer in question.answers %}
-                                    <div class="custom-control custom-checkbox mb-3">
-                                        <input class="custom-control-input" id="question_{{ question.id }}_answers_{{ forloop.counter }}" name="answer_{{ question.id }}[]" type="checkbox" value="{{ answer }}">
-                                        <label class="custom-control-label" for="question_{{ question.id }}_answers_{{ forloop.counter }}">{{ answer }}</label>
-                                    </div>
-                                {% endfor %} 
+                                        <div class="custom-control custom-radio mb-3">
+                                            <input name="answer_{{ question.id }}" class="custom-control-input" id="question_{{ question.id }}_answers_{{ forloop.counter }}" value="{{answer}}" type="radio" required>
+                                            <label class="custom-control-label" for="question_{{ question.id }}_answers_{{ forloop.counter }}">{{ answer }}</label>
+                                        </div>
+                                    {% endfor %} 
+                                {% elif question.type == question.QUESTION_MULTIPLE_ANSWERS %} 
+                                    {% for answer in question.answers %}
+                                        <div class="custom-control custom-checkbox mb-3">
+                                            <input class="custom-control-input" id="question_{{ question.id }}_answers_{{ forloop.counter }}" name="answer_{{ question.id }}[]" type="checkbox" value="{{ answer }}">
+                                            <label class="custom-control-label" for="question_{{ question.id }}_answers_{{ forloop.counter }}">{{ answer }}</label>
+                                        </div>
+                                    {% endfor %} 
+                                {% endif %}
+                            {% else %}
+                                <p>Stats: {{ question.stats }}</p>
                             {% endif %}
-                        {% else %}
-                            <p>Stats: {{ question.stats }}</p>
-                        {% endif %}
+                        </div>
                     </div>
                 </div>
+            {% endfor %}
+        {% else %}
+        <div class="col-12">
+            <div class="card shadow-sm mt-4">
+                <p class="text-center m-5">
+                    {% if voting.status == voting.VOTING_BANNED %}
+                        This voting was banned by administration due to users' reports.
+                    {% endif %}
+                </p>
             </div>
-        {% endfor %}
+        </div>
+        {% endif %}
     </div>
 {% endif %} 
 {% if show_form and not voting_small %}

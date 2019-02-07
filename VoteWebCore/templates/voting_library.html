@@ -27,7 +27,7 @@
                         </div>
                         <div class="border mb-5 votings-filter col-12 col-md-6 col-lg-4 col-xl-3" id="votings-filter-date">
                             <div class="card-body p-0">
-                                <input type="text" autocomplete="off" class="votings-filter-query datepicker" id="votings-filter-query-date" name="query" placeholder="Filter date...">
+                                <input type="text" autocomplete="off" class="votings-filter-query datepicker" data-date-format="dd.mm.yyyy" id="votings-filter-query-date" name="query" placeholder="Filter date...">
                                 <button onclick="return false;" type="button" id="votings-filter-icon-date" class="votings-filter-icon btn btn-primary d-flex p-0 align-items-center justify-content-center">
                                     <i class="la la-calendar"></i>
                                 </button>
@@ -60,11 +60,4 @@
     </div>
     {% endfor %}
 </div>
-<script>
-    jQuery(function($) {
-        $(".votings-filter-query.datepicker").datepicker({
-            format: 'dd.mm.yyyy',
-        });
-    });
-</script>
 {% endblock content %}
