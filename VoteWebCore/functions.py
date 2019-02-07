@@ -1,5 +1,6 @@
 from dateutil import *
-
+from random import randint
+from uuid import uuid4
 
 # Useful functions
 def form_errors(form):
@@ -46,28 +47,5 @@ def datetime_human_diff(dt1, dt2):
     return result
 
 
-def generate_file_name(src_name):
-    str_ret = ''
-    from random import randint
-    for _ in range(1, 16):
-        str_ret += str(randint(1, 99))  # generate random name
-    str_ret += '.' + src_name.split('.')[-1]  # get source file type
-    return str_ret
-
-
-def save_upload_file(f, file_path='VoteWebCore/static/img/'):
-    ret_data = {'path': file_path, 'file_name': generate_file_name(f._name)}
-    with open(ret_data['path'] + ret_data['file_name'], 'wb+') as destination:
-        for chunk in f.chunks():
-            destination.write(chunk)
-    return ret_data
-
-
-def file_to_base64(f):
-    import base64
-
-    img_byte = b''
-    for chunk in f.chunks():
-        img_byte += chunk
-
-    return base64.b64encode(img_byte)
+def generate_file_name(file, src_name):
+    return str(uuid4()).replace("-", "/") + '.' + src_name.split('.')[-1]

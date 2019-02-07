@@ -16,7 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path
+from django.conf.urls.static import static
 
+from VoteSimple import settings
 from VoteWebCore import views, api_views
 
 urlpatterns = [
@@ -43,9 +45,9 @@ urlpatterns = [
     path('voting/create', views.voting_create),
 
     # Ajax API
-    path('api/get-question/<int:id>', views.get_question),
-    path('api/save-question', views.save_question),
+    path('api/get-question/<int:id>', api_views.get_question),
+    path('api/save-question', api_views.save_question),
+    path('api/upload/<str:upload_as>', api_views.upload),
 
-    # todo: Added it to api
-    path('upload_img', views.upload),
-]
+    path('tuf', views.test_upload)
+]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

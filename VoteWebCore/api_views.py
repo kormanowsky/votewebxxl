@@ -70,3 +70,15 @@ def save_question(request):
         "ErrorCode": 403,
         "Error": "InvalidInputError",
     })
+
+@login_required
+def upload(request, upload_as="avatar"):
+    if request.method == 'POST':
+        form = LoadImgForm(request.POST, request.FILES)
+        if form.is_valid():
+            image = Image(owner=request.user, data=request.FILES['file'])
+            image.save()
+            return JsonResponse({'is_valid': form.is_valid(), 'errors': form.errors, 'image_url': image.data.url})
+    else:
+        return JsonResponse({'is_valid': False, 'errors': {'method': 'Method must be POST'}})
+    return JsonResponse({'is_valid': form.is_valid(), 'errors': form.errors, 'image_data': None})

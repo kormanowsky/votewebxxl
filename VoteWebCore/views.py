@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from VoteWebCore.forms import *
 from VoteWebCore.models import *
 from VoteWebCore.functions import *
-from VoteWebCore.api_views import *
+#from VoteWebCore.api_views import *
 
 @login_required
 def votings(request):
@@ -198,21 +198,14 @@ def voting_create(request):
             "html_title": "Create Voting"
         })
 
-
-def upload(request):
-    file_path = ''
-    if request.method == 'POST':
-        form = LoadImgForm(request.POST, request.FILES)
-        if form.is_valid():
-            file_path = save_upload_file(request.FILES['file'])
-    else:
-        return JsonResponse({'is_valid': False, 'errors': {'method': 'Method must be POST'}})
-    return JsonResponse({'is_valid': form.is_valid(), 'errors': form.errors, 'file_path': file_path})
-
-
 @login_required
 def remove_account(request):
     request.user.delete()
     return render(request, "registration/remove_account.html", {
         "html_title": "Remove Account"
+    })
+
+def test_upload(request):
+    return render(request, "load-img-form.html", {
+        "form": LoadImgForm()
     })

@@ -103,7 +103,7 @@ class Question(models.Model):
 
 # Vote
 class Vote(models.Model):
-    creator = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True)
+    creator = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
     question = models.ForeignKey(to=Question, on_delete=models.CASCADE)
     answer = models.CharField(max_length=100)
@@ -144,3 +144,11 @@ class ActivityItem(models.Model):
     # Returns human time difference between current time and voting creation time
     def creation_time_diff(self):
         return datetime_human_diff(datetime.utcnow(), self.datetime_created.replace(tzinfo=None))
+
+
+# Image
+class Image(models.Model):
+
+    owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
+    data = models.ImageField(upload_to=generate_file_name, null=True)

@@ -5,7 +5,7 @@
     <title>Title</title>
 </head>
 <body>
-<form action="" method="post" enctype="multipart/form-data" data-ajax="false">
+<form action="/api/upload/avatar" method="post" enctype="multipart/form-data" data-ajax="false">
     {% csrf_token %}
     {{ form.as_table }}
     <br>
