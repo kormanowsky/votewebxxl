@@ -17,6 +17,8 @@ def formatteddate(date=None):
         date = datetime.now()
     elif date == "tomorrow":
         date = datetime.now() + timedelta(days=1)
+    elif date == "yesterday":
+        date = datetime.now() - timedelta(days=1)
     return date.strftime("%d.%m.%Y")
 
 @register.simple_tag

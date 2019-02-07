@@ -14,7 +14,7 @@ def votings(request):
         "html_title": "Voting Library",
         "no_right_aside": True
     }
-    return render(request, 'voting_library.html', context)
+    return render(request, 'votings.html', context)
 
 
 @login_required

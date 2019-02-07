@@ -241,7 +241,7 @@ table td {
     left: 4px;
 }
 
-.datepicker{
+.datepicker {
     padding: 10px 12px !important;
 }
 
@@ -268,7 +268,11 @@ table td {
 .datepicker table tr td.active,
 .datepicker table tr td.active.disabled,
 .datepicker table tr td.active.disabled:hover,
-.datepicker table tr td.active:hover {
+.datepicker table tr td.active:hover,
+.datepicker table tr td.selected,
+.datepicker table tr td.selected.disabled,
+.datepicker table tr td.selected.disabled:hover,
+.datepicker table tr td.selected:hover {
     background: #5e2eb4 !important;
 }
 
