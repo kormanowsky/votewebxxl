@@ -169,7 +169,7 @@ class Image(models.Model):
         if not user:
             user = request.user
         avatar_url = "https://bizraise.pro/wp-content/uploads/2014/09/no-avatar-300x300.png"
-        image = Image.objects.filter(owner=user, role=Image.IMAGE_ROLE_AVATAR)
+        image = Image.objects.filter(owner=user, role=Image.IMAGE_ROLE_AVATAR).order_by('-datetime_created')
         if len(image):
             avatar_url = 'http://' + request.get_host() + image[0].data.url
         return avatar_url
