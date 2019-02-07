@@ -135,8 +135,13 @@ li.nav-item:hover p.small {
     font-size: 90%;
 }
 
-textarea{
+textarea {
     resize: none !important;
+}
+
+.btn {
+    white-space: normal !important;
+    word-wrap: break-word;
 }
 
 
@@ -171,18 +176,19 @@ textarea{
     right: 12px;
 }
 
-.tab-content > .row{
+.tab-content > .row {
     display: none;
 }
 
-.tab-content > .row.active{
+.tab-content > .row.active {
     display: flex;
 }
 
-.nav-pills .nav-link i:not(.fa){
+.nav-pills .nav-link i:not(.fa) {
     top: 0;
     font-size: 133%;
 }
+
 /* Стили страницы Список голосований */
 
 #votings-search,
@@ -254,10 +260,10 @@ textarea{
 
 /* Стили страницы Вход */
 
-#auth-root{
+#auth-root {
     min-height: 100vh;
     min-width: 100vw;
-    overflow: auto;  
+    overflow: auto;
 }
 
 /* Адаптивность */
@@ -266,9 +272,11 @@ textarea{
     header {
         padding: 0 16px;
     }
+
     #root {
         padding: 96px 16px 0;
     }
+
     #root aside,
     #root main {
         height: calc(100vh - 64px);
@@ -276,22 +284,28 @@ textarea{
         padding-bottom: 48px;
         margin-top: -48px;
     }
+
     .side {
         width: 20%;
         max-width: 250px;
     }
+
     .avatar-small {
         height: 40px;
     }
+
     .avatar-medium {
         height: 56px;
     }
+
     .avatar-big {
         height: 96px;
     }
+
     #profile-info h4 {
         font-size: 1.3rem;
     }
+
     .profile-stats-number {
         font-size: 150%;
     }
@@ -301,20 +315,25 @@ textarea{
     header {
         padding: 0 56px;
     }
+
     header * {
         color: #fff !important;
     }
+
     .navbar li.nav-item span {
         font-size: 90%;
         line-height: 64px;
     }
+
     #top-logo-text,
     .navbar li.nav-item:hover {
         background: #4527a0;
     }
+
     #root {
         padding: 112px 56px 0;
     }
+
     #root aside,
     #root main {
         height: calc(100vh - 64px);
@@ -322,15 +341,19 @@ textarea{
         padding-bottom: 48px;
         margin-top: -48px;
     }
+
     .avatar-small {
         height: 48px;
     }
+
     .avatar-medium {
         height: 80px;
     }
+
     .avatar-big {
         height: 120px;
     }
+
     .profile-activity-main h6 {
         font-size: 80%;
     }
@@ -340,9 +363,11 @@ textarea{
     .avatar-big {
         height: 150px;
     }
+
     #profile-info h4 {
         font-size: 1.5rem;
     }
+
     .profile-stats-number {
         font-size: 175%;
     }
@@ -352,15 +377,19 @@ textarea{
     .pl-xxl-4 {
         padding-left: 1.5rem !important;
     }
+
     .pr-xxl-4 {
         padding-right: 1.5rem !important;
     }
+
     .pr-xxl-0 {
         padding-right: 0 !important;
     }
+
     .justify-content-xxl-around {
         justify-content: space-around !important;
     }
+
     .profile-activity-main h6 {
         font-size: 100%;
     }

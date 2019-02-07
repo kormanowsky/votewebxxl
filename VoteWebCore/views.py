@@ -5,7 +5,8 @@ from django.shortcuts import render, redirect
 
 from VoteWebCore.forms import *
 from VoteWebCore.models import *
-
+from VoteWebCore.functions import *
+from VoteWebCore.api_views import *
 
 @login_required
 def votings(request):
@@ -36,6 +37,32 @@ def register(request):
     return render(request, 'registration/registration.html', context)
 
 
+def voting_save(request):
+    form = SaveVotingForm(request.POST)
+    if form.is_valid():
+        formdata = form.data
+        if not formdata['voting_id']:
+            voting = Voting(owner=request.user, title=formdata['title'])
+            voting.save()
+            activity_item = ActivityItem(user=request.user, voting=voting, type=ActivityItem.ACTIVITY_NEW_VOTING)
+            activity_item.save()
+        else:
+            voting = Voting.objects.filter(id=formdata['voting_id'])
+            if not len(voting) or not voting[0].owner == request.user:
+                return JsonResponse({
+                    "ErrorCode": 403,
+                    "Error": "NotAllowedError"
+                })
+            voting = voting[0]
+        for question_id in formdata['questions']:
+            Question.objects.filter(id=question_id).update(voting=voting)
+        return redirect("/voting/" + str(voting.id))
+    else:
+        return JsonResponse({
+            "ErrorCode": 404,
+            "Error": "InvalidInputData"
+        })
+
 # New view for a single voting
 @login_required
 def voting_single(request, voting_id=-1, action="index"):
@@ -60,20 +87,37 @@ def voting_single(request, voting_id=-1, action="index"):
             for answer in answers:
                 vote = Vote(question=answer['question'], answer=answer['answer'], creator=request.user)
                 vote.save()
+            activity_item = ActivityItem(user=request.user, voting=voting, type=ActivityItem.ACTIVITY_VOTE)
+            activity_item.save()
         else:
-            pass
-            # TODO: Error! User cannot voting two times
+            return JsonResponse({
+                "ErrorCode": 403,
+                "Error": "NotAllowedError"
+            })
         return redirect("/voting/" + str(voting.id))
     elif action == "report" and request.method == "POST":
         form = ReportForm(request.POST)
         if form.is_valid():
-            item = Report(voting=voting,
+            item = Report(status=Report.REPORT_WAITING, voting=voting,
                           creator=request.user, title=form.data['title'], message=form.data['message'])
             item.save()
         return JsonResponse({'is_valid': form.is_valid(), 'errors': form.errors})
     elif action == "remove":
-        voting.delete()
-        return redirect('/votings')
+        if voting.owner == request.user:
+            voting.delete()
+            return redirect('/votings')
+        else:
+            return JsonResponse({"ErrorCode": 403, "Error": "NotAllowedError"})
+    elif action == "edit":
+        if request.method == "POST":
+            return voting_save(request)
+        elif voting.owner == request.user:
+            return render(request, "voting_edit.html", {
+                "html_title": "Edit | " + voting.title,
+                "voting": voting
+            })
+        else:
+            return JsonResponse({"ErrorCode": 403, "Error": "NotAllowedError"})
 
     # Do we need to show the form?
     if voting.current_user_voted(request):
@@ -98,13 +142,22 @@ def profile(request, username=None):
             "ErrorCode": 404,
             "Error": "UserNotFound"
         })
-
+    if profile_owner == request.user:
+        reports = Report.objects.filter(creator=profile_owner)
+    else:
+        reports = None
+    activity = ActivityItem.objects.filter(user=profile_owner.id).order_by('-datetime_created')
+    votings = Voting.objects.filter(owner=profile_owner.id).order_by("-datetime_created")
+    activity_small = activity[:5]
+    votings_small = votings[:5]
     context = {
         "html_title": "@" + request.user.username,
         "profile_owner": profile_owner,
-        "votings": Voting.objects.filter(owner=profile_owner.id).order_by("-datetime_created"),
-        "votes": Vote.objects.filter(creator=profile_owner.id),
-        "activity": get_activity(profile_owner),
+        "profile_owner_reports": reports,
+        "votings": votings,
+        "votings_small": votings_small,
+        "activity": activity,
+        "activity_small": activity_small,
         "no_right_aside": True,
     }
     return render(request, 'profile.html', context)
@@ -139,17 +192,7 @@ def settings(request):
 @login_required
 def voting_create(request):
     if request.method == "POST":
-        form = CreateVotingForm(request.POST)
-        if form.is_valid():
-            formdata = form.data
-            voting = Voting(owner=request.user, title=formdata['title'])
-            voting.save()
-            for questiondata in formdata['questions']:
-                question = Question(voting=voting, type=questiondata['type'], answers=questiondata['answers'], text=questiondata['text'])
-                question.save()
-            return redirect("/voting/" + str(voting.id))
-        else:
-            return JsonResponse({})
+        return voting_save(request)
     else:
         return render(request, "voting_create.html", {
             "html_title": "Create Voting"
@@ -165,3 +208,11 @@ def upload(request):
     else:
         return JsonResponse({'is_valid': False, 'errors': {'method': 'Method must be POST'}})
     return JsonResponse({'is_valid': form.is_valid(), 'errors': form.errors, 'file_path': file_path})
+
+
+@login_required
+def remove_account(request):
+    request.user.delete()
+    return render(request, "registration/remove_account.html", {
+        "html_title": "Remove Account"
+    })

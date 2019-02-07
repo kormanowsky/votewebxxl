@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
 from VoteWebCore.models import *
+from VoteWebCore.functions import *
+
 # https://github.com/bernii/querystring-parser
 from querystring_parser import parser
 
@@ -54,25 +56,48 @@ class ReportForm(forms.Form):
     message = forms.CharField(max_length=512)
 
 
-class CreateVotingForm(forms.Form):
+class SaveVotingForm(forms.Form):
     title = forms.CharField(max_length=300)
     questions = list()
+    voting_id = forms.IntegerField()
 
     def __init__(self, raw_data, *args, **kwargs):
-        super(CreateVotingForm, self).__init__(*args, **kwargs)
+        super(SaveVotingForm, self).__init__(*args, **kwargs)
         parsed_data = parser.parse(raw_data.urlencode(), normalized=True)
         del parsed_data['csrfmiddlewaretoken']
+        if not isinstance(parsed_data['questions'], list):
+            parsed_data['questions'] = [parsed_data['questions']]
         for i, question in enumerate(parsed_data['questions']):
-            parsed_data['questions'][i]['type'] = int(question['type'])
+            parsed_data['questions'][i] = int(question)
+        print(parsed_data)
+        parsed_data['voting_id'] = int(parsed_data['voting_id'])
         self.data = parsed_data
 
     def is_valid(self):
-        for question in self.data['questions']:
-            if not 0 <= question['type'] <= 2:
-                return False
-        return True
+        return len(self.data['questions']) > 0
+
+
+class QuestionForm(forms.Form):
+    question_id = forms.IntegerField()
+    text = forms.CharField(max_length=100)
+    type = forms.IntegerField(min_value=0, max_value=2)
+    answers = list()
+
+    def __init__(self, raw_data, *args, **kwargs):
+        super(QuestionForm, self).__init__(*args, **kwargs)
+        parsed_data = parser.parse(raw_data.urlencode(), normalized=True)
+        del parsed_data['csrfmiddlewaretoken']
+        parsed_data['type'] = int(parsed_data['type'])
+        parsed_data['question_id'] = int(parsed_data['question_id'])
+        self.data = parsed_data
+
+    def is_valid(self):
+        if len(self.data['answers']) < 2:
+            return False
+        if not (Question.QUESTION_BUTTONS <= self.data['type'] <= Question.QUESTION_MULTIPLE_ANSWERS):
+            return False
+        return len(form_errors(self)) == 0
 
 
 class LoadImgForm(forms.Form):
     file = forms.ImageField()
-

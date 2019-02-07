@@ -8,12 +8,14 @@
     <!-- Мета-теги: адаптивность и цвет адресной строки в мобильном Google Chrome -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#5e35b1">
+    <meta property="og:title" content="{% if html_title %}{{ html_title }} | {% endif %}VoteWebXXL">
     <!-- Подключение статики -->
     {% load static %}
     <!-- Шрифты -->
     <link type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,700,800&amp;subset=cyrillic-ext" rel="stylesheet">
     <!-- Стили -->
     <link type="text/css" href='{% static "css/argon.css" %}' rel="stylesheet">
+    <link type="text/css" href='{% static "css/argon-additional-components.css" %}' rel="stylesheet">
     <link type="text/css" href='{% static "vendor/line-awesome/css/line-awesome.min.css" %}' rel="stylesheet">
     <link type="text/css" href='{% static "vendor/bootstrap-datepicker/css/bootstrap-datepicker.min.css" %}' rel="stylesheet">
     <!-- Собственные стили -->
@@ -30,15 +32,18 @@
     <script type="text/javascript" src='{% static "vendor/bootstrap/bootstrap.min.js" %}'></script>
     <script type="text/javascript" src='{% static "js/argon.min.js" %}'></script>
     <script type="text/javascript" src='{% static "vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js" %}'></script>
+    <script type="text/javascript" src="{% static 'vendor/masonry/masonry.pkgd.min.js' %}"></script>
     <!-- Собственные скрипты -->
     <script>
-        // Установка ширины содержимого в 375px для тех экранов, которые меньше 375px
         jQuery(function($) {
+            // Установка ширины содержимого в 375px для тех экранов, которые меньше 375px
             var width = $(window).width();
             if (width < 375) {
                 var viewportTag = $('meta[name="viewport"]');
                 viewportTag.attr('content', viewportTag.attr('content').replace('device-width, initial-scale=1.0', '375'));
             }
+            // Инициализация карточек
+            InitMasonry();
         });
     </script>
 </body>

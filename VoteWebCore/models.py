@@ -1,3 +1,4 @@
+from datetime import datetime
 from json import dumps as json_encode, loads as json_decode
 
 from django.contrib.auth.models import User
@@ -26,9 +27,24 @@ class JSONField(models.CharField):
 
 # Voting
 class Voting(models.Model):
+    # Voting statuses
+    # Public voting (visible to logged in users)
+    VOTING_PUBLIC = 0
+    # Banned voting (banned by admins because of reports)
+    VOTING_BANNED = 1
+
+    # Voting stats statuses
+    # Closed stats
+    VOTING_STATS_CLOSED = False
+    # Open stats
+    VOTING_STATS_OPEN = True
+
     owner = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True)
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
     title = models.CharField(max_length=300)
+    status = models.IntegerField(default=0)
+    open_stats = models.BooleanField(default=True)
+    datetime_closed = models.DateTimeField(null=True, blank=True)
 
     # Returns list of all voting questions
     def questions(self):
@@ -59,7 +75,8 @@ class Question(models.Model):
     # Question with checkboxes
     QUESTION_MULTIPLE_ANSWERS = 2
 
-    voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE)
+    owner = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True, default=None, blank=True)
+    voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE, null=True, blank=True)
     type = models.IntegerField()
     text = models.CharField(max_length=300)
     answers = JSONField(max_length=10000)
@@ -94,22 +111,36 @@ class Vote(models.Model):
 
 # Report
 class Report(models.Model):
+    # Report statuses
+    # Report that is waiting for resolution
+    REPORT_WAITING = 0
+    # Report that was declined by admins
+    REPORT_DECLINED = 1
+    # Report that was accepted by admins
+    REPORT_ACCEPTED = 2
+
     creator = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
     voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=256)
     message = models.CharField(max_length=512)
-    is_checked = models.BooleanField(default=False)  # is moderator check this report
+    datetime_created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     # img = models.FileField()
+    status = models.IntegerField(default=0)
 
-# Activity of user
-def get_activity(user, max_items=5):
-    max_items = int(max_items)
-    votings = Voting.objects.filter(owner=user).order_by('-datetime_created')[:max_items]
-    activity_items = []
-    for voting in votings:
-        if voting.datetime_created:
-            activity_items.append({
-                "type": "new-voting",
-                "voting": voting,
-            })
-    return activity_items
+
+# Activity item
+class ActivityItem(models.Model):
+    # Activity item types
+    # New voting
+    ACTIVITY_NEW_VOTING = 0
+    # Vote in voting
+    ACTIVITY_VOTE = 1
+
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    type = models.IntegerField(default=0)
+    datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
+    voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE)
+
+    # Returns human time difference between current time and voting creation time
+    def creation_time_diff(self):
+        return datetime_human_diff(datetime.utcnow(), self.datetime_created.replace(tzinfo=None))
