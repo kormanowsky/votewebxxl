@@ -76,9 +76,18 @@ def upload(request, upload_as="avatar"):
     if request.method == 'POST':
         form = LoadImgForm(request.POST, request.FILES)
         if form.is_valid():
-            image = Image(owner=request.user, data=request.FILES['file'])
+            role = Image.role_str_to_int(upload_as)
+            image = Image(owner=request.user, data=request.FILES['file'], role=role)
             image.save()
-            return JsonResponse({'is_valid': form.is_valid(), 'errors': form.errors, 'image_url': image.data.url})
+            return JsonResponse({
+                "id": image.id,
+                "owner": image.owner.id,
+                "data": {
+                    "url": image.data.url,
+                },
+                "role": image.role,
+                "datetime_created": image.datetime_created
+            })
     else:
         return JsonResponse({'is_valid': False, 'errors': {'method': 'Method must be POST'}})
     return JsonResponse({'is_valid': form.is_valid(), 'errors': form.errors, 'image_data': None})

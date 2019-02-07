@@ -149,6 +149,17 @@ class ActivityItem(models.Model):
 # Image
 class Image(models.Model):
 
+    # Image roles
+    # Avatar
+    IMAGE_ROLE_AVATAR = 0
+
     owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
     data = models.ImageField(upload_to=generate_file_name, null=True)
+    role = models.IntegerField(default=0)
+
+    @classmethod
+    def role_str_to_int(cls, role_str):
+        if role_str == "avatar":
+            return cls.IMAGE_ROLE_AVATAR
+        return -1
