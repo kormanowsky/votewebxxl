@@ -86,7 +86,7 @@
                 <div class="col-12">
                     <h5 class="pt-4 text-right h6 mb--4 pb-2">Activity</h5>
                     {% for item in activity_small %}
-                        {% include "activity_item.html" with item=item %}
+                    {% include "activity_item.html" with item=item %}
                     {% empty %}
                     <p class="text-center my-5">No activity</p>
                     {% endfor %}
@@ -114,7 +114,9 @@
     </div>
     <div class="row masonry-wrapper" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
         {% for activity_item in activity %}
+        <div class="col-12 col-lg-6 col-xl-4 masonry-item">
             {% include "activity_item.html" with item=activity_item %}
+        </div>
         {% empty %}
         <div class="col-12">
             <p class="text-center my-5">No activity</p>
@@ -158,7 +160,7 @@
                                 <td>
                                     <p class="mb-1">{{ report.title }}</p>{{ report.message }}
                                 </td>
-                                <td>{{ report.status_str }}</td>
+                                <td class="font-weight-600 text-{% if report.status == report.REPORT_WAITING %}warning{% elif report.status == report.REPORT_ACCEPTED %}success{% else %}danger{% endif %}">{{ report.status_str }}</td>
                                 <td class="td-actions text-right">
                                     <a href="#" class="d-block text-danger dangerous-action" onclick="return alert(this.innerText + '===fake remove');">
                                         Remove report
