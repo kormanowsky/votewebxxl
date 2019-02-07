@@ -22,10 +22,10 @@
                 </div>
                 <div class="col-12{% if not voting_small %} col-md-6{% else %} mt-3{% endif %}">
                     <div class="d-block d-md-flex align-items-center justify-content-end">
-                        <p class="text-muted my-0{% if voting_small %} small{% endif %}">created {{ voting.creation_time_diff }} ago</p>
+                        <p class="text-muted my-0 small">created {{ voting.creation_time_diff }} ago</p>
                         {% if voting.datetime_closed %}
-                        <span class="d-none d-md-block mx-3{% if voting_small %} small{% endif %}">&nbsp;&mdash;&nbsp;</span>
-                        <p class="text-primary font-weight-700 my-0{% if voting_small %} small{% endif %}">{% if voting.open %}closing in {{ voting.closed_time_diff }}{% else %}closed{%endif%}</p>
+                        <span class="d-none d-md-block mx-3 small">&nbsp;&mdash;&nbsp;</span>
+                        <p class="text-primary font-weight-700 my-0 small">{% if voting.open %}closing in {{ voting.closed_time_diff }}{% else %}closed{%endif%}</p>
                         {% endif %}
                     </div>
                 </div>
