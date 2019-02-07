@@ -1,6 +1,5 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.core.files import File
 
 from VoteWebCore.models import *
 # https://github.com/bernii/querystring-parser
@@ -77,8 +76,3 @@ class CreateVotingForm(forms.Form):
 class LoadImgForm(forms.Form):
     file = forms.ImageField()
 
-    def add_photo(self, photo_file):
-        with open(photo_file) as f:
-            my_file = File(f)
-            filename = "filename.jpg"
-            self.photo_file.save(filename, my_file)

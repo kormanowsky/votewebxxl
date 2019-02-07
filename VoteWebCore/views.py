@@ -4,7 +4,6 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
 from VoteWebCore.forms import *
-from VoteWebCore.functions import *
 from VoteWebCore.models import *
 
 
@@ -164,5 +163,5 @@ def upload(request):
         if form.is_valid():
             file_path = save_upload_file(request.FILES['file'])
     else:
-        return JsonResponse({})
+        return JsonResponse({'is_valid': False, 'errors': {'method': 'Method must be POST'}})
     return JsonResponse({'is_valid': form.is_valid(), 'errors': form.errors, 'file_path': file_path})
