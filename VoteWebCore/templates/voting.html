@@ -1,78 +1,97 @@
 {# Одно голосование. Для использования в циклах #}
-{% if show_form and not voting_small %}
-    <form action="/voting/{{ voting.id }}/save" method="post">
-        {% csrf_token %} 
-{% endif %}
-<div class="card shadow-sm">
-    <div class="card-body">
-        <p class="text-muted lh-110">Voting #{{ voting.id }}</p>
-        <h1 class="display-2 lh-110 mt-2 my-4"><a href="/voting/{{voting.id}}">{{ voting.title }}</a></h1>
-        <a href="/profile/{{ voting.owner.username }}">
-            <div class="d-flex align-items-center">
-                <img src="{% avatar request voting.owner %}" class="avatar avatar-small shadow-sm">
-                <div class="ml-3">
-                    <p class="lh-100 font-weight-100 mb-1">{{ voting.owner.first_name }}&nbsp;{{ voting.owner.last_name }}</p>
-                    <p class="lh-100 small h6 text-muted">@{{ voting.owner.username }}</p>
-                </div>
-            </div>
-        </a>
-    </div>
-</div>
-{% if not voting_small %}
-    <div class="row">
-        {% if voting.status == voting.VOTING_PUBLIC %}
-            {% for question in voting.questions %}
-                <div class="col-12 col-md-6 col-xl-4">
-                    <div class="card shadow-sm mt-4">
-                        <div class="card-body">
-                            <p class="text-muted lh-110 small">Question #{{ question.id }}</p>
-                            <h3 class="mb-4">{{ question.text }}</h3>
-                            {% if show_form %}
-                                {% if question.type == question.QUESTION_BUTTONS %}
-                                    <input type="hidden" name="answer_{{ question.id }}" value="">
-                                    <div class="row mx-0">
-                                        {% for answer in question.answers %}
-                                            <button onclick="return Votings.setCurrentButtonAnswer(this);" data-question-id="{{ question.id }}" type="button" class="col btn btn-outline-primary" id="question_{{ question.id }}_answers_{{ forloop.counter }}">
-                                                {{ answer }}
-                                            </button>
-                                        {% endfor %}
-                                    </div>
-                                {% elif question.type == question.QUESTION_SINGLE_ANSWER %} 
-                                    {% for answer in question.answers %}
-                                        <div class="custom-control custom-radio mb-3">
-                                            <input name="answer_{{ question.id }}" class="custom-control-input" id="question_{{ question.id }}_answers_{{ forloop.counter }}" value="{{answer}}" type="radio" required>
-                                            <label class="custom-control-label" for="question_{{ question.id }}_answers_{{ forloop.counter }}">{{ answer }}</label>
-                                        </div>
-                                    {% endfor %} 
-                                {% elif question.type == question.QUESTION_MULTIPLE_ANSWERS %} 
-                                    {% for answer in question.answers %}
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input class="custom-control-input" id="question_{{ question.id }}_answers_{{ forloop.counter }}" name="answer_{{ question.id }}[]" type="checkbox" value="{{ answer }}">
-                                            <label class="custom-control-label" for="question_{{ question.id }}_answers_{{ forloop.counter }}">{{ answer }}</label>
-                                        </div>
-                                    {% endfor %} 
-                                {% endif %}
-                            {% else %}
-                                <p>Stats: {{ question.stats }}</p>
-                            {% endif %}
+{% votingstatus voting request as status %}
+{% if status == voting.VOTING_OPEN and not voting_small %}
+<form action="/voting/{{ voting.id }}/save" method="post">
+    {% csrf_token %}
+    {% endif %}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <p class="text-muted lh-110">Voting #{{ voting.id }}</p>
+            <h1 class="display-2 lh-110 mt-2 my-4"><a href="/voting/{{voting.id}}">{{ voting.title }}</a></h1>
+            <div class="row d-flex align-items-center">
+                <div class="col-12{% if not voting_small %} col-md-6{% endif %}">
+                    <a href="/profile/{{ voting.owner.username }}">
+                        <div class="d-flex align-items-center">
+                            <img src="{% avatar request voting.owner %}" class="avatar avatar-small shadow-sm">
+                            <div class="ml-3">
+                                <p class="lh-100 font-weight-100 mb-1">{{ voting.owner.first_name }}&nbsp;{{ voting.owner.last_name }}</p>
+                                <p class="lh-100 small h6 text-muted">@{{ voting.owner.username }}</p>
+                            </div>
                         </div>
+                    </a>
+                </div>
+                <div class="col-12{% if not voting_small %} col-md-6{% else %} mt-3{% endif %}">
+                    <div class="d-block d-md-flex align-items-center justify-content-end">
+                        <p class="text-muted my-0{% if voting_small %} small{% endif %}">created {{ voting.creation_time_diff }} ago</p>
+                        {% if voting.datetime_closed %}
+                        <span class="d-none d-md-block mx-3{% if voting_small %} small{% endif %}">&nbsp;&mdash;&nbsp;</span>
+                        <p class="text-primary font-weight-700 my-0{% if voting_small %} small{% endif %}">{% if voting.open %}closing in {{ voting.closed_time_diff }}{% else %}closed{%endif%}</p>
+                        {% endif %}
                     </div>
                 </div>
-            {% endfor %}
+            </div>
+
+        </div>
+    </div>
+    {% if not voting_small %}
+    <div class="row">
+        {% if status >= voting.VOTING_OPEN_STATS %}
+        {% for question in voting.questions %}
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card shadow-sm mt-4">
+                <div class="card-body">
+                    <p class="text-muted lh-110 small">Question #{{ question.id }}</p>
+                    <h3 class="mb-4">{{ question.text }}</h3>
+                    {% if status == voting.VOTING_OPEN %}
+                    {% if question.type == question.QUESTION_BUTTONS %}
+                    <input type="hidden" name="answer_{{ question.id }}" value="">
+                    <div class="row mx-0">
+                        {% for answer in question.answers %}
+                        <button onclick="return Votings.setCurrentButtonAnswer(this);" data-question-id="{{ question.id }}" type="button" class="col btn btn-outline-primary" id="question_{{ question.id }}_answers_{{ forloop.counter }}">
+                            {{ answer }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                    {% elif question.type == question.QUESTION_SINGLE_ANSWER %}
+                    {% for answer in question.answers %}
+                    <div class="custom-control custom-radio mb-3">
+                        <input name="answer_{{ question.id }}" class="custom-control-input" id="question_{{ question.id }}_answers_{{ forloop.counter }}" value="{{answer}}" type="radio" required>
+                        <label class="custom-control-label" for="question_{{ question.id }}_answers_{{ forloop.counter }}">{{ answer }}</label>
+                    </div>
+                    {% endfor %}
+                    {% elif question.type == question.QUESTION_MULTIPLE_ANSWERS %}
+                    {% for answer in question.answers %}
+                    <div class="custom-control custom-checkbox mb-3">
+                        <input class="custom-control-input" id="question_{{ question.id }}_answers_{{ forloop.counter }}" name="answer_{{ question.id }}[]" type="checkbox" value="{{ answer }}">
+                        <label class="custom-control-label" for="question_{{ question.id }}_answers_{{ forloop.counter }}">{{ answer }}</label>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    {% else %}
+                    <p>Stats: {{ question.stats }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
         {% else %}
         <div class="col-12">
             <div class="card shadow-sm mt-4">
                 <p class="text-center m-5">
-                    {% if voting.status == voting.VOTING_BANNED %}
-                        This voting was banned by administration due to users' reports.
+                    {% if status == voting.VOTING_BANNED %}
+                    This voting was banned by administration due to users' reports.
+                    {% elif status == voting.VOTING_VISIBLE %}
+                    This voting was closed by its owner.
+                    {% else %}
+                    You have to <a href="/login">log in</a> or <a href="/register">register</a> to view, create and vote in votings.
                     {% endif %}
                 </p>
             </div>
         </div>
         {% endif %}
     </div>
-{% endif %} 
-{% if show_form and not voting_small %}
-<button type="submit" class="btn btn-primary w-100 mt-4">Save votes</button>
+    {% endif %}
+    {% if status == voting.VOTING_OPEN and not voting_small %}
+    <button type="submit" class="btn btn-primary w-100 mt-4">Save votes</button>
 </form>
 {% endif %}

@@ -10,7 +10,7 @@ from VoteWebCore.functions import *
 @login_required
 def votings(request):
     context = {
-        "votings": Voting.objects.exclude(status=Voting.VOTING_BANNED),
+        "votings": Voting.objects.exclude(banned=1),
         "html_title": "Voting Library",
         "no_right_aside": True
     }
@@ -70,7 +70,6 @@ def voting_save(request):
         })
 
 # New view for a single voting
-@login_required
 def voting_single(request, voting_id=-1, action="index"):
     voting_items = Voting.objects.filter(id=voting_id)
     is_found = len(voting_items) == 1
@@ -83,7 +82,6 @@ def voting_single(request, voting_id=-1, action="index"):
     context = {
         "voting": voting,
         'html_title': voting.title,
-        "show_form": 1
     }
     # Actions 
     if action == "save" and request.method == "POST":
@@ -125,10 +123,6 @@ def voting_single(request, voting_id=-1, action="index"):
                 })
         else:
             return JsonResponse({"ErrorCode": 403, "Error": "NotAllowedError"})
-
-    # Do we need to show the form?
-    if voting.current_user_voted(request) or voting.status != Voting.VOTING_PUBLIC:
-        context["show_form"] = 0
     return render(request, "voting_single.html", context)
 
 
@@ -153,8 +147,8 @@ def profile(request, username=None):
         reports = Report.objects.filter(creator=profile_owner)
     else:
         reports = None
-    activity = ActivityItem.objects.filter(user=profile_owner.id).exclude(voting__status=Voting.VOTING_BANNED).order_by('-datetime_created')
-    votings = Voting.objects.filter(owner=profile_owner.id).exclude(status=Voting.VOTING_BANNED).order_by("-datetime_created")
+    activity = ActivityItem.objects.filter(user=profile_owner.id).exclude(voting__banned=1).order_by('-datetime_created')
+    votings = Voting.objects.filter(owner=profile_owner.id).exclude(banned=1).order_by("-datetime_created")
     activity_small = activity[:5]
     votings_small = votings[:5]
     context = {

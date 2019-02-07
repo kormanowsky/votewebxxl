@@ -1,7 +1,7 @@
 from dateutil import *
 from random import randint
 from uuid import uuid4
-
+from datetime import *
 from VoteWebCore.models import *
 
 # Useful functions
@@ -33,8 +33,10 @@ def datetime_to_local(dt):
 
 
 def datetime_human_diff(dt1, dt2):
+    if dt1 < dt2:
+        dt1, dt2 = dt2, dt1
     diff = dt1 - dt2
-    seconds = diff.seconds
+    seconds = round(diff.total_seconds())
     result = ""
     if seconds >= 60 * 60 * 24:
         result += str(seconds // (60 * 60 * 24)) + "d "
@@ -47,7 +49,6 @@ def datetime_human_diff(dt1, dt2):
         seconds = seconds % 60
     result += str(seconds) + "s"
     return result
-
 
 def generate_file_name(file, src_name):
     return str(uuid4()).replace("-", "/") + '.' + src_name.split('.')[-1]

@@ -27,24 +27,30 @@ class JSONField(models.CharField):
 
 # Voting
 class Voting(models.Model):
-    # Voting statuses
-    # Public voting (visible to logged in users)
-    VOTING_PUBLIC = 0
-    # Banned voting (banned by admins because of reports)
-    VOTING_BANNED = 1
 
-    # Voting stats statuses
-    # Closed stats
-    VOTING_STATS_CLOSED = False
-    # Open stats
-    VOTING_STATS_OPEN = True
+    # Voting statuses (more statuses can be computed through summing these)
+    VOTING_BANNED = 0 # User cannot view voting
+    VOTING_VISIBLE = 1 # User can view voting
+    VOTING_OPEN_STATS = 2 # User can view stats
+    VOTING_OPEN = 4 # User can vote
 
     owner = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True)
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
     title = models.CharField(max_length=300)
-    status = models.IntegerField(default=0)
+    banned = models.IntegerField(default=0)
     open_stats = models.BooleanField(default=True)
     datetime_closed = models.DateTimeField(null=True, blank=True)
+
+    # Returns voting status
+    def status(self, user):
+        status = 0
+        if not self.banned:
+            status += self.VOTING_VISIBLE
+        if self.open_stats or self.owner == user:
+            status += self.VOTING_OPEN_STATS
+        if not self.user_voted(user):
+            status += self.VOTING_OPEN
+        return status
 
     # Returns list of all voting questions
     def questions(self):
@@ -52,6 +58,8 @@ class Voting(models.Model):
 
     # Checks if user has voted
     def user_voted(self, user):
+        if not len(self.questions()):
+            return False
         return self.questions()[0].user_voted(user)
 
     # Checks if current user has voted
@@ -66,13 +74,21 @@ class Voting(models.Model):
 
     # Returns datetime_created in dd.mm.yyyy
     def datetime_created_str(self):
-        return self.datetime_created.strftime("%d.%m.%Y")
+        return self.datetime_created.strftime("%d.%m.%Y at %H:%M")
 
     # Returns datetime_closed in dd.mm.yyyy
     def datetime_closed_str(self):
         if not self.datetime_closed:
             return None
         return self.datetime_closed.strftime("%d.%m.%Y")
+
+    # Returns human time difference between current time and voting closing time
+    def closed_time_diff(self):
+        return datetime_human_diff(self.datetime_closed.replace(tzinfo=None), datetime.now())
+
+    # Checks if voting is open
+    def open(self):
+        return not self.datetime_closed or self.datetime_closed.replace(tzinfo=None) > datetime.now()
 
 
 # Question
