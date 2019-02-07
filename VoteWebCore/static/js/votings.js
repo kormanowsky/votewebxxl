@@ -26,10 +26,10 @@ Votings.edit = {
     },
     addPossibleAnswerInput: function (answer) {
         answer = answer || "";
-        var $divInputGroup = $('<div class="input-group mt-2"></div>'),
+        var $divInputGroup = $('<div class="input-group col-12 col-md-6 mt-2"></div>'),
             $input = $('<input class="input-possible-answer form-control" value="' + answer + '">'),
             $divInputGroupAppend = $('<div class="input-group-append"></div>'),
-            $inputRemoveBtn = $('<button class="btn btn-outline-danger"></button>'),
+            $inputRemoveBtn = $('<button class="btn btn-outline-danger dangerous-action"></button>'),
             $inputRemoveIcon = $('<i class="la la-times"></i>');
         $inputRemoveBtn.append($inputRemoveIcon).attr('onclick', 'return Votings.edit.removePossibleAnswerInput(this);');
         $divInputGroupAppend.append($inputRemoveBtn);
@@ -123,7 +123,7 @@ Votings.edit = {
                     $qText = $('<h3 class="mb-4"></h3>').text(question_data.text),
                     $qIdInput = $('<input type="hidden" name="questions[]" value="' + qId + '">'),
                     $qEditLink = $('<a href="#" onclick="return Votings.edit.openQuestionModal(' + qId + ');" class="mr-4"></a>'),
-                    $qRemoveLink = $('<a href="#" onclick="return Votings.edit.removeQuestion(this);" class="text-danger"></a>');
+                    $qRemoveLink = $('<a href="#" onclick="return Votings.edit.removeQuestion(this);" class="text-danger dangerous-action"></a>');
                 $qCardBody.append($qIdInput);
                 $qCardBody.append($qText);
                 $qCard.append($qCardBody);

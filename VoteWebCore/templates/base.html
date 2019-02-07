@@ -29,6 +29,23 @@
 
 <body>
     {% block body %} {% endblock body %}
+    <!-- Модальное окно опасного действия -->
+    <div class="modal fade" id="dangerousActionConfirmModal" tabindex="-1" role="dialog" aria-labelledby="dangerousActionConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="dangerousActionConfirmModalLabel">Confirmation</h5>
+                </div>
+                <div class="modal-body">
+                    <p>Do you really want to do this?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger" data-dismiss="modal" id="dangerousModalYes">Yes</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Скрипты подвала -->
     <script type="text/javascript" src='{% static "vendor/bootstrap/bootstrap.min.js" %}'></script>
     <script type="text/javascript" src='{% static "js/argon.min.js" %}'></script>
@@ -50,42 +67,13 @@
                 window.Upload.init($(input));
             });
             // Опасные действия
-            $(".dangerous-action").each(function(i, e) {
-                // Сброс атрибута onclick
-                if (e.onclick) {
-                    var onclick = e.onclick;
-                    $(e).click(function(event) {
-                        onclick.apply(e, event);
-                    });
-                    e.onclick = '';
-                    $(e).attr('onclick', '');
-                }
-                // Запоминание и сброс обработчиков, показ модального окна
-                var eventListeners = jQuery._data(e, 'events').click,
-                    actionConfirmed = false, 
-                    showConfirmationModal = function(event) {
-                        // Проверка, хочет ли пользователь совершить действие
-                        actionConfirmed = confirm('do you really want to do that?');
-                    }, 
-                    newEventListeners = [showConfirmationModal];
-                // Создание новых обработчиков
-                for(var i in eventListeners){
-                    var listener = eventListeners[i];
-                    if(typeof listener === "object"){
-                        var handler = listener.handler;
-                        newEventListeners.push(function(event){
-                            if(actionConfirmed){
-                                handler(e, event);
-                            }
-                        });
-                    }
-                }
-                // Сброс старых обработчиков
-                $(e).off('click');
-                // Установка новых обработчиков
-                for(var i in newEventListeners){
-                    $(e).click(newEventListeners[i]);
-                }
+            $(".modal").last().css("z-index", "1059");
+            InitConfirmationModals();
+            var observer = new MutationObserver(InitConfirmationModals);
+            observer.observe(document.body, {
+                attributes: true,
+                childList: true,
+                subtree: true
             });
         });
     </script>
