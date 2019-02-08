@@ -35,8 +35,9 @@
     </div>
     {% if not voting_small %}
     <div class="row">
-        {% if status >= voting.VOTING_OPEN_STATS %}
+        {% if status >= voting.VOTING_VISIBLE %}
         <div class="col-12 col-xl-8">
+            {% if status >= voting.VOTING_OPEN_STATS %}
             {% for question in voting.questions %}
             <div class="w-100">
                 <div class="card shadow-sm mt-4">
@@ -76,16 +77,27 @@
                 </div>
             </div>
             {% endfor %}
+            {% if status >= voting.VOTING_OPEN and not voting_small %}
+            <button type="submit" class="btn btn-primary w-100 mt-4">Save votes</button>
+            {% endif %}
+            {% elif status == voting.VOTING_VISIBLE %}
+            <div class="w-100">
+                <div class="card shadow-sm mt-4">
+                    <p class="text-center m-5">The author of this voting decided to make stats private.
+                    </p>
+                </div>
+            </div>
+            {% endif %}
         </div>
-
+        <div class="col-12 col-xl-4">
+            Social info
+        </div>
         {% else %}
         <div class="col-12">
             <div class="card shadow-sm mt-4">
                 <p class="text-center m-5">
                     {% if status == voting.VOTING_BANNED %}
                     This voting was banned by administration due to users' reports.
-                    {% elif status == voting.VOTING_VISIBLE %}
-                    This voting was closed by its owner.
                     {% else %}
                     You have to <a href="/login">log in</a> or <a href="/register">register</a> to view, create and vote in votings.
                     {% endif %}
@@ -96,6 +108,5 @@
     </div>
     {% endif %}
     {% if status >= voting.VOTING_OPEN and not voting_small %}
-    <button type="submit" class="btn btn-primary w-100 mt-4">Save votes</button>
 </form>
 {% endif %}

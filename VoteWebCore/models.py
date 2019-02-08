@@ -50,7 +50,7 @@ class Voting(models.Model):
             status += self.VOTING_VISIBLE
         if self.open_stats or self.owner == user:
             status += self.VOTING_OPEN_STATS
-        if not self.user_voted(user):
+        if self.open() and not self.user_voted(user):
             status += self.VOTING_OPEN
         return status
 

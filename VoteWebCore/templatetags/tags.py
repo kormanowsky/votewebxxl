@@ -25,6 +25,9 @@ def formatteddate(date=None):
 def votingstatus(voting, request, user=None):
     if not user:
         if not is_logged_in(request):
-            return -1
+            if voting.open_stats:
+                return Voting.VOTING_OPEN_STATS
+            else:
+                return Voting.VOTING_VISIBLE
         user = request.user
     return voting.status(user)
