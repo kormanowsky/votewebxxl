@@ -53,7 +53,9 @@ def save_question(request):
                 return JsonResponse({
                     "ErrorCode": 403,
                     "Error": "NotAllowedError",
-                }) 
+                })
+            if question.text != form.data['text'] or question.answers != form.data['answers']:
+                Vote.objects.filter(question=question.id).delete()
             question.update(text=form.data['text'], type=form.data['type'], answers=form.data['answers'])
             question = question[0]
         else:
