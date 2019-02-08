@@ -62,7 +62,10 @@ class Voting(models.Model):
     def user_voted(self, user):
         if not len(self.questions()):
             return False
-        return self.questions()[0].user_voted(user)
+        for question in self.questions():
+            if not question.user_voted(user):
+                return False
+        return True
 
     # Checks if current user has voted
     def current_user_voted(self, request):
