@@ -2,6 +2,7 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
 from django.db.models import Q
 
 from VoteWebCore.forms import *
@@ -62,7 +63,12 @@ def voting_single(request, voting_id=-1, action="index"):
         "voting": voting,
         'html_title': voting.title,
     }
-    # Actions 
+    # Actions
+    if action != "index" and not is_logged_in(request):
+        return JsonResponse({
+            "ErrorCode": 403,
+            "Error": "MustBeLoggedInToDoError"
+        })
     if action == "save" and request.method == "POST":
         if not voting.current_user_voted(request):
             form = VoteForm(request.POST)
@@ -111,6 +117,22 @@ def voting_single(request, voting_id=-1, action="index"):
                 })
         else:
             return JsonResponse({"ErrorCode": 403, "Error": "NotAllowedError"})
+    elif action == "comment":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            item = Comment(creator=request.user, message=form.data['message'], voting=voting)
+            item.save()
+            return JsonResponse({
+                "is_valid": True,
+                "comments_count": len(voting.comments()),
+                "comment": render_to_string(request=request, template_name="comment.html", context={
+                    "comment": item
+                })
+            })
+        return JsonResponse({
+            "ErrorCode": 403,
+            "Error": "PartialDataError"
+        })
     return render(request, "voting_single.html", context)
 
 

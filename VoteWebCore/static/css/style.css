@@ -75,7 +75,8 @@ nav.navbar.navbar-expand-lg {
     background: #5e35b1;
 }
 
-.avatar-small {
+.avatar-small,
+.avatar-tiny {
     height: 32px;
     width: 32px;
 }
@@ -308,6 +309,11 @@ table td {
         max-width: 250px;
     }
 
+    .avatar-tiny {
+        height: 32px;
+        width: 32px;
+    }
+
     .avatar-small {
         height: 40px;
         width: 40px;
@@ -365,6 +371,11 @@ table td {
         padding-top: 48px;
         padding-bottom: 48px;
         margin-top: -48px;
+    }
+
+    .avatar-tiny {
+        height: 40px;
+        width: 40px;
     }
 
     .avatar-small {

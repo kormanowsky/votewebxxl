@@ -1,10 +1,52 @@
-function AjaxForm(element, success, error) {
+function AjaxForm(element, success, error, autoClose) {
+    autoClose = autoClose || false;
+    var $errorsDiv = $('<div class="p-4"></div>');
+    $errorsDiv.insertBefore($(element)).hide();
+    // For forms in modal
+    if ($(element).parents(".modal").length) {
+        $(element).parents(".modal").find(".close").click(function () {
+            setTimeout(function () {
+                $errorsDiv.hide();
+                $(element).show();
+                ClearForm($(element));
+            }, 600);
+        });
+
+    }
     element.submit(function (event) {
         event.preventDefault();
         var url = element.attr('action'),
             data = element.serialize();
-        // TODO: check if request is successful in JSON
-        $.post(url, data, success, error);
+        $.post(url, data, function (data) {
+            if (typeof data === "object") {
+                if ('is_valid' in data) {
+                    if (data['is_valid'] === false) {
+                        var errors_list = $('ul');
+                        for (var key in data['errors']) {
+                            var error_li = $('li');
+                            error_li.text(data['errors'][key] + ': ' + key);
+                            errors_list.append(error_li);
+                        }
+                        $errrosDiv.addClass('text-danger').append(errors_list).show();
+                    } else {
+                        $(element).hide();
+                        $errorsDiv.addClass('text-success').html('Success!').show();
+                        if (autoClose)
+                            $(element).parents(".modal").find(".close").click();
+                        if (typeof success === "function")
+                            success(data);
+                    }
+                }
+            } else {
+                if (autoClose)
+                    $(element).parents(".modal").find(".close").click();
+                if (typeof success === "function")
+                    success(data);
+            }
+
+
+
+        }, error);
     });
 }
 
@@ -77,11 +119,11 @@ function makeGETParams(params) {
 
 function AddConfirmationModal(e) {
     // Повторно не делаем
-    if(parseInt($(e).attr('data-dam-processed'))){
+    if (parseInt($(e).attr('data-dam-processed'))) {
         return;
     }
     // Устанавливаем тип кнопки там, где его нет
-    if(e.nodeName === "BUTTON" && !$(e).attr('type')){
+    if (e.nodeName === "BUTTON" && !$(e).attr('type')) {
         $(e).attr('type', 'button');
     }
     // Сброс атрибута onclick
@@ -93,9 +135,9 @@ function AddConfirmationModal(e) {
         $(e).removeAttr('onclick');
     }
     // Сброс атрибута href 
-    if ($(e).attr("href") && $(e).attr("href") != "#"){
+    if ($(e).attr("href") && $(e).attr("href") != "#") {
         var href = $(e).attr("href");
-        $(e).click(function(event){
+        $(e).click(function (event) {
             window.location = href;
         });
         $(e).attr('href', '#');
@@ -131,37 +173,16 @@ function AddConfirmationModal(e) {
     $(e).attr('data-dam-processed', 1);
 }
 
-function InitConfirmationModals(){
-    $(".dangerous-action:not([data-dam-processed])").each(function(i, e) {
+function InitConfirmationModals() {
+    $(".dangerous-action:not([data-dam-processed])").each(function (i, e) {
         AddConfirmationModal(e);
     });
 }
 
 jQuery(function ($) {
-    // Report form
-    $('#report-form-errors').hide();
-    AjaxForm($("#report-form"), function (data) {
-        $("#report-form-errors").html('');
-        if ('is_valid' in data && 'errors' in data) {
-            if (data['is_valid'] === false) {
-                var errors_list = $('ul');
-                for (var key in data['errors']) {
-                    var error_li = $('li');
-                    error_li.text(data['errors'][key] + ': ' + key);
-                    errors_list.append(error_li);
-                }
-                $('#report-form-errors').addClass('text-danger').append(errors_list).show();
-            } else {
-                $('#report-form').hide();
-                $('#report-form-errors').addClass('text-success').html('Success!').show();
-                $('#reportModal .close').click(function () {
-                    setTimeout(function () {
-                        $('#report-form-errors').hide();
-                        $('#report-form').show();
-                        ClearForm($("#report-form"));
-                    }, 600);
-                });
-            }
-        }
-    });
+    AjaxForm($("#report-form"));
+    AjaxForm($("#comment-form"), function(data){
+        $("#comments").prepend(data.comment);
+        $("#comments-count").text(data.comments_count);
+    }, false, true);
 });

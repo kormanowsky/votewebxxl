@@ -107,6 +107,10 @@ class Voting(models.Model):
     def favourites_count(self):
         return len(ActivityItem.objects.filter(type=ActivityItem.ACTIVITY_FAVOURITE, voting=self.id))
 
+    # Returns comments
+    def comments(self):
+        return Comment.objects.filter(voting=self.id).order_by("-datetime_created")
+
 
 # Question
 class Question(models.Model):
@@ -171,6 +175,9 @@ class Report(models.Model):
     def status_str(self):
         return ["Waiting", "Declined", "Accepted"][self.status]
 
+    def datetime_created_str(self):
+        return self.datetime_created.strftime("%d.%m.%Y at %H:%M")
+
 
 # Activity item
 class ActivityItem(models.Model):
@@ -181,6 +188,8 @@ class ActivityItem(models.Model):
     ACTIVITY_VOTE = 1
     # Add to favourites
     ACTIVITY_FAVOURITE = 2
+    # Comment on voting
+    ACTIVITY_COMMENT = 3
 
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     type = models.IntegerField(default=0)
@@ -192,8 +201,8 @@ class ActivityItem(models.Model):
         return datetime_human_diff(datetime.utcnow(), self.datetime_created.replace(tzinfo=None))
     
     def display_data(self):
-        text = ["created voting", "voted in", "added to favourites"][self.type]
-        icon = ["question", "check-square", "star"][self.type]
+        text = ["created voting", "voted in", "added to favourites", "added comment to"][self.type]
+        icon = ["question", "check-square", "star", "comment"][self.type]
         return {
             "text": text, 
             "icon": icon
@@ -227,3 +236,15 @@ class Image(models.Model):
         if len(image):
             avatar_url = 'http://' + request.get_host() + image[0].data.url
         return avatar_url
+
+
+# Comment
+class Comment(models.Model):
+
+    creator = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
+    voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE, null=True)
+    message = models.CharField(max_length=512)
+    datetime_created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+
+    def datetime_created_str(self):
+        return self.datetime_created.strftime("%d.%m.%Y at %H:%M")

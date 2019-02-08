@@ -169,14 +169,14 @@
                             {% for report in profile_owner_reports %}
                             <tr>
                                 <td>{{ report.id }}</td>
-                                <td>{{ report.datetime_created }}</td>
+                                <td>{{ report.datetime_created_str }}</td>
                                 <td><a href="/voting/{{ report.voting.id }}">{{ report.voting.title }}</a></td>
                                 <td>
                                     <p class="mb-1">{{ report.title }}</p>{{ report.message }}
                                 </td>
                                 <td class="font-weight-600 text-{% if report.status == report.REPORT_WAITING %}warning{% elif report.status == report.REPORT_ACCEPTED %}success{% else %}danger{% endif %}">{{ report.status_str }}</td>
                                 <td class="td-actions text-right">
-                                    <a href="#" class="d-block text-danger dangerous-action" onclick="return alert(this.innerText + '===fake remove');">
+                                    <a href="/api/remove/report/{{ report.id }}" class="d-block text-danger dangerous-action">
                                         Remove report
                                     </a>
                                 </td>

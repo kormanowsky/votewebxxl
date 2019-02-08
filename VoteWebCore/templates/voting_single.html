@@ -9,6 +9,13 @@
 {% block content_actions %}
 {% votingstatus voting request as status %}
 {% if status > voting.VOTING_BANNED %}
+{% if request.user.username %}
+<li class="nav-item">
+    <a href="#" class="d-flex pb-3 align-items-center" data-toggle="modal" data-target="#commentModal">
+        <p class="m-0">Comment</p>
+    </a>
+</li>
+{% endif %}
 {% if voting.owner == request.user %}
 <li class="nav-item">
     <a href="/voting/{{ voting.id }}/edit" class="d-flex pb-3 align-items-center">
@@ -46,7 +53,6 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div id="report-form-errors" class="p-4"></div>
             <form action="/voting/{{ voting.id }}/report" method="post" id="report-form">
                 {% csrf_token %}
                 <div class="modal-body">
@@ -104,4 +110,33 @@
         </div>
     </div>
 </div>
+{% if request.user.username %}
+<!-- Modal -->
+<div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="commentModalLabel">Comment voting <span class="text-primary">{{ voting.title }}</span></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="/voting/{{ voting.id }}/comment" method="post" id="comment-form">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="input-comment-text">Comment text</label>
+                        <div class="input-group">
+                            <textarea rows=5 class="form-control" name="message" id="input-comment-text" placeholder="Type your comment" required></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" id="comment-form-submit">Comment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
 {% endblock content_actions %}

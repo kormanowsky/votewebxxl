@@ -126,3 +126,5 @@ class VotingsSearchForm(forms.Form):
     def is_valid(self):
         return not len(self.errors.as_text())
 
+class CommentForm(forms.Form):
+    message = forms.CharField(max_length=512)
