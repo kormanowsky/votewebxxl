@@ -108,7 +108,7 @@ Votings.edit = {
         if (!question_data.text || question_data.type === false || question_data.answers.length < 2) {
             return false;
         }
-        if (question_data.type === 0 && question_data.answers.length > 3 || question_data.type === 2 && question_data.answers.length < 3) {
+        if (question_data.type === 0 && question_data.answers.length > 2 || question_data.type === 2 && question_data.answers.length < 3) {
             question_data.type = 1;
         }
         $.ajax({

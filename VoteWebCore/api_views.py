@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django.shortcuts import redirect
 
 from VoteWebCore.models import *
 from VoteWebCore.forms import *
@@ -54,8 +55,8 @@ def save_question(request):
                     "ErrorCode": 403,
                     "Error": "NotAllowedError",
                 })
-            if question.text != form.data['text'] or question.answers != form.data['answers']:
-                Vote.objects.filter(question=question.id).delete()
+            if question[0].text != form.data['text'] or question[0].answers != form.data['answers']:
+                Vote.objects.filter(question=question[0].id).delete()
             question.update(text=form.data['text'], type=form.data['type'], answers=form.data['answers'])
             question = question[0]
         else:
@@ -93,3 +94,44 @@ def upload(request, upload_as="avatar"):
     else:
         return JsonResponse({'is_valid': False, 'errors': {'method': 'Method must be POST'}})
     return JsonResponse({'is_valid': form.is_valid(), 'errors': form.errors, 'image_data': None})
+
+@login_required
+
+def save_voting(request):
+    form = SaveVotingForm(request.POST)
+    if form.is_valid():
+        formdata = form.data
+        if not formdata['voting_id']:
+            voting = Voting(owner=request.user,
+                            title=formdata['title'],
+                            datetime_closed=formdata['datetime_closed'],
+                            open_stats=formdata['open_stats'])
+            voting.save()
+            activity_item = ActivityItem(user=request.user, voting=voting, type=ActivityItem.ACTIVITY_NEW_VOTING)
+            activity_item.save()
+        else:
+            voting = Voting.objects.filter(id=formdata['voting_id'])
+            if not len(voting) or not voting[0].owner == request.user:
+                return JsonResponse({
+                    "ErrorCode": 403,
+                    "Error": "NotAllowedError"
+                })
+            voting.update(datetime_closed=formdata['datetime_closed'],
+                          title=formdata['title'],
+                          open_stats=formdata['open_stats'])
+            voting = voting[0]
+            question_ids = []
+            for question in voting.questions():
+                question_ids.append(question.id)
+            if question_ids != formdata['questions']:
+                for question_id in question_ids:
+                    Vote.objects.filter(question=question_id).delete()
+            voting.questions().update(voting=None)
+        for question_id in formdata['questions']:
+            Question.objects.filter(id=question_id).update(voting=voting)
+        return redirect("/voting/" + str(voting.id))
+    else:
+        return JsonResponse({
+            "ErrorCode": 404,
+            "Error": "InvalidInputData"
+        })

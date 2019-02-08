@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 from VoteWebCore.forms import *
 from VoteWebCore.models import *
 from VoteWebCore.functions import *
+from VoteWebCore.api_views import save_voting
 
 @login_required
 def votings(request):
@@ -38,40 +39,6 @@ def register(request):
         else:
             context['errors'] = form_errors(context['form'])
     return render(request, 'registration/registration.html', context)
-
-
-def voting_save(request):
-    form = SaveVotingForm(request.POST)
-    if form.is_valid():
-        formdata = form.data
-        if not formdata['voting_id']:
-            voting = Voting(owner=request.user,
-                            title=formdata['title'],
-                            datetime_closed=formdata['datetime_closed'],
-                            open_stats=formdata['open_stats'])
-            voting.save()
-            activity_item = ActivityItem(user=request.user, voting=voting, type=ActivityItem.ACTIVITY_NEW_VOTING)
-            activity_item.save()
-        else:
-            voting = Voting.objects.filter(id=formdata['voting_id'])
-            if not len(voting) or not voting[0].owner == request.user:
-                return JsonResponse({
-                    "ErrorCode": 403,
-                    "Error": "NotAllowedError"
-                })
-            voting.update(datetime_closed=formdata['datetime_closed'],
-                          title=formdata['title'],
-                          open_stats=formdata['open_stats'])
-            voting = voting[0]
-            voting.questions().update(voting=None)
-        for question_id in formdata['questions']:
-            Question.objects.filter(id=question_id).update(voting=voting)
-        return redirect("/voting/" + str(voting.id))
-    else:
-        return JsonResponse({
-            "ErrorCode": 404,
-            "Error": "InvalidInputData"
-        })
 
 # New view for a single voting
 def voting_single(request, voting_id=-1, action="index"):
@@ -119,7 +86,7 @@ def voting_single(request, voting_id=-1, action="index"):
     elif action == "edit":
         if voting.owner == request.user:
             if request.method == "POST":
-                return voting_save(request)
+                return save_voting(request)
             else:
                 return render(request, "voting_edit.html", {
                     "html_title": "Edit | " + voting.title,
@@ -197,7 +164,7 @@ def settings(request):
 @login_required
 def voting_create(request):
     if request.method == "POST":
-        return voting_save(request)
+        return save_voting(request)
     else:
         return render(request, "voting_create.html", {
             "html_title": "Create Voting", 
