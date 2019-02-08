@@ -114,9 +114,7 @@ class Question(models.Model):
 
     # Returns question statistics for diagram
     def stats(self):
-        stats = {
-            "all": len(Vote.objects.filter(question=self.id)),
-        }
+        stats = {}
         for answer in self.answers:
             stats[answer] = len(Vote.objects.filter(question=self.id, answer=answer))
         return stats

@@ -1,27 +1,100 @@
 var Votings = window.Votings = {};
-Votings.setCurrentButtonAnswer = function (element) {
-    var $element = $(element),
-        answer = $element.text().trim(),
-        question_id = $element.attr('data-question-id'),
-        $input = $("input[name='answer_" + question_id + "']");
-    $input.attr('value', answer);
-    $element.siblings("button.btn-primary").toggleClass("btn-outline-primary btn-primary");
-    $element.toggleClass("btn-outline-primary btn-primary");
-    return false;
-}
-Votings.checkVotingForm = function () {
-    var $form = $('form');
-    // TODO: write this
-}
-Votings.getQuestion = function(id, success){
+Votings.getQuestion = function (id, success) {
     return $.ajax({
         "url": "/api/get-question/" + id,
-        "method": "GET", 
+        "method": "GET",
         "success": success
     });
 }
+Votings.vote = {
+    setCurrentButtonAnswer: function (element) {
+        var $element = $(element),
+            answer = $element.text().trim(),
+            question_id = $element.attr('data-question-id'),
+            $input = $("input[name='answer_" + question_id + "']");
+        $input.attr('value', answer);
+        $element.siblings("button.btn-primary").toggleClass("btn-outline-primary btn-primary");
+        $element.toggleClass("btn-outline-primary btn-primary");
+        return false;
+    },
+    checkForm: function (element) {
+
+    }
+}
+Votings.stats = {
+    init: function (id, type, stats) {
+        var $canvas = $('#question-' + id + '-stats'),
+            canvas = $canvas[0];
+        canvas.width = $canvas.parent().width();
+        canvas.height = parseInt(canvas.width * 0.75);
+        var labels = [],
+            data = [],
+            colors = [
+                '255, 99, 132',
+                '54, 162, 235',
+                '255, 206, 86',
+                '75, 192, 192',
+                '153, 102, 255',
+                '255, 159, 64',
+            ],
+            background = [],
+            border = [],
+            random = function (a, b) {
+                if (a > b) {
+                    var t = a;
+                    a = b;
+                    b = t;
+                }
+                return parseInt(Math.random() * (b - a) + a);
+            },
+            randomColor = function () {
+                var color = [];
+                for (var i = 0; i < 3; ++i) {
+                    color.push(random(0, 255));
+                }
+                return color;
+            },
+            type = type == 2 ? 'bar' : 'pie',
+            options = type == 2 ? {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                        }]
+                }
+            } : {};
+        if (labels.length > 6) {
+            for (var i = 6; i < labels.length; ++i) {
+                colors.push(randomColor.join(', '));
+            }
+        }
+        for (var i = 0; i < colors.length; ++i) {
+            background.push('rgba(' + colors[i] + ', 0.2)');
+            border.push('rgba(' + colors[i] + ', 1)');
+        }
+        for (var label in stats) {
+            labels.push(label);
+            data.push(stats[label]);
+        }
+        var chart = new Chart(canvas.getContext('2d'), {
+            type: type,
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Votes',
+                    data: data,
+                    backgroundColor: background,
+                    borderColor: border,
+                    borderWidth: 1
+                }]
+            },
+            options: options,
+        });
+    }
+}
 Votings.edit = {
-    clearPossibleAnswers: function(){
+    clearPossibleAnswers: function () {
         $('#form-group-answers').html('');
     },
     addPossibleAnswerInput: function (answer) {
@@ -43,30 +116,30 @@ Votings.edit = {
         $element.parent().parent().remove();
         return false;
     },
-    openQuestionModal: function(question_id){
+    openQuestionModal: function (question_id) {
         question_id = question_id || 0;
         var $a = $('<a data-toggle="modal" data-target="#questionModal"></a>');
         $('body').append($a);
         $a.click();
         $a.remove();
         $("#questionModal").attr("data-question-id", question_id);
-        if(question_id){
-            Votings.getQuestion(question_id, function(question){
+        if (question_id) {
+            Votings.getQuestion(question_id, function (question) {
                 $("#questionModalLabel").text("Edit question #" + question.id);
                 $("#input-text").val(question.text);
                 $("#input-question_type_" + question.type).click();
                 Votings.edit.clearPossibleAnswers();
-                for(var answer_index in question.answers){
+                for (var answer_index in question.answers) {
                     var answer = question.answers[answer_index];
                     Votings.edit.addPossibleAnswerInput(answer);
                 }
             });
-        }else{
+        } else {
             $("#questionModalLabel").text("Add question");
         }
         return false;
-    }, 
-    closeQuestionModal: function(){
+    },
+    closeQuestionModal: function () {
         $("#questionModal .close").click();
     },
     saveQuestion: function (element) {
@@ -117,7 +190,7 @@ Votings.edit = {
             "method": "POST",
             "success": function (question_data) {
                 var qId = question_data.id,
-                    $qWrap = $('<div class="col-12 col-md-6 col-xl-4 masonry-item"></div>'),
+                    $qWrap = $('<div class="col-12 col-md-6 masonry-item"></div>'),
                     $qCard = $('<div class="card shadow-sm mt-4"></div>'),
                     $qCardBody = $('<div class="card-body"></div>'),
                     $qIdP = $('<p class="text-muted lh-110 small"></p>').text('Question #' + qId),
@@ -161,7 +234,7 @@ Votings.edit = {
                 if ($("#no-questions").length) {
                     $("#no-questions").remove();
                 }
-                if($(".row#questions div[data-q-id='" + question_data.id + "']").length){
+                if ($(".row#questions div[data-q-id='" + question_data.id + "']").length) {
                     $(".row#questions div[data-q-id='" + question_data.id + "']").parent().remove();
                 }
                 $(".row#questions").append($qWrap);
@@ -181,7 +254,7 @@ Votings.edit = {
     },
     removeQuestion: function (element) {
         $(element).parent().parent().parent().parent().remove();
-        if($("#questions").children().length == 0){
+        if ($("#questions").children().length == 0) {
             $("#questions").html('<div id="no-questions" class="col-12"><h5 class="p-5 text-center">Click Add to add a question</h5></div>');
         }
     },
