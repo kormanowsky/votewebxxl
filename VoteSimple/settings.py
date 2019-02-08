@@ -9,6 +9,9 @@ https://docs.djangoproject.com/en/2.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
+####################################################
+# VoteWebXXL v0.9
+####################################################
 
 import os
 
@@ -24,7 +27,9 @@ SECRET_KEY = 'z*y=iaykh5$1scrva8jl52(t%t5%s_go%4xq4brsiyd@=_7v1t'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '*'
+]
 
 # Application definition
 
@@ -63,6 +68,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'builtins': [
+                'VoteWebCore.templatetags.tags'
+            ]
         },
     },
 ]
@@ -114,5 +122,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
 LOGIN_URL = '/login'
-LOGIN_REDIRECT_URL = '/quiz_list'
+LOGIN_REDIRECT_URL = '/votings'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
+MEDIA_URL = '/uploads/'

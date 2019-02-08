@@ -1,0 +1,142 @@
+{% extends "basic.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        {% include "voting.html" with voting=voting voting_small=0 %}
+    </div>
+</div>
+{% endblock content %}
+{% block content_actions %}
+{% votingstatus voting request as status %}
+{% if status > voting.VOTING_BANNED %}
+{% if request.user.username %}
+<li class="nav-item">
+    <a href="#" class="d-flex pb-3 align-items-center" data-toggle="modal" data-target="#commentModal">
+        <p class="m-0">Comment</p>
+    </a>
+</li>
+{% endif %}
+{% if voting.owner == request.user %}
+<li class="nav-item">
+    <a href="/voting/{{ voting.id }}/edit" class="d-flex pb-3 align-items-center">
+        <p class="m-0">Edit</p>
+    </a>
+</li>
+<li class="nav-item">
+    <a href="#" class="d-flex pb-3 align-items-center" data-toggle="modal" data-target="#shareModal">
+        <p class="m-0">Share</p>
+    </a>
+</li>
+<li class="nav-item">
+    <a href="/voting/{{ voting.id }}/remove" class="text-danger d-flex pb-3 align-items-center dangerous-action">
+        <p class="m-0">Remove</p>
+    </a>
+</li>
+{% else %}
+<li class="nav-item">
+    <a href="#" class="d-flex pb-3 align-items-center" data-toggle="modal" data-target="#shareModal">
+        <p class="m-0">Share</p>
+    </a>
+</li>
+<li class="nav-item">
+    <a href="#" class="text-danger d-flex pb-3 align-items-center" data-toggle="modal" data-target="#reportModal">
+        <p class="m-0">Report abuse</p>
+    </a>
+</li>
+<!-- Modal -->
+<div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="reportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reportModalLabel">Report abuse</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="/voting/{{ voting.id }}/report" method="post" id="report-form">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="input-title">Report title</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="title" id="input-title" placeholder="Give your report a title" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="input-message">Report message</label>
+                        <div class="input-group">
+                            <textarea rows=5 class="form-control" name="message" id="input-message" placeholder="Describe what is wrong with this voting" required></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" id="report-form-submit">Send report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endif %}
+<!-- Modal -->
+<div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="shareModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="shareModalLabel">Share</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="input-link">Copy link</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="input-link" value="http://{{ request.get_host }}/voting/{{ voting.id }}" readonly>
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <a href="#" onclick="return (function(){ $('#input-link')[0].select(); document.execCommand('copy'); $('#input-link').blur(); return false; })();" class=""><i class="la la-clipboard"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="input-message">Share with social networks</label>
+                    <div>
+                        <a href="https://vk.com/share.php?url=http://{{ request.get_host }}/voting/{{ voting.id }}&title={{ html_title }} | VoteWebXXL"><img src="https://vk.com/images/share_32.png" width=32 height=32></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% if request.user.username %}
+<!-- Modal -->
+<div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="commentModalLabel">Comment voting <span class="text-primary">{{ voting.title }}</span></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="/voting/{{ voting.id }}/comment" method="post" id="comment-form">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="input-comment-text">Comment text</label>
+                        <div class="input-group">
+                            <textarea rows=5 class="form-control" name="message" id="input-comment-text" placeholder="Type your comment" required></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" id="comment-form-submit">Comment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock content_actions %}

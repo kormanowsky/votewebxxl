@@ -1,0 +1,71 @@
+.table thead th {
+    font-size: .65rem;
+    padding-top: .75rem;
+    padding-bottom: .75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-bottom: 1px solid #e9ecef
+}
+
+.table th {
+    font-weight: 600
+}
+
+.table td .progress {
+    width: 120px;
+    height: 3px;
+    margin: 0
+}
+
+.table td,.table th {
+    font-size: .8125rem;
+    white-space: nowrap
+}
+
+.table.align-items-center td,.table.align-items-center th {
+    vertical-align: middle
+}
+
+.table .thead-dark th {
+    color: #4d7bca;
+    background-color: #1c345d
+}
+
+.table .thead-light th {
+    color: #5e35b1;
+    background-color: #fff;
+    font-size: .8rem;
+    border-top: none;
+}
+
+.table-hover tr {
+    transition: all .15s ease
+}
+
+@media screen and (prefers-reduced-motion:reduce) {
+    .table-hover tr {
+        transition: none
+    }
+}
+
+.table-flush td,.table-flush th {
+    border-right: 0;
+    border-left: 0
+}
+
+.table-flush tbody tr:first-child td,.table-flush tbody tr:first-child th {
+    border-top: 0
+}
+
+.table-flush tbody tr:last-child td,.table-flush tbody tr:last-child th {
+    border-bottom: 0
+}
+
+.card .table {
+    margin-bottom: 0
+}
+
+.card .table td,.card .table th {
+    padding-right: 1.5rem;
+    padding-left: 1.5rem
+}
