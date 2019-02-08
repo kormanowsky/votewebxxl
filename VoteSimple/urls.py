@@ -48,4 +48,5 @@ urlpatterns = [
     path('api/get-question/<int:id>', api_views.get_question),
     path('api/save-question', api_views.save_question),
     path('api/upload/<str:upload_as>', api_views.upload),
+    path('api/favourites/<str:action>/<int:voting_id>', api_views.favourites),
 ]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

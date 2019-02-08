@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect
 
 from VoteWebCore.models import *
@@ -135,3 +135,32 @@ def save_voting(request):
             "ErrorCode": 404,
             "Error": "InvalidInputData"
         })
+
+@login_required
+def favourites(request, action="add", voting_id=0):
+    if request.method != "POST":
+        return JsonResponse({
+            "ErrorCode": 403,
+            "Error": "InvalidRequestMethodError",
+        })
+    voting = Voting.objects.filter(id=voting_id)
+    if len(voting):
+        voting = voting[0]
+        if action == "add":
+            if voting.status(request.user) != voting.VOTING_BANNED and not voting.current_user_added_to_favourites(request):
+                activity_item = ActivityItem(user=request.user,
+                                             type=ActivityItem.ACTIVITY_FAVOURITE,
+                                             voting=voting)
+                activity_item.save()
+                return HttpResponse(voting.favourites_count())
+        elif action == "remove":
+            if voting.status(request.user) != voting.VOTING_BANNED and voting.current_user_added_to_favourites(request):
+                activity_item = ActivityItem.objects.filter(user=request.user.id,
+                                                            type=ActivityItem.ACTIVITY_FAVOURITE,
+                                                            voting=voting.id)
+                activity_item.delete()
+                return HttpResponse(voting.favourites_count())
+    return JsonResponse({
+        "ErrorCode": 403,
+        "Error": "InvalidDataError",
+    })

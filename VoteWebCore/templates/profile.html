@@ -32,8 +32,8 @@
                             </li>
                             <li class="profile-stats-item pr-2 pr-md-3">
                                 <div>
-                                    <p class="font-weight-700 lh-100 m-0 profile-stats-number text-center text-primary">{{ votes|length }}</p>
-                                    <p class="lh-100 mt-2 profile-statis-description small text-center text-uppercase mb-0 mb-lg-3">Vote{% if votes|length != 1 %}s{%endif %}</p>
+                                    <p class="font-weight-700 lh-100 m-0 profile-stats-number text-center text-primary">{{ votes_count }}</p>
+                                    <p class="lh-100 mt-2 profile-statis-description small text-center text-uppercase mb-0 mb-lg-3">Vote{% if votes_count != 1 %}s{%endif %}</p>
                                 </div>
                             </li>
                             <!--
@@ -69,6 +69,9 @@
                 </li>
                 <li class="nav-item">
                     <a class="d-flex align-items-center justify-content-center nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-3-tab" data-toggle="tab" href="#tabs-icons-text-3" role="tab" aria-controls="tabs-icons-text-3" aria-selected="false"><i class="mr-2 la la-question"></i>Votings</a>
+                </li>
+                <li class="nav-item">
+                    <a class="d-flex align-items-center justify-content-center nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-5-tab" data-toggle="tab" href="#tabs-icons-text-5" role="tab" aria-controls="tabs-icons-text-5" aria-selected="false"><i class="mr-2 la la-star"></i>Favourites</a>
                 </li>
                 {% if request.user == profile_owner %}
                 <li class="nav-item">
@@ -131,6 +134,17 @@
         {% empty %}
         <div class="col-12">
             <p class="text-center my-5">No votings</p>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="row masonry-wrapper" id="tabs-icons-text-5" role="tabpanel" aria-labelledby="tabs-icons-text-5-tab">
+        {% for voting in favourite_votings %}
+        <div class="col-12 col-lg-6 mt-4 masonry-item">
+            {% include "voting.html" with voting=voting voting_small=1 %}
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="text-center my-5">No favourite votings</p>
         </div>
         {% endfor %}
     </div>

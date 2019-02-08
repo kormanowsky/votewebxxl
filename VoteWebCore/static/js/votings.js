@@ -18,7 +18,31 @@ Votings.vote = {
         return false;
     },
     checkForm: function (element) {
-
+        var input_names = [],
+            result = true;
+        $(element).find('input').each(function (i, input) {
+            var $input = $(input);
+            if(!(input_names.indexOf($input.attr('name'))+1)){
+                input_names.push($input.attr('name'));
+            }
+        });
+        input_names.forEach(function(name){
+            var $inputs = $(element).find('[name="' + name + '"]'),
+                _result = false;
+            $inputs.each(function(i, input){
+                if(input.type == "checkbox" || input.type == "radio"){
+                    if(input.checked){
+                        _result = true;
+                    }
+                }else{
+                    if(input.value.length){
+                        _result = true;
+                    }
+                }
+            });
+            result = result && _result;
+        });
+        return result;
     }
 }
 Votings.stats = {
@@ -263,5 +287,45 @@ Votings.edit = {
         if ($element.find("#questions .card").length == 0) {
             return false;
         }
+    }
+}
+Votings.favourites = {
+    add: function(element, id){
+        $.ajax({
+            "url": "/api/favourites/add/" + id,
+            "type": "POST",
+            "data": {
+                "csrfmiddlewaretoken": $(element).next().attr('value')
+            },
+            "success": function(data){
+                if(typeof data === "string"){
+                    $(element).find("p").text(data);
+                    var onclick = $(element).attr("onclick");
+                    $(element).attr("onclick", onclick.replace("add", "remove"));
+                    $(element).toggleClass("text-light text-primary");
+                }else{
+                    console.error(data);
+                }
+            }
+        });
+    }, 
+    remove: function(element, id){
+        $.ajax({
+            "url": "/api/favourites/remove/" + id,
+            "type": "POST",
+            "data": {
+                "csrfmiddlewaretoken": $(element).next().attr('value')
+            },
+            "success": function(data){
+                if(typeof data === "string"){
+                    $(element).find("p").text(data);
+                    var onclick = $(element).attr("onclick");
+                    $(element).attr("onclick", onclick.replace("remove", "add"));
+                    $(element).toggleClass("text-light text-primary");
+                }else{
+                    console.error(data);
+                }
+            }
+        });
     }
 }

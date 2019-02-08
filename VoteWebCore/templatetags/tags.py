@@ -31,3 +31,11 @@ def votingstatus(voting, request, user=None):
                 return Voting.VOTING_VISIBLE
         user = request.user
     return voting.status(user)
+
+@register.simple_tag
+def votingaddedtofavourites(voting, request, user=None):
+    if not user:
+        if not is_logged_in(request):
+            return False
+        user = request.user
+    return voting.user_added_to_favourites(user)

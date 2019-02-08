@@ -59,6 +59,15 @@ def voting_single(request, voting_id=-1, action="index"):
         if not voting.current_user_voted(request):
             form = VoteForm(request.POST)
             answers = form.data["answers"]
+            questions = []
+            for answer in answers:
+                questions.append(answer['question'])
+            for question in voting.questions():
+                if not question in questions:
+                    return JsonResponse({
+                        "ErrorCode": 403, 
+                        "Error": "PartialDataError",
+                    })
             for answer in answers:
                 vote = Vote(question=answer['question'], answer=answer['answer'], creator=request.user)
                 vote.save()
@@ -122,6 +131,11 @@ def profile(request, username=None):
     votings = Voting.objects.filter(owner=profile_owner.id).exclude(banned=1).order_by("-datetime_created")
     activity_small = activity[:5]
     votings_small = votings[:5]
+    votes_count=len(activity.filter(type=ActivityItem.ACTIVITY_VOTE))
+    favourite_votings = []
+    favourite = activity.filter(type=ActivityItem.ACTIVITY_FAVOURITE)
+    for item in favourite:
+        favourite_votings.append(item.voting)
     context = {
         "html_title": "@" + request.user.username,
         "profile_owner": profile_owner,
@@ -130,7 +144,9 @@ def profile(request, username=None):
         "votings_small": votings_small,
         "activity": activity,
         "activity_small": activity_small,
-        "no_right_aside": True,
+        "favourite_votings": favourite_votings,
+        "votes_count": votes_count,
+        "no_right_aside": True
     }
     return render(request, 'profile.html', context)
 

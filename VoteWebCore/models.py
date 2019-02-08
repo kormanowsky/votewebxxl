@@ -95,6 +95,18 @@ class Voting(models.Model):
     def open(self):
         return not self.datetime_closed or self.datetime_closed.replace(tzinfo=None) > datetime.now()
 
+    # Checks if user added to favourites
+    def user_added_to_favourites(self, user):
+        return len(ActivityItem.objects.filter(type=ActivityItem.ACTIVITY_FAVOURITE, voting=self.id, user=user.id))
+
+    # Checks if current user added to favourites
+    def current_user_added_to_favourites(self, request):
+        return self.user_added_to_favourites(request.user)\
+
+    # Returns count of favourites
+    def favourites_count(self):
+        return len(ActivityItem.objects.filter(type=ActivityItem.ACTIVITY_FAVOURITE, voting=self.id))
+
 
 # Question
 class Question(models.Model):
@@ -167,6 +179,8 @@ class ActivityItem(models.Model):
     ACTIVITY_NEW_VOTING = 0
     # Vote in voting
     ACTIVITY_VOTE = 1
+    # Add to favourites
+    ACTIVITY_FAVOURITE = 2
 
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     type = models.IntegerField(default=0)
@@ -176,6 +190,14 @@ class ActivityItem(models.Model):
     # Returns human time difference between current time and voting creation time
     def creation_time_diff(self):
         return datetime_human_diff(datetime.utcnow(), self.datetime_created.replace(tzinfo=None))
+    
+    def display_data(self):
+        text = ["created voting", "voted in", "added to favourites"][self.type]
+        icon = ["question", "check-square", "star"][self.type]
+        return {
+            "text": text, 
+            "icon": icon
+        }
 
 
 # Image

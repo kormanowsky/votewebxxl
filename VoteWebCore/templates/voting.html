@@ -1,7 +1,8 @@
 {# Одно голосование. Для использования в циклах #}
 {% votingstatus voting request as status %}
+{% votingaddedtofavourites voting request as addedtofavourites %}
 {% if status >= voting.VOTING_OPEN and not voting_small %}
-<form action="/voting/{{ voting.id }}/save" method="post">
+<form action="/voting/{{ voting.id }}/save" method="post" onsubmit="return Votings.vote.checkForm(this);">
     {% csrf_token %}
     {% endif %}
     <div class="card shadow-sm">
@@ -70,6 +71,7 @@
                         {% endfor %}
                         {% endif %}
                         {% else %}
+                        <p class="text-muted text-center my-3">Answer stats</p>
                         <canvas id="question-{{ question.id }}-stats"></canvas>
                         <script>jQuery(function($){ window.Votings.stats.init({{ question.id }}, {{question.type}}, {{question.stats|safe}}); });</script>
                         {% endif %}
@@ -90,7 +92,22 @@
             {% endif %}
         </div>
         <div class="col-12 col-xl-4">
-            Social info
+            <div class="card shadow-sm mt-4">
+                <div class="card-body">
+                    <div class="text-light font-weight-300 d-flex justify-content-around m-0 h4">
+                        <a href="#" onclick="Votings.favourites.{% if not addedtofavourites %}add{% else %}remove{% endif %}(this, {{ voting.id }}); return false;" class="d-flex align-items-center {% if addedtofavourites %}text-primary{% else %}text-light{% endif %}">
+                            <i class="la la-star"></i>
+                            <p class="my-0 lh-100 ml-2">{{ voting.favourites_count }}</p>
+                        </a>
+                        {% csrf_token %}
+                        <div class="d-flex align-items-center">
+                            <i class="la la-comments"></i>
+                            <p class="my-0 lh-100 ml-2">100</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
         {% else %}
         <div class="col-12">

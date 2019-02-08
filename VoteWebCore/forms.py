@@ -50,7 +50,7 @@ class VoteForm(forms.Form):
                         "answer": answer
                     })
         self.data["answers"] = answers
-
+        
 
 class ReportForm(forms.Form):
     title = forms.CharField(max_length=256)
