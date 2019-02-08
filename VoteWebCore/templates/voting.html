@@ -59,7 +59,7 @@
                         <label class="custom-control-label" for="question_{{ question.id }}_answers_{{ forloop.counter }}">{{ answer }}</label>
                     </div>
                     {% endfor %}
-                    {% elif question.type == question.QUESTION_MULTIPLE_ANSWERS %}
+                    {% elif question.type == question.QUESTION_MULTIPLE_ANSWERS %} 
                     {% for answer in question.answers %}
                     <div class="custom-control custom-checkbox mb-3">
                         <input class="custom-control-input" id="question_{{ question.id }}_answers_{{ forloop.counter }}" name="answer_{{ question.id }}[]" type="checkbox" value="{{ answer }}">
