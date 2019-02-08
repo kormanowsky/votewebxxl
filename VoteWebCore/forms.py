@@ -120,8 +120,8 @@ class VotingsSearchForm(forms.Form):
         super(VotingsSearchForm, self).__init__(*args, **kwargs)
         self.data['title'] = raw_data.get('title', '')
         self.data['owner'] = raw_data.get('owner', '')
-        self.data['datetime_created_from'] = datetime_str_to_obj(raw_data.get("datetime_created_from", None))
-        self.data['datetime_created_to'] = datetime_str_to_obj(raw_data.get("datetime_created_to", None))
+        self.data['datetime_created_from'] = datetime_str_to_obj(raw_data.get("datetime_created_from", ''))
+        self.data['datetime_created_to'] = datetime_str_to_obj(raw_data.get("datetime_created_to", ''))
     
     def is_valid(self):
         return not len(self.errors.as_text())

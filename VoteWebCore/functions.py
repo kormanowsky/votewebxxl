@@ -51,7 +51,7 @@ def datetime_human_diff(dt1, dt2):
     return result
 
 def datetime_str_to_obj(datetime_str):
-    if datetime_str is None:
+    if len(datetime_str.split(".")) != 3:
         return None
     day, month, year = list(map(int, datetime_str.split(".")))
     datetime_obj = datetime(year=year, month=month, day=day, hour=0, minute=0, second=0, microsecond=0,
