@@ -164,3 +164,28 @@ def favourites(request, action="add", voting_id=0):
         "ErrorCode": 403,
         "Error": "InvalidDataError",
     })
+
+@login_required
+def remove(request, model="report", id=0):
+    models = {
+        "comment": Comment,
+        "report": Report
+    }
+    if not model in models:
+        return JsonResponse({
+            "ErrorCode": 403,
+            "Error": "PartialDataError",
+        })
+
+    item = models[model].objects.filter(id=id)
+    if not len(item) or not item[0].creator == request.user:
+        return JsonResponse({
+            "ErrorCode": 403,
+            "Error": "NotAllowedError",
+        })
+    voting_id = item[0].voting.id
+    item[0].delete()
+    if model == "report":
+        return redirect("/profile/" + request.user.username)
+    else:
+        return redirect("/voting/" + str(voting_id))
