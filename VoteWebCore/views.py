@@ -2,6 +2,7 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from django.db.models import Q
 
 from VoteWebCore.forms import *
 from VoteWebCore.models import *
@@ -10,13 +11,20 @@ from VoteWebCore.api_views import save_voting
 
 @login_required
 def votings(request):
-    # Можно даже сделать форму VotingsSearchForm
-    # в Request.GET приходят параметры owner, title, datetime_created_from, datetime_created_to
-    # надо сформировать QuerySet из голосований (Voting.objects.filter)
-    # обязательно exclude(banned=1) !
+    votings = Voting.objects.all()
+    form = VotingsSearchForm(request.GET)
+    if form.is_valid():
+        votings = votings.filter(title__contains=form.data['title'])
+        votings = votings.filter(Q(owner__last_name__contains=form.data['owner']) | Q(owner__first_name__contains=form.data['owner']) | Q(owner__username__contains=form.data['owner']))
+        if not form.data['datetime_created_from'] is None:
+            votings = votings.filter(datetime_created__gte=form.data['datetime_created_from'])
+        if not form.data['datetime_created_to'] is None:
+            votings = votings.filter(datetime_created__lte=form.data['datetime_created_to'])
+    votings = votings.exclude(banned=1)
     context = {
-        "votings": Voting.objects.exclude(banned=1),
+        "votings": votings,
         "html_title": "Votings",
+        "form": form,
         "no_right_aside": True
     }
     return render(request, 'votings.html', context)

@@ -50,5 +50,13 @@ def datetime_human_diff(dt1, dt2):
     result += str(seconds) + "s"
     return result
 
+def datetime_str_to_obj(datetime_str):
+    if datetime_str is None:
+        return None
+    day, month, year = list(map(int, datetime_str.split(".")))
+    datetime_obj = datetime(year=year, month=month, day=day, hour=0, minute=0, second=0, microsecond=0,
+                               tzinfo=tz.tzutc())
+    return datetime_obj
+
 def generate_file_name(file, src_name):
     return str(uuid4()).replace("-", "/") + '.' + src_name.split('.')[-1]

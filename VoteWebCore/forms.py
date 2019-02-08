@@ -4,7 +4,6 @@ from django.contrib.auth.forms import UserCreationForm
 from VoteWebCore.models import *
 from VoteWebCore.functions import *
 
-from dateutil.tz import tzutc
 # https://github.com/bernii/querystring-parser
 from querystring_parser import parser
 
@@ -75,9 +74,7 @@ class SaveVotingForm(forms.Form):
             parsed_data['questions'][i] = int(question)
         parsed_data['voting_id'] = int(parsed_data['voting_id'])
         if(len(parsed_data['datetime_closed'])):
-            day, month, year = list(map(int, parsed_data['datetime_closed'].split(".")))
-            datetime_closed = datetime(year=year, month=month, day=day, hour=0, minute=0, second=0, microsecond=0, tzinfo=tzutc())
-            parsed_data['datetime_closed'] = datetime_closed
+            parsed_data['datetime_closed'] = datetime_str_to_obj(parsed_data['datetime_closed'])
         else:
             parsed_data['datetime_closed'] = None
         parsed_data['open_stats'] = parsed_data['open_stats'] == '1'
@@ -111,3 +108,21 @@ class QuestionForm(forms.Form):
 
 class LoadImgForm(forms.Form):
     file = forms.ImageField()
+
+
+class VotingsSearchForm(forms.Form):
+    title = forms.CharField(max_length=100, required=False)
+    owner = forms.CharField(max_length=100, required=False)
+    datetime_created_from = forms.DateTimeField(required=False)
+    datetime_created_to = forms.DateTimeField(required=False)
+
+    def __init__(self, raw_data, *args, **kwargs):
+        super(VotingsSearchForm, self).__init__(*args, **kwargs)
+        self.data['title'] = raw_data.get('title', '')
+        self.data['owner'] = raw_data.get('owner', '')
+        self.data['datetime_created_from'] = datetime_str_to_obj(raw_data.get("datetime_created_from", None))
+        self.data['datetime_created_to'] = datetime_str_to_obj(raw_data.get("datetime_created_to", None))
+    
+    def is_valid(self):
+        return not len(self.errors.as_text())
+

@@ -22,21 +22,21 @@
                         <div class="form-group col-12 col-md-6 col-xl-3">
                             <label for="input-title">Title</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" name="title" id="input-title" placeholder="Voting title">
+                                <input type="text" class="form-control" name="title" id="input-title" placeholder="Voting title" {% if form.data.title %}value="{{ form.data.title }}"{% endif %}>
                             </div>
                         </div>
                         <div class="form-group col-12 col-md-6 col-xl-3">
                             <label for="input-owner">Owner</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" name="owner" id="input-owner" placeholder="Login or name">
+                                <input type="text" class="form-control" name="owner" id="input-owner" placeholder="Login or name" {% if form.data.owner %}value="{{ form.data.owner }}"{% endif %}>
                             </div>
                         </div>
                         <div class="form-group col-12 col-xl-6">
                             <label>Date of creation</label>
                             <div class="input-group input-daterange d-flex align-items-center" data-date-format="dd.mm.yyyy">
-                                <input type="text" class="form-control" name="datetime_created_from" value="{% formatteddate 'yesterday' %}">
+                                <input type="text" class="form-control" name="datetime_created_from" value="{% if form.data.datetime_created_from %}{% formatteddate form.data.datetime_created_from %}{% else %}{% formatteddate 'yesterday' %}{% endif %}">
                                 <div class="input-group-addon px-3">to</div>
-                                <input type="text" class="form-control" name="datetime_created_to" value="{% formatteddate %}">
+                                <input type="text" class="form-control" name="datetime_created_to" value="{% if form.data.datetime_created_to %}{% formatteddate form.data.datetime_created_to %}{% else %}{% formatteddate %}{% endif %}">
                             </div>
                         </div>
                     </div>
@@ -52,8 +52,8 @@
         {% include "voting.html" with voting=voting voting_small=1 %}
     </div>
     {% empty %}
-    <div class="row mt-4">
-        <p class="text-center col-12 text-light">No results</p>
+    <div class="col-12 mt-4">
+        <p class="text-center text-light">No results</p>
     </div>
     {% endfor %}
 </div>
