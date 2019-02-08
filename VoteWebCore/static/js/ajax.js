@@ -26,23 +26,13 @@ function InitMasonry() {
         })
     });
 
-    var navPillsLinks = $(".nav-pills a"),
-        masonryLayouted = false;
-    if (navPillsLinks.length) {
-        navPillsLinks.each(function (i, link) {
-            $(link).click(function () {
-                // Leave this as is
-                setTimeout(LayoutMasonry, 1);
-            });
-        });
-    }
-
     $(window).on('resize', LayoutMasonry);
 }
 
-function LayoutMasonry() {
+function LayoutMasonry(method) {
+    method = method || 'layout';
     $(".masonry-wrapper").each(function (i, e) {
-        $(e).masonry('layout')
+        $(e).masonry(method)
     });
 }
 

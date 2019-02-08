@@ -7,6 +7,8 @@
 </div>
 {% endblock content %}
 {% block content_actions %}
+{% votingstatus voting request as status %}
+{% if status > voting.VOTING_BANNED %}
 {% if voting.owner == request.user %}
 <li class="nav-item">
     <a href="/voting/{{ voting.id }}/edit" class="d-flex pb-3 align-items-center">
@@ -68,6 +70,7 @@
         </div>
     </div>
 </div>
+{% endif %}
 {% endif %}
 <!-- Modal -->
 <div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="shareModalLabel" aria-hidden="true">

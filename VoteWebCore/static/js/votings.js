@@ -117,14 +117,16 @@ Votings.edit = {
             "method": "POST",
             "success": function (question_data) {
                 var qId = question_data.id,
-                    $qWrap = $('<div class="col-12 col-md-6 col-xl-4"></div>'),
+                    $qWrap = $('<div class="col-12 col-md-6 col-xl-4 masonry-item"></div>'),
                     $qCard = $('<div class="card shadow-sm mt-4"></div>'),
                     $qCardBody = $('<div class="card-body"></div>'),
+                    $qIdP = $('<p class="text-muted lh-110 small"></p>').text('Question #' + qId),
                     $qText = $('<h3 class="mb-4"></h3>').text(question_data.text),
                     $qIdInput = $('<input type="hidden" name="questions[]" value="' + qId + '">'),
                     $qEditLink = $('<a href="#" onclick="return Votings.edit.openQuestionModal(' + qId + ');" class="mr-4"></a>'),
                     $qRemoveLink = $('<a href="#" onclick="return Votings.edit.removeQuestion(this);" class="text-danger dangerous-action"></a>');
                 $qCardBody.append($qIdInput);
+                $qCardBody.append($qIdP);
                 $qCardBody.append($qText);
                 $qCard.append($qCardBody);
                 $qCard.attr("data-q-id", qId);

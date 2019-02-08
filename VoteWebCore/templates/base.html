@@ -69,7 +69,17 @@
             // Опасные действия
             $(".modal").last().css("z-index", "1059");
             InitConfirmationModals();
-            var observer = new MutationObserver(InitConfirmationModals);
+            var observer = new MutationObserver(function(records) {
+                InitConfirmationModals();
+                records.forEach(function(record) {
+                    if (record.addedNodes.length && $(record.target).hasClass('masonry-wrapper')) {
+                        $(record.target).masonry('addItems', record.addedNodes);
+                    } else if (record.removedNodes.length && $(record.target).hasClass('masonry-wrapper')) {
+                        $(record.target).masonry('remove', record.removedNodes);
+                    }
+                    LayoutMasonry();
+                });
+            });
             observer.observe(document.body, {
                 attributes: true,
                 childList: true,
