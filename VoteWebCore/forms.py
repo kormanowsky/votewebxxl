@@ -128,3 +128,10 @@ class VotingsSearchForm(forms.Form):
 
 class CommentForm(forms.Form):
     message = forms.CharField(max_length=512)
+
+
+# ADMIN PANEL
+class VotingAdmin(forms.ModelForm):
+    class Meta:
+        model = Voting
+        fields = '__all__'

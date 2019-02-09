@@ -37,7 +37,7 @@ class Voting(models.Model):
     owner = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True)
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
     title = models.CharField(max_length=300)
-    banned = models.IntegerField(default=0)
+    banned = models.BooleanField(default=False)
     open_stats = models.BooleanField(default=True)
     datetime_closed = models.DateTimeField(null=True, blank=True)
 
@@ -110,6 +110,9 @@ class Voting(models.Model):
     # Returns comments
     def comments(self):
         return Comment.objects.filter(voting=self.id).order_by("-datetime_created")
+
+    def __str__(self):
+        return self.title + " (#" + str(self.id) + ")"
 
 
 # Question
