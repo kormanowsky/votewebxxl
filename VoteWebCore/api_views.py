@@ -2,21 +2,27 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect
 
-from VoteWebCore.models import *
 from VoteWebCore.forms import *
 from VoteWebCore.error_views import *
 
+
 # Get one question
 def get_question(request, id=0):
-    question = Question.objects.filter(id=id)
+    if request.method != "POST":
+        return error_method_not_allowed(request)
+
+    question = Question.objects.filter(id=id).exclude(is_active=False)
+
     if not len(question):
         return error_not_found(request)
+
     question = question[0]
 
     if question.voting is not None:
         voting_id = question.voting.id
     else:
         voting_id = None
+
     if question.user is not None:
         user_id = question.user.id
     else:
@@ -31,23 +37,29 @@ def get_question(request, id=0):
         "type": question.type
     })
 
+
 # Save question 
 @login_required
 def save_question(request):
     if request.method != "POST":
         return error_method_not_allowed(request)
+
     form = QuestionForm(request.POST)
     if form.is_valid():
+        # Question update
         if form.data['question_id']:
             question = Question.objects.filter(id=form.data['question_id']).exclude(is_active=False)
             if not len(question):
-                return error_forbidden(request)
+                return error_bad_request(request)
             if not question[0].user == request.user:
                 return error_forbidden(request)
+            # If question text or question answers changed, we remove all votes of this question
             if question[0].text != form.data['text'] or question[0].answers != form.data['answers']:
                 Vote.objects.filter(question=question[0].id).update(is_active=False)
+
             question.update(text=form.data['text'], type=form.data['type'], answers=form.data['answers'])
             question = question[0]
+        # New question
         else:
             question = Question(text=form.data['text'], type=form.data['type'],
                                 answers=form.data['answers'], voting=None, user=request.user)
@@ -60,10 +72,13 @@ def save_question(request):
         })
     return error_bad_request(request)
 
+
+# Upload file
 @login_required
 def upload(request, upload_as="avatar"):
     if request.method != 'POST':
         return error_method_not_allowed(request)
+
     form = LoadImgForm(request.POST, request.FILES)
     if form.is_valid():
         role = Image.role_str_to_int(upload_as)
@@ -78,11 +93,15 @@ def upload(request, upload_as="avatar"):
             "role": image.role,
             "datetime_created": image.datetime_created
         })
-    return JsonResponse({'is_valid': form.is_valid(), 'errors': form.errors, 'image_data': None})
+    return error_bad_request(request)
 
+
+# Save voting
 @login_required
-
 def save_voting(request):
+    if request.method != 'POST':
+        return error_method_not_allowed(request)
+
     form = SaveVotingForm(request.POST)
     if form.is_valid():
         formdata = form.data
@@ -96,63 +115,93 @@ def save_voting(request):
             activity_item.save()
         else:
             voting = Voting.objects.filter(id=formdata['voting_id']).exclude(is_active=False)
-            if not len(voting) or not voting[0].user == request.user:
+
+            if not len(voting):
+                return error_bad_request(request)
+
+            if not voting[0].user == request.user:
                 return error_forbidden(request)
+
             voting.update(datetime_closed=formdata['datetime_closed'],
                           title=formdata['title'],
                           open_stats=formdata['open_stats'])
             voting = voting[0]
+
+            # If questions of voting were changed (e.g a question was added or removed),
+            # we remove all votes of this voting
             question_ids = []
             for question in voting.questions():
                 question_ids.append(question.id)
             if question_ids != formdata['questions']:
                 for question_id in question_ids:
                     Vote.objects.filter(question=question_id).update(is_active=False)
-            voting.questions().update(voting=None)
+            # Now we "remove" all questions of voting, then we will recover them
+            voting.questions().update(is_active=False, voting=None)
+        # Here we add voting to new questions
         for question_id in formdata['questions']:
-            Question.objects.filter(id=question_id).update(voting=voting)
-        return redirect("/voting/" + str(voting.id))
+            Question.objects.filter(id=question_id).update(is_active=True, voting=voting)
+        return redirect("/voting/{}".format(voting.id))
     else:
         return error_bad_request(request)
 
+
+# Add to favourites or remove from favourites
 @login_required
 def favourites(request, action="add", voting_id=0):
     if request.method != "POST":
         return error_method_not_allowed(request)
+
     voting = Voting.objects.filter(id=voting_id).exclude(is_active=False)
     if len(voting):
         voting = voting[0]
         if action == "add":
-            if voting.status(request.user) != voting.VOTING_BANNED and not voting.current_user_added_to_favourites(request):
+            if voting.current_user_added_to_favourites(request):
+                return error_forbidden(request)
+            if voting.status(request.user) != voting.VOTING_BANNED:
                 activity_item = ActivityItem(user=request.user,
                                              type=ActivityItem.ACTIVITY_FAVOURITE,
                                              voting=voting)
                 activity_item.save()
                 return HttpResponse(voting.favourites_count())
+            return error_forbidden(request)
         elif action == "remove":
-            if voting.status(request.user) != voting.VOTING_BANNED and voting.current_user_added_to_favourites(request):
+            if not voting.current_user_added_to_favourites(request):
+                return error_forbidden(request)
+            if voting.status(request.user) != voting.VOTING_BANNED:
                 activity_item = ActivityItem.objects.filter(user=request.user.id,
                                                             type=ActivityItem.ACTIVITY_FAVOURITE,
                                                             voting=voting.id)
                 activity_item.update(is_active=False)
                 return HttpResponse(voting.favourites_count())
-    return error_forbidden(request)
+            return error_forbidden(request)
+    return error_bad_request(request)
 
+
+# Remove reports and comments
 @login_required
 def remove(request, model="report", id=0):
-    models = {
+    if request.method != 'POST':
+        return error_method_not_allowed(request)
+
+    model_classes = {
         "comment": Comment,
         "report": Report
     }
-    if not model in models:
+    if not model in model_classes:
         return error_bad_request(request)
 
-    item = models[model].objects.filter(id=id).exclude(is_active=False)
-    if not len(item) or not item[0].user == request.user:
+    item = model_classes[model].objects.filter(id=id).exclude(is_active=False)
+
+    if not len(item):
+        return error_bad_request(request)
+
+    if not item[0].user == request.user:
         return error_forbidden(request)
+
     voting_id = item[0].voting.id
     item.update(is_active=False)
+
     if model == "report":
-        return redirect("/profile/" + request.user.username)
+        return redirect("/profile/{}".format(request.user.username))
     else:
-        return redirect("/voting/" + str(voting_id))
+        return redirect("/voting/{}".format(voting_id))
