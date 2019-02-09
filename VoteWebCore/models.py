@@ -39,7 +39,7 @@ class Voting(models.Model):
     # User can vote
     VOTING_OPEN = 4
 
-    user = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(to=User, on_delete=models.SET_CASCADE, null=True)
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
     title = models.CharField(max_length=300)
     banned = models.BooleanField(default=False)
@@ -106,7 +106,9 @@ class Voting(models.Model):
 
     # Checks if user added to favourites
     def user_added_to_favourites(self, user):
-        return len(ActivityItem.objects.filter(type=ActivityItem.ACTIVITY_FAVOURITE, voting=self.id, user=user.id).exclude(is_active=False))
+        return len(ActivityItem.objects.filter(type=ActivityItem.ACTIVITY_FAVOURITE,
+                                               voting=self.id,
+                                               user=user.id).exclude(is_active=False))
 
     # Checks if current user added to favourites
     def current_user_added_to_favourites(self, request):
@@ -114,7 +116,8 @@ class Voting(models.Model):
 
     # Returns count of favourites
     def favourites_count(self):
-        return len(ActivityItem.objects.filter(type=ActivityItem.ACTIVITY_FAVOURITE, voting=self.id).exclude(is_active=False))
+        return len(ActivityItem.objects.filter(type=ActivityItem.ACTIVITY_FAVOURITE,
+                                               voting=self.id).exclude(is_active=False))
     favourites_count.short_description = "Count of additions to Favourites"
 
     # Returns comments list
@@ -379,7 +382,7 @@ class Image(models.Model):
     # Converts string role to int role
     @classmethod
     def role_str_to_int(cls, role_str):
-        for role in roles:
+        for role in cls.IMAGE_ROLES:
             if role[1].lower() == role_str.replace("_", " "):
                 return role[0]
         return -1

@@ -11,6 +11,7 @@ from VoteWebCore.functions import *
 from VoteWebCore.api_views import save_voting
 from VoteWebCore.error_views import *
 
+
 def index(request):
     if request.user.is_authenticated:
         return redirect("/votings")
@@ -18,13 +19,17 @@ def index(request):
         "html_title": "Home"
     })
 
+
 @login_required
 def votings(request):
     votings = Voting.objects.exclude(is_active=False)
     form = VotingsSearchForm(request.GET)
     if form.is_valid():
         votings = votings.filter(title__contains=form.data['title'])
-        votings = votings.filter(Q(user__last_name__contains=form.data['user']) | Q(user__first_name__contains=form.data['user']) | Q(user__username__contains=form.data['user']))
+        votings = votings.filter(
+            Q(user__last_name__contains=form.data['user']) |
+            Q(user__first_name__contains=form.data['user']) |
+            Q(user__username__contains=form.data['user']))
         if not form.data['datetime_created_from'] is None:
             votings = votings.filter(datetime_created__gte=form.data['datetime_created_from'])
         if not form.data['datetime_created_to'] is None:
@@ -96,7 +101,7 @@ def voting_single(request, voting_id=-1, action="index"):
             item = Report(status=Report.REPORT_WAITING, voting=voting,
                           user=request.user, title=form.data['title'], message=form.data['message'])
             item.save()
-        return JsonResponse({'is_valid': form.is_valid(), 'errors': form.errors})
+        return error_bad_request(request)
     elif action == "remove":
         if voting.user == request.user:
             voting.is_active = False
@@ -143,11 +148,14 @@ def profile(request, username=None):
     else:
         return error_not_found(request)
     if profile_user == request.user:
-        reports = Report.objects.filter(user=profile_user).order_by("-datetime_created").exclude(is_active=False)
+        reports = Report.objects.filter(user=profile_user)\
+            .order_by("-datetime_created").exclude(is_active=False)
     else:
         reports = None
-    activity = ActivityItem.objects.filter(user=profile_user.id).exclude(voting__banned=1).order_by('-datetime_created').exclude(is_active=False)
-    votings = Voting.objects.filter(user=profile_user.id).exclude(banned=1).order_by("-datetime_created").exclude(is_active=False)
+    activity = ActivityItem.objects.filter(user=profile_user.id)\
+        .exclude(voting__banned=1).order_by('-datetime_created').exclude(is_active=False)
+    votings = Voting.objects.filter(user=profile_user.id)\
+        .exclude(banned=1).order_by("-datetime_created").exclude(is_active=False)
     activity_small = activity[:5]
     votings_small = votings[:5]
     votes_count=len(activity.filter(type=ActivityItem.ACTIVITY_VOTE))
@@ -182,7 +190,6 @@ def settings(request):
             formdata = form.cleaned_data
             if request.user.username != formdata['username']:
                 if len(User.objects.filter(username=formdata['username'])):
-                    form.add_error('username', 'User name already register')
                     return render(request, 'settings.html', context)
             item = User.objects.filter(id=request.user.id)
             if len(item):
