@@ -25,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'z*y=iaykh5$1scrva8jl52(t%t5%s_go%4xq4brsiyd@=_7v1t'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     '*'
@@ -45,7 +45,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -124,12 +123,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'VoteWebCore/static')
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = '/votings'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'VoteWebCore/static/uploads')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'VoteWebCore/uploads')
 MEDIA_URL = '/uploads/'
 
 CSRF_FAILURE_VIEW = 'VoteWebCore.views.error_csrf'

@@ -19,12 +19,12 @@ from django.urls import path
 from django.conf.urls.static import static
 
 from VoteSimple import settings
-from VoteWebCore import views, api_views
+from VoteWebCore import views, api_views, error_views
 
-handler400 = 'VoteWebCore.views.error_bad_request'
-handler403 = 'VoteWebCore.views.error_forbidden'
-handler404 = 'VoteWebCore.views.error_not_found'
-handler500 = 'VoteWebCore.views.error_internal'
+handler400 = error_views.error_bad_request
+handler403 = error_views.error_forbidden
+handler404 = error_views.error_not_found
+handler500 = error_views.error_internal
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -55,4 +55,7 @@ urlpatterns = [
     path('api/upload/<str:upload_as>', api_views.upload),
     path('api/favourites/<str:action>/<int:voting_id>', api_views.favourites),
     path('api/remove/<str:model>/<int:id>', api_views.remove),
+
+    # Default view
+    path(r'', error_views.error_not_found)
 ]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
