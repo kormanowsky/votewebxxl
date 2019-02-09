@@ -44,7 +44,7 @@ class Voting(models.Model):
 
     # Returns voting status
     def status(self, user):
-        status = 0
+        status = self.VOTING_BANNED
         if not len(self.questions()):
             return status
         if self.banned:
