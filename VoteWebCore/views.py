@@ -13,8 +13,6 @@ from VoteWebCore.error_views import *
 
 
 def index(request):
-    if request.user.is_authenticated:
-        return redirect("/votings")
     return render(request, "index.html", {
         "html_title": "Home"
     })

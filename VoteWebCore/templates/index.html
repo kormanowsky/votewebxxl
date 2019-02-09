@@ -21,14 +21,15 @@
             </div>
         </div>
     </section>
-    <section id="about" class="py-5 px-3 px-lg-0">
+    <section id="about" class="bg-white py-5 px-3 px-lg-0 font-weight-300">
         <div class="container py-0 py-lg-5">
             <div class="row">
                 <div class="col-12">
-                    <h1 class="text-primary font-weight-100">
+                    <h1 class="text-primary font-weight-300">
                         About VoteWebXXL
                     </h1>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo sequi quibusdam, omnis nemo facilis asperiores, laboriosam laborum tenetur aliquam, minima fugiat ab accusantium perferendis hic eum assumenda quia voluptates atque consequuntur iusto itaque accusamus error. Officiis, vel iure vitae libero ad assumenda beatae corporis minima, placeat ab iusto consequuntur veniam obcaecati dolore et. Dicta nisi voluptas tenetur incidunt laboriosam modi architecto repudiandae, recusandae, dolores, suscipit laborum ducimus neque fugit delectus reiciendis autem aspernatur natus est ex earum itaque! Consequatur enim, suscipit eos fugit ipsum incidunt debitis, dolorum iure quo aut possimus. Maiores dolore repellendus deleniti doloremque. Quam repellendus, illum cupiditate!</p>
+                    <h4>With our app you can easily create votings and collect people's opinions!</h4>
+                    
                 </div>
             </div>
         </div>
@@ -38,39 +39,96 @@
         <div class="container py-0 py-lg-5">
             <div class="row">
                 <div class="col-12">
-                    <h1 class="text-white font-weight-100">
+                    <h1 class="text-white font-weight-300">
                         Team
                     </h1>
-                    <p class="text-white">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo sequi quibusdam, omnis nemo facilis asperiores, laboriosam laborum tenetur aliquam, minima fugiat ab accusantium perferendis hic eum assumenda quia voluptates atque consequuntur iusto itaque accusamus error. Officiis, vel iure vitae libero ad assumenda beatae corporis minima, placeat ab iusto consequuntur veniam obcaecati dolore et. Dicta nisi voluptas tenetur incidunt laboriosam modi architecto repudiandae, recusandae, dolores, suscipit laborum ducimus neque fugit delectus reiciendis autem aspernatur natus est ex earum itaque! Consequatur enim, suscipit eos fugit ipsum incidunt debitis, dolorum iure quo aut possimus. Maiores dolore repellendus deleniti doloremque. Quam repellendus, illum cupiditate!</p>
+                    <div><h1>Team Here</h1></div>
                 </div>
             </div>
         </div>
     </section>
-    <section id="register" class="py-5 px-3 px-lg-0">
+    <section id="register" class="bg-white py-5 px-3 px-lg-0">
         <div class="container py-0 py-lg-5">
             <div class="row">
                 <div class="col-12">
-                    <h1 class="text-primary font-weight-100">
+                    <h1 class="text-primary font-weight-300">
                         Try it yourself!
                     </h1>
-                    <div class="mt-4">
-                        <a href="/register" class="btn btn-primary shadow-sm">Register now</a>
+                    <div class="mt-4 mx-2">
+                        <form role="form" action="/register" method="post">
+                            {% csrf_token %} {% if not form.is_valid %}
+                            <div class="row">
+                                <div class="col-12">
+                                    {% for error in errors %}
+                                    <p class="text-danger">{{error}}</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                            <div class="row">
+                                <div class="col-6">
+                                    <p>Account info</p>
+                                    <div class="form-group mb-3">
+                                        <div class="input-group input-group-alternative">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="la la-user"></i></span>
+                                            </div>
+                                            <input class="form-control" placeholder="Username" type="text" name="username" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <div class="input-group input-group-alternative">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="la la-envelope"></i></span>
+                                            </div>
+                                            <input class="form-control" placeholder="Email" type="email" name="email" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group input-group-alternative">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="la la-key"></i></span>
+                                            </div>
+                                            <input class="form-control" placeholder="Password" type="password" name="password1" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group input-group-alternative">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="la la-key"></i></span>
+                                            </div>
+                                            <input class="form-control" placeholder="Password confirmation" type="password" name="password2" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <p>Personal info</p>
+                                    <div class="form-group">
+                                        <div class="input-group input-group-alternative">
+                                            <input class="form-control" placeholder="Firstname" type="text" name="first_name" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group input-group-alternative">
+                                            <input class="form-control" placeholder="Lastname" type="text" name="last_name" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <button type="submit" class="btn btn-primary my-4">Register</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    <section id="donate" class="py-5 px-3 px-lg-0">
-        <div class="container py-0 py-lg-5">
-            <div class="row">
-                <div class="col-12">
-                    <h1 class="text-primary font-weight-100">
-                        Donate us
-                    </h1>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo sequi quibusdam, omnis nemo facilis asperiores, laboriosam laborum tenetur aliquam, minima fugiat ab accusantium perferendis hic eum assumenda quia voluptates atque consequuntur iusto itaque accusamus error. Officiis, vel iure vitae libero ad assumenda beatae corporis minima, placeat ab iusto consequuntur veniam obcaecati dolore et. Dicta nisi voluptas tenetur incidunt laboriosam modi architecto repudiandae, recusandae, dolores, suscipit laborum ducimus neque fugit delectus reiciendis autem aspernatur natus est ex earum itaque! Consequatur enim, suscipit eos fugit ipsum incidunt debitis, dolorum iure quo aut possimus. Maiores dolore repellendus deleniti doloremque. Quam repellendus, illum cupiditate!</p>
-                </div>
-            </div>
+    <footer class="bg-primary">
+        <div class="text-center p-4 text-white font-weight-300">
+            VoteWebXXL v0.9<br>&copy; 2019 The VoteWebXXL Team. All Rights Reserved.
         </div>
-    </section>
+    </footer>
 </div>
 {% endblock body %}
