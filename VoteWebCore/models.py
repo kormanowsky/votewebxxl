@@ -80,14 +80,14 @@ class Voting(models.Model):
 
     # Returns datetime_created in dd.mm.yyyy
     def datetime_created_str(self):
-        return self.datetime_created.strftime("%d.%m.%Y at %H:%M")
+        return datetime_human(self.datetime_created)
     datetime_created_str.short_description = "Datetime of creation"
 
     # Returns datetime_closed in dd.mm.yyyy
     def datetime_closed_str(self):
         if not self.datetime_closed:
             return None
-        return self.datetime_closed.strftime("%d.%m.%Y")
+        return date_human(self.datetime_closed)
     datetime_closed_str.short_description = "Date of closing"
 
     # Returns human time difference between current time and voting closing time
@@ -167,6 +167,17 @@ class Question(models.Model):
     def __str__(self):
         return self.text + " (#" + str(self.id) + ")"
 
+    def voting_html(self):
+        if not self.voting:
+            return "-"
+        return mark_safe('<a href="/admin/VoteWebCore/voting/%d/change">%s (#%d)</a><br/>'
+                         % (self.voting.id, self.voting.title, self.voting.id))
+    voting_html.short_description = "Voting"
+
+    def answers_html(self):
+        return mark_safe("<br/>".join(list(map(str, self.answers))))
+    answers_html.short_description = "Answers"
+
 
 # Vote
 class Vote(models.Model):
@@ -174,6 +185,17 @@ class Vote(models.Model):
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
     question = models.ForeignKey(to=Question, on_delete=models.CASCADE)
     answer = models.CharField(max_length=100)
+
+    def datetime_created_str(self):
+        return datetime_human(self.datetime_created)
+    datetime_created_str.short_description = "Datetime of creation"
+
+    def question_html(self):
+        question = self.question
+        html = '<a href="/admin/VoteWebCore/question/%d/change">%s (#%s)</a><br/>' % (
+        question.id, question.text, str(question.id))
+        return mark_safe(html)
+    question_html.short_description = "Question"
 
 
 # Report
@@ -198,7 +220,15 @@ class Report(models.Model):
         return ["Waiting", "Declined", "Accepted"][self.status]
 
     def datetime_created_str(self):
-        return self.datetime_created.strftime("%d.%m.%Y at %H:%M")
+        return datetime_human(self.datetime_created)
+    datetime_created_str.short_description = "Datetime of creation"
+
+    def voting_html(self):
+        if not self.voting:
+            return "-"
+        return mark_safe('<a href="/admin/VoteWebCore/voting/%d/change">%s (#%d)</a><br/>'
+                         % (self.voting.id, self.voting.title, self.voting.id))
+    voting_html.short_description = "Voting"
 
 
 # Activity item
@@ -229,6 +259,19 @@ class ActivityItem(models.Model):
             "text": text, 
             "icon": icon
         }
+
+    def datetime_created_str(self):
+        return datetime_human(self.datetime_created)
+    datetime_created_str.short_description = "Datetime of creation"
+
+    def voting_html(self):
+        if not self.voting:
+            return "-"
+        return mark_safe('<a href="/admin/VoteWebCore/voting/%d/change">%s (#%d)</a><br/>'
+                         % (self.voting.id, self.voting.title, self.voting.id))
+    voting_html.short_description = "Voting"
+
+
 
 
 # Image
@@ -265,6 +308,10 @@ class Image(models.Model):
         return mark_safe('<img height=100 src="%s">' % src)
     img.short_description = 'Image'
 
+    def datetime_created_str(self):
+        return datetime_human(self.datetime_created)
+    datetime_created_str.short_description = "Datetime of creation"
+
 
 # Comment
 class Comment(models.Model):
@@ -275,4 +322,12 @@ class Comment(models.Model):
     datetime_created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     def datetime_created_str(self):
-        return self.datetime_created.strftime("%d.%m.%Y at %H:%M")
+        return datetime_human(self.datetime_created)
+    datetime_created_str.short_description = "Datetime of creation"
+
+    def voting_html(self):
+        if not self.voting:
+            return "-"
+        return mark_safe('<a href="/admin/VoteWebCore/voting/%d/change">%s (#%d)</a><br/>'
+                         % (self.voting.id, self.voting.title, self.voting.id))
+    voting_html.short_description = "Voting"

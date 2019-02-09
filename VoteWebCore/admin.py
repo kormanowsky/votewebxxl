@@ -6,27 +6,27 @@ class VotingAdmin(admin.ModelAdmin):
 
 
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'owner', 'voting', 'text', 'type', 'answers')
+    list_display = ('id', 'owner', 'voting_html', 'text', 'type', 'answers_html')
 
 
 class VoteAdmin(admin.ModelAdmin):
-    list_display = ('id', 'creator', 'datetime_created', 'question', 'answer')
+    list_display = ('id', 'creator', 'datetime_created_str', 'question_html', 'answer')
 
 
 class ReportAdmin(admin.ModelAdmin):
-    list_display = ('id', 'creator', 'datetime_created', 'voting', 'title', 'message', 'status')
+    list_display = ('id', 'creator', 'datetime_created_str', 'voting_html', 'title', 'message', 'status')
 
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'creator', 'datetime_created', 'voting', 'message')
+    list_display = ('id', 'creator', 'datetime_created_str', 'voting_html', 'message')
 
 
 class ImageAdmin(admin.ModelAdmin):
-    list_display = ('id', 'owner', 'datetime_created', 'role', 'img')
+    list_display = ('id', 'owner', 'datetime_created_str', 'role', 'img')
 
 
 class ActivityItemAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'datetime_created', 'voting', 'type')
+    list_display = ('id', 'user', 'datetime_created_str', 'voting', 'type')
 
 # Registration
 admin.site.site_header = "VoteWebXXL | Admin Panel"

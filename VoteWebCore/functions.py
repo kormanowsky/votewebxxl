@@ -61,5 +61,11 @@ def datetime_str_to_obj(datetime_str):
                                tzinfo=tz.tzutc())
     return datetime_obj
 
+def datetime_human(dt):
+    return dt.strftime("%d.%m.%Y at %H:%M")
+
+def date_human(dt):
+    return dt.strftime("%d.%m.%Y")
+
 def generate_file_name(file, src_name):
     return str(uuid4()).replace("-", "/") + '.' + src_name.split('.')[-1]
