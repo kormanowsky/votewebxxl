@@ -4,7 +4,7 @@ from json import dumps as json_encode, loads as json_decode
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.safestring import mark_safe
-from json import dumps as json_encode, loads as json_decode
+
 from VoteWebCore.functions import *
 
 
@@ -106,7 +106,7 @@ class Voting(models.Model):
 
     # Checks if user added to favourites
     def user_added_to_favourites(self, user):
-        return len(ActivityItem.objects.filter(type=ActivityItem.ACTIVITY_FAVOURITE, voting=self.id, user=user.id))
+        return len(ActivityItem.objects.filter(type=ActivityItem.ACTIVITY_FAVOURITE, voting=self.id, user=user.id).exclude(is_active=False))
 
     # Checks if current user added to favourites
     def current_user_added_to_favourites(self, request):
@@ -114,12 +114,12 @@ class Voting(models.Model):
 
     # Returns count of favourites
     def favourites_count(self):
-        return len(ActivityItem.objects.filter(type=ActivityItem.ACTIVITY_FAVOURITE, voting=self.id))
+        return len(ActivityItem.objects.filter(type=ActivityItem.ACTIVITY_FAVOURITE, voting=self.id).exclude(is_active=False))
     favourites_count.short_description = "Count of additions to Favourites"
 
     # Returns comments list
     def comments(self):
-        return Comment.objects.filter(voting=self.id).order_by("-datetime_created")
+        return Comment.objects.filter(voting=self.id).order_by("-datetime_created").exclude(is_active=False)
 
     # Returns comments count
     def comments_count(self):
@@ -128,29 +128,24 @@ class Voting(models.Model):
 
     # HTML for questions field in admin panel
     def questions_html(self):
-        if not len(self.questions()):
-            return "-"
-        html = ""
-        for question in self.questions():
-            html += '<a href="/admin/VoteWebCore/question/%d/change">%s (#%s)</a><br/>' % (question.id, question.text, str(question.id))
-        return mark_safe(html)
+        return questions_html(self.questions())
     questions_html.short_description = "Questions"
 
     # HTML for user field in admin panel
     def user_html(self):
-        if not self.user:
-            return "-"
-        return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.user.id, self.user.first_name, self.user.last_name, self.user.username))
-    user_html.short_description = "Owner"
+        return user_html(self.user)
+    user_html.short_description = "User"
 
     # Convert to string (for site admin panel)
     def __str__(self):
-        return self.title + " (#" + str(self.id) + ")"
+        return "{} (#{})".format(self.title, self.id)
 
 
 # Question
 class Question(models.Model):
+
     # Question types
+
     # Question with two buttons (usually 'yes' and 'no')
     QUESTION_BUTTONS = 0
     # Question with radio inputs
@@ -158,13 +153,15 @@ class Question(models.Model):
     # Question with checkboxes
     QUESTION_MULTIPLE_ANSWERS = 2
 
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True, default=None, blank=True)
-    voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE, null=True, blank=True)
-    type = models.IntegerField(choices=(
+    QUESTION_TYPES = [
         (QUESTION_BUTTONS, 'Buttons'),
         (QUESTION_SINGLE_ANSWER, 'Radio inputs'),
         (QUESTION_MULTIPLE_ANSWERS, 'Checkboxes')
-    ))
+    ]
+
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True, default=None, blank=True)
+    voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE, null=True, blank=True)
+    type = models.IntegerField(choices=QUESTION_TYPES)
     text = models.CharField(max_length=300)
     answers = JSONField(max_length=10000)
     is_active = models.BooleanField(default=True)
@@ -173,7 +170,7 @@ class Question(models.Model):
     def stats(self):
         stats = {}
         for answer in self.answers:
-            stats[answer] = len(Vote.objects.filter(question=self.id, answer=answer))
+            stats[answer] = len(Vote.objects.filter(question=self.id, answer=answer).exclude(is_active=False))
         return stats
 
     # Checks if user has voted
@@ -186,27 +183,24 @@ class Question(models.Model):
             return False
         return self.user_voted(request.user)
 
-
-
+    # HTML for voting field in admin panel
     def voting_html(self):
-        if not self.voting:
-            return "-"
-        return mark_safe('<a href="/admin/VoteWebCore/voting/%d/change">%s (#%d)</a><br/>'
-                         % (self.voting.id, self.voting.title, self.voting.id))
+        return voting_html(self)
     voting_html.short_description = "Voting"
 
+    # HTML for answers field in admin panel
     def answers_html(self):
         return mark_safe("<br/>".join(list(map(str, self.answers))))
     answers_html.short_description = "Answers"
 
+    # HTML for user field in admin panel
     def user_html(self):
-        if not self.user:
-            return "-"
-        return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.user.id, self.user.first_name, self.user.last_name, self.user.username))
-    user_html.short_description = "Owner"
+        return user_html(self)
+    user_html.short_description = "User"
 
+    # Convert to string (for site admin panel)
     def __str__(self):
-        return self.text + " (#" + str(self.id) + ")"
+        return "{} (#{})".format(self.text, self.id)
 
 
 # Vote
@@ -217,32 +211,31 @@ class Vote(models.Model):
     answer = models.CharField(max_length=100)
     is_active = models.BooleanField(default=True)
 
+    # Returns datetime_created in dd.mm.yyyy
     def datetime_created_str(self):
         return datetime_human(self.datetime_created)
     datetime_created_str.short_description = "Datetime of creation"
 
+    # HTML for question field in admin panel
     def question_html(self):
-        question = self.question
-        html = '<a href="/admin/VoteWebCore/question/%d/change">%s (#%s)</a><br/>' % (
-        question.id, question.text, str(question.id))
-        return mark_safe(html)
+        return question_html(self.question)
     question_html.short_description = "Question"
 
+    # HTML for user field in admin panel
     def user_html(self):
-        if not self.user:
-            return "-"
-        return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.user.id, self.user.first_name, self.user.last_name, self.user.username))
-    user_html.short_description = "Creator"
+        return user_html(self.user)
+    user_html.short_description = "User"
 
+    # Convert to string (for site admin panel)
     def __str__(self):
-        return "Vote #" + str(self.id) + ""
-
-
+        return "Vote #{}".format(self.id)
 
 
 # Report
 class Report(models.Model):
+
     # Report statuses
+
     # Report that is waiting for resolution
     REPORT_WAITING = 0
     # Report that was declined by admins
@@ -250,39 +243,45 @@ class Report(models.Model):
     # Report that was accepted by admins
     REPORT_ACCEPTED = 2
 
+    REPORT_STATUSES = [
+        (REPORT_WAITING, 'Waiting'),
+        (REPORT_DECLINED, 'Declined'),
+        (REPORT_ACCEPTED, 'Accepted')
+    ]
+
     user = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
     voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=256)
     message = models.CharField(max_length=512)
     datetime_created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-    status = models.IntegerField(default=0, choices=(
-        (REPORT_WAITING, 'Waiting'),
-        (REPORT_DECLINED, 'Declined'),
-        (REPORT_ACCEPTED, 'Accepted')
-    ))
+    status = models.IntegerField(default=REPORT_WAITING, choices=REPORT_STATUSES)
     is_active = models.BooleanField(default=True)
 
+    # Returns datetime_created as a readable string
     def datetime_created_str(self):
         return datetime_human(self.datetime_created)
     datetime_created_str.short_description = "Datetime of creation"
 
+    # HTML for voting field in admin panel
     def voting_html(self):
-        if not self.voting:
-            return "-"
-        return mark_safe('<a href="/admin/VoteWebCore/voting/%d/change">%s (#%d)</a><br/>'
-                         % (self.voting.id, self.voting.title, self.voting.id))
+        return voting_html(self)
     voting_html.short_description = "Voting"
 
+    # HTML for user field in admin panel
     def user_html(self):
-        if not self.user:
-            return "-"
-        return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.user.id, self.user.first_name, self.user.last_name, self.user.username))
-    user_html.short_description = "Creator"
+        return user_html(self)
+    user_html.short_description = "User"
+
+    # Convert to string (for site admin panel)
+    def __str__(self):
+        return "Report #{}".format(self.id)
 
 
 # Activity item
 class ActivityItem(models.Model):
+
     # Activity item types
+
     # New voting
     ACTIVITY_NEW_VOTING = 0
     # Vote in voting
@@ -292,67 +291,100 @@ class ActivityItem(models.Model):
     # Comment on voting
     ACTIVITY_COMMENT = 3
 
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
-    type = models.IntegerField(default=0, choices=(
+    ACTIVITY_TYPES = [
         (ACTIVITY_NEW_VOTING, 'New voting'),
         (ACTIVITY_VOTE, 'Vote'),
         (ACTIVITY_FAVOURITE, 'Added to favourite'),
         (ACTIVITY_COMMENT, 'Comment'),
-    ))
+    ]
+
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    type = models.IntegerField(default=ACTIVITY_NEW_VOTING, choices=ACTIVITY_TYPES)
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
     voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
 
-    # Returns human time difference between current time and voting creation time
-    def creation_time_diff(self):
-        return datetime_human_diff(datetime.utcnow(), self.datetime_created.replace(tzinfo=None))
-    
+    # Returns data for activity_item.html
     def display_data(self):
-        text = ["created voting", "voted in", "added to favourites", "added comment to"][self.type]
-        icon = ["question", "check-square", "star", "comment"][self.type]
+        text = ["created voting", "voted in", "added to favourites"][self.type]
+        icon = ["question", "check-square", "star"][self.type]
         return {
             "text": text, 
             "icon": icon
         }
 
+    # Returns human time difference between current time and voting creation time
+    def creation_time_diff(self):
+        return datetime_human_diff(datetime.utcnow(), self.datetime_created.replace(tzinfo=None))
+
+    # Returns datetime_created as a readable string
     def datetime_created_str(self):
         return datetime_human(self.datetime_created)
     datetime_created_str.short_description = "Datetime of creation"
 
+    # HTML for voting field in admin panel
     def voting_html(self):
-        if not self.voting:
-            return "-"
-        return mark_safe('<a href="/admin/VoteWebCore/voting/%d/change">%s (#%d)</a><br/>'
-                         % (self.voting.id, self.voting.title, self.voting.id))
+        return voting_html(self.voting)
     voting_html.short_description = "Voting"
 
+    # HTML for user field in admin panel
     def user_html(self):
-        if not self.user:
-            return "-"
-        return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.user.id, self.user.first_name, self.user.last_name, self.user.username))
+        return user_html(self.user)
     user_html.short_description = "User"
 
+    # Convert to string (for site admin panel)
+    def __str__(self):
+        return "Activity item #{}".format(self.id)
 
 
 # Image
 class Image(models.Model):
 
     # Image roles
+
     # Avatar
     IMAGE_ROLE_AVATAR = 0
+
+    IMAGE_ROLES = [
+        (IMAGE_ROLE_AVATAR, 'Avatar')
+    ]
 
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
     data = models.ImageField(upload_to=generate_file_name, null=True)
-    role = models.IntegerField(default=0, choices=[(IMAGE_ROLE_AVATAR, 'Avatar')])
+    role = models.IntegerField(default=IMAGE_ROLE_AVATAR, choices=IMAGE_ROLES)
     is_active = models.BooleanField(default=True)
 
+    # Returns datetime_created as a readable string
+    def datetime_created_str(self):
+        return datetime_human(self.datetime_created)
+    datetime_created_str.short_description = "Datetime of creation"
+
+    # HTML for user field in admin panel
+    def user_html(self):
+        return user_html(self)
+    user_html.short_description = "User"
+
+    # Image data for admin panel
+    def img(self):
+        return format_html('<img height=100 src="{0}">',
+                           mark_safe(self.data.url)
+                           )
+    img.short_description = 'Image'
+
+    # Convert to string (for site admin panel)
+    def __str__(self):
+        return "Image #{}".format(self.id)
+
+    # Converts string role to int role
     @classmethod
     def role_str_to_int(cls, role_str):
-        if role_str == "avatar":
-            return cls.IMAGE_ROLE_AVATAR
+        for role in roles:
+            if role[1].lower() == role_str.replace("_", " "):
+                return role[0]
         return -1
 
+    # Returns avatar url for specified user
     @classmethod
     def get_avatar_url(cls, request, user=None):
         if not user:
@@ -362,22 +394,6 @@ class Image(models.Model):
         if len(image):
             avatar_url = 'http://' + request.get_host() + image[0].data.url
         return avatar_url
-
-    # Admin panel
-    def img(self):
-        src = self.data.url
-        return mark_safe('<img height=100 src="%s">' % src)
-    img.short_description = 'Image'
-
-    def datetime_created_str(self):
-        return datetime_human(self.datetime_created)
-    datetime_created_str.short_description = "Datetime of creation"
-
-    def user_html(self):
-        if not self.user:
-            return "-"
-        return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.user.id, self.user.first_name, self.user.last_name, self.user.username))
-    user_html.short_description = "Owner"
 
 
 # Comment
@@ -389,19 +405,21 @@ class Comment(models.Model):
     datetime_created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     is_active = models.BooleanField(default=True)
 
+    # Returns datetime_created as a readable string
     def datetime_created_str(self):
         return datetime_human(self.datetime_created)
     datetime_created_str.short_description = "Datetime of creation"
 
+    # HTML for voting field in admin panel
     def voting_html(self):
-        if not self.voting:
-            return "-"
-        return mark_safe('<a href="/admin/VoteWebCore/voting/%d/change">%s (#%d)</a><br/>'
-                         % (self.voting.id, self.voting.title, self.voting.id))
+        return voting_html(self)
     voting_html.short_description = "Voting"
 
+    # HTML for user field in admin panel
     def user_html(self):
-        if not self.user:
-            return "-"
-        return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.user.id, self.user.first_name, self.user.last_name, self.user.username))
-    user_html.short_description = "Creator"
+        return user_html(self)
+    user_html.short_description = "User"
+
+    # Convert to string (for site admin panel)
+    def __str__(self):
+        return "Comment #{}".format(self.id)
