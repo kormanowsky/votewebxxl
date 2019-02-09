@@ -16,7 +16,7 @@
     </a>
 </li>
 {% endif %}
-{% if voting.owner == request.user %}
+{% if voting.user == request.user %}
 <li class="nav-item">
     <a href="/voting/{{ voting.id }}/edit" class="d-flex pb-3 align-items-center">
         <p class="m-0">Edit</p>

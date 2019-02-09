@@ -82,7 +82,7 @@ def voting_single(request, voting_id=-1, action="index"):
                 if not question in questions:
                     return error_bad_request(request)
             for answer in answers:
-                vote = Vote(question=answer['question'], answer=answer['answer'], creator=request.user)
+                vote = Vote(question=answer['question'], answer=answer['answer'], user=request.user)
                 vote.save()
             activity_item = ActivityItem(user=request.user, voting=voting, type=ActivityItem.ACTIVITY_VOTE)
             activity_item.save()
@@ -93,7 +93,7 @@ def voting_single(request, voting_id=-1, action="index"):
         form = ReportForm(request.POST)
         if form.is_valid():
             item = Report(status=Report.REPORT_WAITING, voting=voting,
-                          creator=request.user, title=form.data['title'], message=form.data['message'])
+                          user=request.user, title=form.data['title'], message=form.data['message'])
             item.save()
         return JsonResponse({'is_valid': form.is_valid(), 'errors': form.errors})
     elif action == "remove":
@@ -117,7 +117,7 @@ def voting_single(request, voting_id=-1, action="index"):
     elif action == "comment":
         form = CommentForm(request.POST)
         if form.is_valid():
-            item = Comment(creator=request.user, message=form.data['message'], voting=voting)
+            item = Comment(user=request.user, message=form.data['message'], voting=voting)
             item.save()
             return JsonResponse({
                 "is_valid": True,
@@ -142,7 +142,7 @@ def profile(request, username=None):
     else:
         return error_not_found(request)
     if profile_user == request.user:
-        reports = Report.objects.filter(creator=profile_user).order_by("-datetime_created").exclude(is_active=False)
+        reports = Report.objects.filter(user=profile_user).order_by("-datetime_created").exclude(is_active=False)
     else:
         reports = None
     activity = ActivityItem.objects.filter(user=profile_user.id).exclude(voting__banned=1).order_by('-datetime_created').exclude(is_active=False)

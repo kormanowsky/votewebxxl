@@ -41,15 +41,9 @@ def save_question(request):
         if form.data['question_id']:
             question = Question.objects.filter(id=form.data['question_id']).exclude(is_active=False)
             if not len(question):
-                return JsonResponse({
-                    "ErrorCode": 404,
-                    "Error": "InvalidQuestionId",
-                })
+                return error_forbidden(request)
             if not question[0].user == request.user:
-                return JsonResponse({
-                    "ErrorCode": 403,
-                    "Error": "NotAllowedError",
-                })
+                return error_forbidden(request)
             if question[0].text != form.data['text'] or question[0].answers != form.data['answers']:
                 Vote.objects.filter(question=question[0].id).update(is_active=False)
             question.update(text=form.data['text'], type=form.data['type'], answers=form.data['answers'])

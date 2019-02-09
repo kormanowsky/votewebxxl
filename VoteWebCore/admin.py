@@ -1,6 +1,8 @@
 from django.contrib import admin
 from .models import *
 
+# Admin panel pages
+
 
 class VotingAdmin(admin.ModelAdmin):
     list_display = ('id', 'user_html', 'title', 'questions_html', 'datetime_created_str', 'datetime_closed_str', 'banned', 'open', 'open_stats', 'is_active')

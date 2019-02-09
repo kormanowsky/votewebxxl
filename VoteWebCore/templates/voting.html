@@ -11,12 +11,12 @@
             <h1 class="display-2 lh-110 mt-2 my-4"><a href="/voting/{{voting.id}}">{{ voting.title }}</a></h1>
             <div class="row d-flex align-items-center">
                 <div class="col-12{% if not voting_small %} col-md-6{% endif %}">
-                    <a href="/profile/{{ voting.owner.username }}">
+                    <a href="/profile/{{ voting.user.username }}">
                         <div class="d-flex align-items-center">
-                            <img src="{% avatar request voting.owner %}" class="avatar avatar-small shadow-sm">
+                            <img src="{% avatar request voting.user %}" class="avatar avatar-small shadow-sm">
                             <div class="ml-3">
-                                <p class="lh-100 font-weight-100 mb-1">{{ voting.owner.first_name }}&nbsp;{{ voting.owner.last_name }}</p>
-                                <p class="lh-100 small h6 text-muted">@{{ voting.owner.username }}</p>
+                                <p class="lh-100 font-weight-100 mb-1">{{ voting.user.first_name }}&nbsp;{{ voting.user.last_name }}</p>
+                                <p class="lh-100 small h6 text-muted">@{{ voting.user.username }}</p>
                             </div>
                         </div>
                     </a>
