@@ -23,7 +23,7 @@
             </div>
             {% endfor %} {% endif %} {% else %}
             <p class="text-muted text-center my-3">Question stats</p>
-            {% if question.has_votes() %}
+            {% if question.has_votes %}
             <canvas id="question-{{ question.id }}-stats"></canvas>
             <script>jQuery(function($){ window.Votings.stats.init({{ question.id }}, {{question.type}}, {{question.stats|safe}}); });</script>
             {% else %}

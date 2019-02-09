@@ -187,6 +187,10 @@ class Question(models.Model):
             return False
         return self.user_voted(request.user)
 
+    # Checks if question has votes
+    def has_votes(self):
+        return len(Vote.objects.filter(question=self.id).exclude(is_active=1))
+
     # HTML for voting field in admin panel
     def voting_html(self):
         return voting_html(self.voting)
