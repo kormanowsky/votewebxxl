@@ -57,6 +57,7 @@ def register(request):
             context['errors'] = form_errors(context['form'])
     return render(request, 'registration/registration.html', context)
 
+
 # New view for a single voting
 def voting_single(request, voting_id=-1, action="index"):
     voting_items = Voting.objects.filter(id=voting_id).exclude(is_active=False)

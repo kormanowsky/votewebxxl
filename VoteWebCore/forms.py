@@ -8,6 +8,10 @@ from VoteWebCore.functions import *
 from querystring_parser import parser
 
 
+# Shorten 'csrfmiddlewaretoken'
+CSRF_KEY = "csrfmiddlewaretoken"
+
+
 class RegisterForm(UserCreationForm):
     email = forms.EmailField()
     first_name = forms.CharField(max_length=32)
@@ -36,18 +40,19 @@ class VoteForm(forms.Form):
     def __init__(self, raw_data, *args, **kwargs):
         super(VoteForm, self).__init__(*args, **kwargs)
         raw_answers = parser.parse(raw_data.urlencode(), normalized=True)
+        del raw_answers[CSRF_KEY]
         answers = []
         for answer_key in raw_answers:
-            if answer_key != "csrfmiddlewaretoken":
-                question_id = int(answer_key[answer_key.find("_") + 1:])
-                question_answers = raw_answers[answer_key]
-                if not isinstance(question_answers, list):
-                    question_answers = [question_answers]
-                for answer in question_answers:
-                    answers.append({
-                        "question": Question(id=question_id),
-                        "answer": answer
-                    })
+            question_id = int(answer_key[answer_key.find("_") + 1:])
+            question_answers = raw_answers[answer_key]
+            if not isinstance(question_answers, list):
+                question_answers = [question_answers]
+            for answer in question_answers:
+                answers.append({
+                    "question": Question(id=question_id),
+                    "answer": answer
+                })
+
         self.data["answers"] = answers
         
 
@@ -63,11 +68,10 @@ class SaveVotingForm(forms.Form):
     datetime_closed = forms.DateField()
     open_stats = forms.BooleanField()
 
-
     def __init__(self, raw_data, *args, **kwargs):
         super(SaveVotingForm, self).__init__(*args, **kwargs)
         parsed_data = parser.parse(raw_data.urlencode(), normalized=True)
-        del parsed_data['csrfmiddlewaretoken']
+        del parsed_data[CSRF_KEY]
         if not isinstance(parsed_data['questions'], list):
             parsed_data['questions'] = [parsed_data['questions']]
         for i, question in enumerate(parsed_data['questions']):
@@ -129,10 +133,3 @@ class VotingsSearchForm(forms.Form):
 
 class CommentForm(forms.Form):
     message = forms.CharField(max_length=512)
-
-
-# ADMIN PANEL
-class VotingAdmin(forms.ModelForm):
-    class Meta:
-        model = Voting
-        fields = '__all__'
