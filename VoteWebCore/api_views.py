@@ -197,10 +197,12 @@ def remove(request, model="report", id=0):
     if not item[0].user == request.user:
         return error_forbidden(request)
 
-    voting_id = item[0].voting.id
     item.update(is_active=False)
+    voting = item[0].voting
 
     if model == "report":
+        voting.banned = 0
+        voting.save()
         return redirect("/profile/{}".format(request.user.username))
     else:
-        return redirect("/voting/{}".format(voting_id))
+        return redirect("/voting/{}".format(voting.id))
