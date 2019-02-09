@@ -132,7 +132,7 @@ def voting_single(request, voting_id=-1, action="index"):
 
 def profile(request, username=None):
     if username is None:
-        if request.user.username:
+        if request.user.is_authenticated:
             return redirect("/profile/" + request.user.username)
         else:
             return error_not_found(request)

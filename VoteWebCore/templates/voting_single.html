@@ -9,7 +9,7 @@
 {% block content_actions %}
 {% votingstatus voting request as status %}
 {% if status > voting.VOTING_BANNED %}
-{% if request.user.username %}
+{% if request.user.is_authenticated %}
 <li class="nav-item">
     <a href="#" class="d-flex pb-3 align-items-center" data-toggle="modal" data-target="#commentModal">
         <p class="m-0">Comment</p>
@@ -110,7 +110,7 @@
         </div>
     </div>
 </div>
-{% if request.user.username %}
+{% if request.user.is_authenticated %}
 <!-- Modal -->
 <div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
