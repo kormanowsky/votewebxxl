@@ -118,6 +118,15 @@ class Voting(models.Model):
         return len(self.comments())
     comments_count.short_description = "Comments count"
 
+    def questions_html(self):
+        if not len(self.questions()):
+            return "-"
+        html = ""
+        for question in self.questions():
+            html += '<a href="/admin/VoteWebCore/question/%d/change">%s (#%s)</a><br/>' % (question.id, question.text, str(question.id))
+        return mark_safe(html)
+    questions_html.short_description = "Questions"
+
     def __str__(self):
         return self.title + " (#" + str(self.id) + ")"
 
@@ -154,6 +163,9 @@ class Question(models.Model):
         if not is_logged_in(request):
             return False
         return self.user_voted(request.user)
+
+    def __str__(self):
+        return self.text + " (#" + str(self.id) + ")"
 
 
 # Vote
