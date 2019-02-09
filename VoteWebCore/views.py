@@ -11,6 +11,13 @@ from VoteWebCore.functions import *
 from VoteWebCore.api_views import save_voting
 from VoteWebCore.error_views import *
 
+def index(request):
+    if is_logged_in(request):
+        return redirect("/votings")
+    return render(request, "index.html", {
+        "html_title": "Home"
+    })
+
 @login_required
 def votings(request):
     votings = Voting.objects.exclude(is_active=False)

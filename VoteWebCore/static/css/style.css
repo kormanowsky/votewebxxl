@@ -287,9 +287,43 @@ table td {
 
 /* Стили страницы ошибки */
 
-#error-code{
+#error-code {
     font-size: 12em;
 }
+
+/* Стили лендинга */
+
+@keyframes landing_scroll {
+    from {bottom: 1em;}
+    50% {bottom: 1.5em;}
+    to {bottom: 1em;}
+}
+
+#landing-sitename {
+    padding-top: 3em;
+    padding-bottom: 0;
+    font-size: 3rem;
+    margin: 0;
+}
+
+#landing-supporting {
+    padding-bottom: 9em;
+}
+
+#landing-scroll {
+    color: #fff;
+    font-size: 3rem;
+    margin: 0 auto;
+    text-align: center;
+    position: absolute;
+    right: 0;
+    left: 0;
+    bottom: 1em;
+    animation-name: landing_scroll;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+}
+
 /* ÐÐ´Ð°Ð¿Ñ‚Ð¸Ð²Ð½Ð¾ÑÑ‚ÑŒ */
 
 @media(min-width: 768px) {
@@ -344,6 +378,13 @@ table td {
 
     .modal-wide > .modal-dialog {
         max-width: 700px;
+    }
+
+    #landing-sitename {
+        padding-top: 3em;
+        padding-bottom: 0;
+        font-size: 4rem;
+        margin: 0;
     }
 }
 

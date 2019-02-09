@@ -27,7 +27,12 @@ handler404 = error_views.error_not_found
 handler500 = error_views.error_internal
 
 urlpatterns = [
+    # Index view
+    path('', views.index),
+    # Admin
     path('admin/', admin.site.urls),
+
+    # Votings list & search
     path('votings', views.votings),
 
     # Auth module

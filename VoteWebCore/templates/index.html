@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block body %}
+<style>
+    html,
+    body {
+        overflow: auto !important;
+    }
+</style>
+<div id="wrap">
+    <section id="top" class="bg-gradient-primary h-100vh d-flex align-items-center justify-content-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="text-white text-center font-weight-700" id="landing-sitename">VoteWebXXL</h1>
+                    <h3 class="text-white text-center font-weight-100" id="landing-supporting">Web app for organising votings<br>
+                        <a href="/login" class="btn btn-outline-white mt-4">Log in</a>
+                    </h3>
+                </div>
+            </div>
+            <div id="landing-scroll">
+                <a class="text-white" href="#about" onclick="$('html').animate({ scrollTop: $(window).height()+'px'}, 600); return false;"><i class="la la-arrow-down"></i></a>
+            </div>
+        </div>
+    </section>
+    <section id="about" class="py-5 px-3 px-lg-0">
+        <div class="container py-0 py-lg-5">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="text-primary font-weight-100">
+                        About VoteWebXXL
+                    </h1>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo sequi quibusdam, omnis nemo facilis asperiores, laboriosam laborum tenetur aliquam, minima fugiat ab accusantium perferendis hic eum assumenda quia voluptates atque consequuntur iusto itaque accusamus error. Officiis, vel iure vitae libero ad assumenda beatae corporis minima, placeat ab iusto consequuntur veniam obcaecati dolore et. Dicta nisi voluptas tenetur incidunt laboriosam modi architecto repudiandae, recusandae, dolores, suscipit laborum ducimus neque fugit delectus reiciendis autem aspernatur natus est ex earum itaque! Consequatur enim, suscipit eos fugit ipsum incidunt debitis, dolorum iure quo aut possimus. Maiores dolore repellendus deleniti doloremque. Quam repellendus, illum cupiditate!</p>
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <section id="team" class="bg-primary py-5 px-3 px-lg-0">
+        <div class="container py-0 py-lg-5">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="text-white font-weight-100">
+                        Team
+                    </h1>
+                    <p class="text-white">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo sequi quibusdam, omnis nemo facilis asperiores, laboriosam laborum tenetur aliquam, minima fugiat ab accusantium perferendis hic eum assumenda quia voluptates atque consequuntur iusto itaque accusamus error. Officiis, vel iure vitae libero ad assumenda beatae corporis minima, placeat ab iusto consequuntur veniam obcaecati dolore et. Dicta nisi voluptas tenetur incidunt laboriosam modi architecto repudiandae, recusandae, dolores, suscipit laborum ducimus neque fugit delectus reiciendis autem aspernatur natus est ex earum itaque! Consequatur enim, suscipit eos fugit ipsum incidunt debitis, dolorum iure quo aut possimus. Maiores dolore repellendus deleniti doloremque. Quam repellendus, illum cupiditate!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="register" class="py-5 px-3 px-lg-0">
+        <div class="container py-0 py-lg-5">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="text-primary font-weight-100">
+                        Try it yourself!
+                    </h1>
+                    <div class="mt-4">
+                        <a href="/register" class="btn btn-primary shadow-sm">Register now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="donate" class="py-5 px-3 px-lg-0">
+        <div class="container py-0 py-lg-5">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="text-primary font-weight-100">
+                        Donate us
+                    </h1>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo sequi quibusdam, omnis nemo facilis asperiores, laboriosam laborum tenetur aliquam, minima fugiat ab accusantium perferendis hic eum assumenda quia voluptates atque consequuntur iusto itaque accusamus error. Officiis, vel iure vitae libero ad assumenda beatae corporis minima, placeat ab iusto consequuntur veniam obcaecati dolore et. Dicta nisi voluptas tenetur incidunt laboriosam modi architecto repudiandae, recusandae, dolores, suscipit laborum ducimus neque fugit delectus reiciendis autem aspernatur natus est ex earum itaque! Consequatur enim, suscipit eos fugit ipsum incidunt debitis, dolorum iure quo aut possimus. Maiores dolore repellendus deleniti doloremque. Quam repellendus, illum cupiditate!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock body %}
