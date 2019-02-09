@@ -127,6 +127,10 @@ class Voting(models.Model):
         return mark_safe(html)
     questions_html.short_description = "Questions"
 
+    def owner_html(self):
+        return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.owner.id, self.owner.first_name, self.owner.last_name, self.owner.username))
+    owner_html.short_description = "Owner"
+
     def __str__(self):
         return self.title + " (#" + str(self.id) + ")"
 
@@ -178,6 +182,10 @@ class Question(models.Model):
         return mark_safe("<br/>".join(list(map(str, self.answers))))
     answers_html.short_description = "Answers"
 
+    def owner_html(self):
+        return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.owner.id, self.owner.first_name, self.owner.last_name, self.owner.username))
+    owner_html.short_description = "Owner"
+
 
 # Vote
 class Vote(models.Model):
@@ -196,6 +204,12 @@ class Vote(models.Model):
         question.id, question.text, str(question.id))
         return mark_safe(html)
     question_html.short_description = "Question"
+
+    def creator_html(self):
+        return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.creator.id, self.creator.first_name, self.creator.last_name, self.creator.username))
+    creator_html.short_description = "Creator"
+
+
 
 
 # Report
@@ -229,6 +243,10 @@ class Report(models.Model):
         return mark_safe('<a href="/admin/VoteWebCore/voting/%d/change">%s (#%d)</a><br/>'
                          % (self.voting.id, self.voting.title, self.voting.id))
     voting_html.short_description = "Voting"
+
+    def creator_html(self):
+        return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.creator.id, self.creator.first_name, self.creator.last_name, self.creator.username))
+    creator_html.short_description = "Creator"
 
 
 # Activity item
@@ -271,6 +289,9 @@ class ActivityItem(models.Model):
                          % (self.voting.id, self.voting.title, self.voting.id))
     voting_html.short_description = "Voting"
 
+    def user_html(self):
+        return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.user.id, self.user.first_name, self.user.last_name, self.user.username))
+    user_html.short_description = "User"
 
 
 
@@ -312,6 +333,10 @@ class Image(models.Model):
         return datetime_human(self.datetime_created)
     datetime_created_str.short_description = "Datetime of creation"
 
+    def owner_html(self):
+        return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.owner.id, self.owner.first_name, self.owner.last_name, self.owner.username))
+    owner_html.short_description = "Owner"
+
 
 # Comment
 class Comment(models.Model):
@@ -331,3 +356,7 @@ class Comment(models.Model):
         return mark_safe('<a href="/admin/VoteWebCore/voting/%d/change">%s (#%d)</a><br/>'
                          % (self.voting.id, self.voting.title, self.voting.id))
     voting_html.short_description = "Voting"
+
+    def creator_html(self):
+        return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.creator.id, self.creator.first_name, self.creator.last_name, self.creator.username))
+    creator_html.short_description = "Creator"
