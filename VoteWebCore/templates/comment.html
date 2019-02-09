@@ -1,0 +1,35 @@
+<div class="card shadow-sm mt-3">
+    <div class="card-body p-3">
+        <div class="row">
+            <div class="col-12 small text-light mb-2">
+                Comment #{{ comment.id }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <a href="/profile/{{ comment.creator.username }}">
+                    <div class="d-flex align-items-center">
+                        <img src="{% avatar request comment.creator %}" class="avatar avatar-tiny shadow-sm">
+                        <div class="ml-2">
+                            <p class="lh-100 font-weight-100 mb-1 small">{{ comment.creator.first_name }}&nbsp;{{ comment.creator.last_name }}</p>
+                            <p class="lh-100 small text-muted m-0">@{{ comment.creator.username }}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 mb-1 mt-2">
+                {{ comment.message }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 small text-light">
+                {{ comment.datetime_created_str }}
+                {% if comment.creator == request.user %}
+                <a href="/api/remove/comment/{{ comment.id }}" class="ml-2 text-danger dangerous-action">Remove</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

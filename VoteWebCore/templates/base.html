@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+{# Базовый шаблон #}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% if html_title %}{{ html_title }}{% else %}{% block html_title %}{% endblock %}{% endif %} | VoteWebXXL</title>
+    <!-- Мета-теги: адаптивность и цвет адресной строки в мобильном Google Chrome -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#5e35b1">
+    <meta property="og:title" content="{% if html_title %}{{ html_title }} | {% endif %}VoteWebXXL">
+    {# Подключение статики #}
+    {% load static %}
+    <!-- Шрифты -->
+    <link type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,700,800&amp;subset=cyrillic-ext" rel="stylesheet">
+    <!-- Стили -->
+    <link type="text/css" href='{% static "css/argon.css" %}' rel="stylesheet">
+    <link type="text/css" href='{% static "css/argon-additional-components.css" %}' rel="stylesheet">
+    <link type="text/css" href='{% static "vendor/line-awesome/css/line-awesome.min.css" %}' rel="stylesheet">
+    <link type="text/css" href='{% static "vendor/bootstrap-datepicker/css/bootstrap-datepicker.min.css" %}' rel="stylesheet">
+    <!-- Собственные стили -->
+    <link type="text/css" href='{% static "css/style.css" %}' rel="stylesheet">
+    <!-- jQuery и другие скрипты шапки -->
+    <script type="text/javascript" src='{% static "vendor/jquery/jquery.min.js" %}'></script>
+    <script src='{% static "js/ajax.js" %}'></script>
+    <script src='{% static "js/votings.js" %}'></script>
+    <script src='{% static "js/upload.js" %}'></script>
+</head>
+
+<body>
+    {% block body %} {% endblock body %}
+    <!-- Модальное окно опасного действия -->
+    <div class="modal fade" id="dangerousActionConfirmModal" tabindex="-1" role="dialog" aria-labelledby="dangerousActionConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="dangerousActionConfirmModalLabel">Confirmation</h5>
+                </div>
+                <div class="modal-body">
+                    <p>Do you really want to do this?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger" data-dismiss="modal" id="dangerousModalYes">Yes</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Скрипты подвала -->
+    <script type="text/javascript" src='{% static "vendor/bootstrap/bootstrap.min.js" %}'></script>
+    <script type="text/javascript" src='{% static "js/argon.min.js" %}'></script>
+    <script type="text/javascript" src='{% static "vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js" %}'></script>
+    <script type="text/javascript" src="{% static 'vendor/masonry/masonry.pkgd.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/Chart.bundle.min.js' %}"></script>
+    <!-- Собственные скрипты -->
+    <script>
+        jQuery(function($) {
+            // Установка ширины содержимого в 375px для тех экранов, которые меньше 375px
+            var width = $(window).width();
+            if (width < 375) {
+                var viewportTag = $('meta[name="viewport"]');
+                viewportTag.attr('content', viewportTag.attr('content').replace('device-width, initial-scale=1.0', '375'));
+            }
+            // Инициализация карточек
+            InitMasonry();
+            // Загрузка картинок
+            $(".upload-image").each(function(index, input) {
+                window.Upload.init($(input));
+            });
+            // Опасные действия
+            $(".modal").last().css("z-index", "1059");
+            InitConfirmationModals();
+            var observer = new MutationObserver(function(records) {
+                InitConfirmationModals();
+                records.forEach(function(record) {
+                    if (record.addedNodes.length && $(record.target).hasClass('masonry-wrapper')) {
+                        $(record.target).masonry('addItems', record.addedNodes);
+                    } else if (record.removedNodes.length && $(record.target).hasClass('masonry-wrapper')) {
+                        $(record.target).masonry('remove', record.removedNodes);
+                    }
+                    LayoutMasonry();
+                });
+            });
+            observer.observe(document.body, {
+                attributes: true,
+                childList: true,
+                subtree: true
+            });
+            $('.input-daterange').datepicker();
+        });
+    </script>
+</body>
+
+</html>

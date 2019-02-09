@@ -1,0 +1,17 @@
+<div class="card profile-activity-item shadow-sm mt-4">
+    <div class="card-body row m-0 position-relative">
+        <div class="position-absolute profile-activity-left col px-0">
+            <div class="profile-activity-type shadow text-white bg-primary">
+                <i class="la la-{{ item.display_data.icon }}"></i>
+            </div>
+        </div>
+        <div class="col pl-0 pr-2 profile-activity-main pt-3 pl-2">
+            <h6 class="font-weight-300 text-muted m-0">
+                <a href="#">{{ item.user.first_name }} {{ item.user.last_name }}</a> {{ item.display_data.text }} <a href="/voting/{{ item.voting.id }}">{{ item.voting.title }}</a>
+            </h6>
+        </div>
+        <div class="position-absolute profile-activity-right text-right">
+            <p class="font-weight-700 small text-muted timestamp">{{ item.creation_time_diff }}</p>
+        </div>
+    </div>
+</div>

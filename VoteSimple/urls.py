@@ -13,19 +13,41 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path
+from django.conf.urls.static import static
 
-from VoteWebCore import views
+from VoteSimple import settings
+from VoteWebCore import views, api_views
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
-    path('quiz_list', views.quiz_list),
-    path('quiz_task', views.quiz_task),
-    path('quiz_save', views.quiz_save),
+    path('admin/', admin.site.urls),
+    path('votings', views.votings),
 
     # Auth module
     path('login', auth_views.LoginView.as_view()),
     path('logout', views.logout),
     path('register', views.register),
-]
+    path('remove-account', views.remove_account),
+
+    # Profile Page
+    path('profile/<str:username>', views.profile),
+
+    # Single voting
+    path('voting/<int:voting_id>', views.voting_single),
+    path('voting/<int:voting_id>/<str:action>', views.voting_single),
+
+    # Settings
+    path('settings', views.settings),
+
+    # Voting create
+    path('voting/create', views.voting_create),
+
+    # Ajax API
+    path('api/get-question/<int:id>', api_views.get_question),
+    path('api/save-question', api_views.save_question),
+    path('api/upload/<str:upload_as>', api_views.upload),
+    path('api/favourites/<str:action>/<int:voting_id>', api_views.favourites),
+    path('api/remove/<str:model>/<int:id>', api_views.remove),
+]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
