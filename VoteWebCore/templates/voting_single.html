@@ -7,7 +7,7 @@
 </div>
 {% endblock content %}
 {% block content_actions %}
-{% votingstatus voting request as status %}
+{% voting_status voting request as status %}
 {% if status > voting.VOTING_BANNED %}
 {% if request.user.is_authenticated %}
 <li class="nav-item">

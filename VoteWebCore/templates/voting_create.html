@@ -26,7 +26,7 @@
                     <div class="form-group">
                         <label for="input-title">Datetime of closing (leave blank to make your voting open forever)</label>
                         <div class="input-group">
-                            <input type="text" class="form-control datepicker" data-date-start-date="{% formatteddate 'tomorrow' %}" data-date-format="dd.mm.yyyy" name="datetime_closed" id="input-datetime_closed" value="{% if voting.datetime_closed %}{{ voting.datetime_closed}}{% endif %}">
+                            <input type="text" class="form-control datepicker" data-date-start-date="{% formatted_date 'tomorrow' %}" data-date-format="dd.mm.yyyy" name="datetime_closed" id="input-datetime_closed" value="{% if voting.datetime_closed %}{{ voting.datetime_closed}}{% endif %}">
                         </div>
                     </div>
                     <div class="form-group">

@@ -1,6 +1,6 @@
 {# Одно голосование. Для использования в циклах #}
-{% votingstatus voting request as status %}
-{% votingaddedtofavourites voting request as addedtofavourites %}
+{% voting_status voting request as status %}
+{% voting_added_to_favourites voting request as added_to_favourites %}
 {% if status >= voting.VOTING_OPEN and not voting_small %}
 <form action="/voting/{{ voting.id }}/save" method="post" onsubmit="return Votings.vote.checkForm(this);">
     {% csrf_token %}
@@ -95,14 +95,14 @@
             <div class="card shadow-sm mt-4">
                 <div class="card-body">
                     <div class="text-light font-weight-300 d-flex justify-content-around m-0 h4">
-                        <a href="#" onclick="Votings.favourites.{% if not addedtofavourites %}add{% else %}remove{% endif %}(this, {{ voting.id }}); return false;" class="d-flex align-items-center {% if addedtofavourites %}text-primary{% else %}text-light{% endif %}">
+                        <a href="#" onclick="Votings.favourites.{% if not added_to_favourites %}add{% else %}remove{% endif %}(this, {{ voting.id }}); return false;" class="d-flex align-items-center {% if added_to_favourites %}text-primary{% else %}text-light{% endif %}">
                             <i class="la la-star"></i>
                             <p class="my-0 lh-100 ml-2">{{ voting.favourites_count }}</p>
                         </a>
                         {% csrf_token %}
                         <div class="d-flex align-items-center">
                             <i class="la la-comments"></i>
-                            <p class="my-0 lh-100 ml-2" id="comments-count">{{ voting.comments|length }}</p>
+                            <p class="my-0 lh-100 ml-2" id="comments-count">{{ voting.comments_count }}</p>
                         </div>
                     </div>
                 </div>
