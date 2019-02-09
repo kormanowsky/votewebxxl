@@ -21,6 +21,11 @@ from django.conf.urls.static import static
 from VoteSimple import settings
 from VoteWebCore import views, api_views
 
+handler400 = 'VoteWebCore.views.error_bad_request'
+handler403 = 'VoteWebCore.views.error_forbidden'
+handler404 = 'VoteWebCore.views.error_not_found'
+handler500 = 'VoteWebCore.views.error_internal'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('votings', views.votings),

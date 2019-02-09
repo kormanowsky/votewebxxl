@@ -4,15 +4,13 @@ from django.shortcuts import redirect
 
 from VoteWebCore.models import *
 from VoteWebCore.forms import *
+from VoteWebCore.error_views import *
 
 # Get one question
 def get_question(request, id=0):
     question = Question.objects.filter(id=id)
     if not len(question):
-        return JsonResponse({
-            "ErrorCode": 404,
-            "Error": "InvalidQuestionId",
-        })
+        return error_not_found(request)
     question = question[0]
 
     if question.voting is not None:
@@ -37,10 +35,7 @@ def get_question(request, id=0):
 @login_required
 def save_question(request):
     if request.method != "POST":
-        return JsonResponse({
-            "ErrorCode": 403, 
-            "Error": "NotAllowedMethodError"
-        })
+        return error_method_not_allowed(request)
     form = QuestionForm(request.POST)
     if form.is_valid():
         if form.data['question_id']:
@@ -69,30 +64,26 @@ def save_question(request):
             "type": question.type,
             "answers": question.answers,
         })
-    return JsonResponse({
-        "ErrorCode": 403,
-        "Error": "InvalidInputError",
-    })
+    return error_bad_request(request)
 
 @login_required
 def upload(request, upload_as="avatar"):
-    if request.method == 'POST':
-        form = LoadImgForm(request.POST, request.FILES)
-        if form.is_valid():
-            role = Image.role_str_to_int(upload_as)
-            image = Image(owner=request.user, data=request.FILES['file'], role=role)
-            image.save()
-            return JsonResponse({
-                "id": image.id,
-                "owner": image.owner.id,
-                "data": {
-                    "url": image.data.url,
-                },
-                "role": image.role,
-                "datetime_created": image.datetime_created
-            })
-    else:
-        return JsonResponse({'is_valid': False, 'errors': {'method': 'Method must be POST'}})
+    if request.method != 'POST':
+        return error_method_not_allowed(request)
+    form = LoadImgForm(request.POST, request.FILES)
+    if form.is_valid():
+        role = Image.role_str_to_int(upload_as)
+        image = Image(owner=request.user, data=request.FILES['file'], role=role)
+        image.save()
+        return JsonResponse({
+            "id": image.id,
+            "owner": image.owner.id,
+            "data": {
+                "url": image.data.url,
+            },
+            "role": image.role,
+            "datetime_created": image.datetime_created
+        })
     return JsonResponse({'is_valid': form.is_valid(), 'errors': form.errors, 'image_data': None})
 
 @login_required
@@ -112,10 +103,7 @@ def save_voting(request):
         else:
             voting = Voting.objects.filter(id=formdata['voting_id'])
             if not len(voting) or not voting[0].owner == request.user:
-                return JsonResponse({
-                    "ErrorCode": 403,
-                    "Error": "NotAllowedError"
-                })
+                return error_forbidden(request)
             voting.update(datetime_closed=formdata['datetime_closed'],
                           title=formdata['title'],
                           open_stats=formdata['open_stats'])
@@ -131,18 +119,12 @@ def save_voting(request):
             Question.objects.filter(id=question_id).update(voting=voting)
         return redirect("/voting/" + str(voting.id))
     else:
-        return JsonResponse({
-            "ErrorCode": 404,
-            "Error": "InvalidInputData"
-        })
+        return error_bad_request(request)
 
 @login_required
 def favourites(request, action="add", voting_id=0):
     if request.method != "POST":
-        return JsonResponse({
-            "ErrorCode": 403,
-            "Error": "InvalidRequestMethodError",
-        })
+        return error_method_not_allowed(request)
     voting = Voting.objects.filter(id=voting_id)
     if len(voting):
         voting = voting[0]
@@ -160,10 +142,7 @@ def favourites(request, action="add", voting_id=0):
                                                             voting=voting.id)
                 activity_item.delete()
                 return HttpResponse(voting.favourites_count())
-    return JsonResponse({
-        "ErrorCode": 403,
-        "Error": "InvalidDataError",
-    })
+    return error_forbidden(request)
 
 @login_required
 def remove(request, model="report", id=0):
@@ -172,17 +151,11 @@ def remove(request, model="report", id=0):
         "report": Report
     }
     if not model in models:
-        return JsonResponse({
-            "ErrorCode": 403,
-            "Error": "PartialDataError",
-        })
+        return error_bad_request(request)
 
     item = models[model].objects.filter(id=id)
     if not len(item) or not item[0].creator == request.user:
-        return JsonResponse({
-            "ErrorCode": 403,
-            "Error": "NotAllowedError",
-        })
+        return error_forbidden(request)
     voting_id = item[0].voting.id
     item[0].delete()
     if model == "report":

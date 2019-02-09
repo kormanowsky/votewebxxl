@@ -9,6 +9,7 @@ from VoteWebCore.forms import *
 from VoteWebCore.models import *
 from VoteWebCore.functions import *
 from VoteWebCore.api_views import save_voting
+from VoteWebCore.error_views import *
 
 @login_required
 def votings(request):
@@ -54,10 +55,7 @@ def voting_single(request, voting_id=-1, action="index"):
     voting_items = Voting.objects.filter(id=voting_id)
     is_found = len(voting_items) == 1
     if not is_found:
-        return JsonResponse({
-            "ErrorCode": 404,
-            "Error": "VoteNotFound"
-        })
+        return error_not_found(request)
     voting = voting_items[0]
     context = {
         "voting": voting,
@@ -65,10 +63,7 @@ def voting_single(request, voting_id=-1, action="index"):
     }
     # Actions
     if action != "index" and not is_logged_in(request):
-        return JsonResponse({
-            "ErrorCode": 403,
-            "Error": "MustBeLoggedInToDoError"
-        })
+        return error_forbidden(request)
     if action == "save" and request.method == "POST":
         if not voting.current_user_voted(request):
             form = VoteForm(request.POST)
@@ -78,20 +73,14 @@ def voting_single(request, voting_id=-1, action="index"):
                 questions.append(answer['question'])
             for question in voting.questions():
                 if not question in questions:
-                    return JsonResponse({
-                        "ErrorCode": 403, 
-                        "Error": "PartialDataError",
-                    })
+                    return error_bad_request(request)
             for answer in answers:
                 vote = Vote(question=answer['question'], answer=answer['answer'], creator=request.user)
                 vote.save()
             activity_item = ActivityItem(user=request.user, voting=voting, type=ActivityItem.ACTIVITY_VOTE)
             activity_item.save()
         else:
-            return JsonResponse({
-                "ErrorCode": 403,
-                "Error": "NotAllowedError"
-            })
+            return error_forbidden(request)
         return redirect("/voting/" + str(voting.id))
     elif action == "report" and request.method == "POST":
         form = ReportForm(request.POST)
@@ -105,7 +94,7 @@ def voting_single(request, voting_id=-1, action="index"):
             voting.delete()
             return redirect('/votings')
         else:
-            return JsonResponse({"ErrorCode": 403, "Error": "NotAllowedError"})
+            return error_forbidden(request)
     elif action == "edit":
         if voting.owner == request.user:
             if request.method == "POST":
@@ -116,7 +105,7 @@ def voting_single(request, voting_id=-1, action="index"):
                     "voting": voting
                 })
         else:
-            return JsonResponse({"ErrorCode": 403, "Error": "NotAllowedError"})
+            return error_forbidden(request)
     elif action == "comment":
         form = CommentForm(request.POST)
         if form.is_valid():
@@ -129,10 +118,7 @@ def voting_single(request, voting_id=-1, action="index"):
                     "comment": item
                 })
             })
-        return JsonResponse({
-            "ErrorCode": 403,
-            "Error": "PartialDataError"
-        })
+        return error_bad_request(request)
     return render(request, "voting_single.html", context)
 
 
@@ -141,18 +127,12 @@ def profile(request, username=None):
         if request.user.username:
             return redirect("/profile/" + request.user.username)
         else:
-            return JsonResponse({
-                "ErrorCode": 404,
-                "Error": "UserNotFound"
-            })
+            return error_not_found(request)
     profile_owner = User.objects.filter(username=username)
     if len(profile_owner) == 1:
         profile_owner = profile_owner[0]
     else:
-        return JsonResponse({
-            "ErrorCode": 404,
-            "Error": "UserNotFound"
-        })
+        return error_not_found(request)
     if profile_owner == request.user:
         reports = Report.objects.filter(creator=profile_owner)
     else:
@@ -222,3 +202,4 @@ def remove_account(request):
     return render(request, "registration/remove_account.html", {
         "html_title": "Remove Account"
     })
+

@@ -94,8 +94,8 @@ Votings.stats = {
             }
         }
         for (var i = 0; i < colors.length; ++i) {
-            background.push('rgba(' + colors[i] + ', 0.2)');
-            border.push('rgba(' + colors[i] + ', 1)');
+            background.push('rgba(' + colors[i] + ', 1)');
+            border.push('rgba(' + colors[i] + ', 0)');
         }
         for (var label in stats) {
             labels.push(label);
