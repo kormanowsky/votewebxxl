@@ -188,7 +188,7 @@ class Question(models.Model):
 
     # HTML for voting field in admin panel
     def voting_html(self):
-        return voting_html(self)
+        return voting_html(self.voting)
     voting_html.short_description = "Voting"
 
     # HTML for answers field in admin panel
@@ -267,13 +267,26 @@ class Report(models.Model):
 
     # HTML for voting field in admin panel
     def voting_html(self):
-        return voting_html(self)
+        return voting_html(self.voting)
     voting_html.short_description = "Voting"
 
     # HTML for user field in admin panel
     def user_html(self):
-        return user_html(self)
+        return user_html(self.user)
     user_html.short_description = "User"
+
+    # HTML for status
+    def status_html(self):
+        status_str = self.get_status_display()
+        if self.status == self.REPORT_WAITING:
+            html_class = "danger"
+        elif self.status == self.REPORT_ACCEPTED:
+            html_class = "success"
+        else:
+            html_class = "danger"
+        html = '<p class="font-weight-600 text-{}">{}</p>'
+        return mark_safe(html.format(html_class, status_str))
+    status_html.short_description = "Status"
 
     # Convert to string (for site admin panel)
     def __str__(self):
@@ -365,7 +378,7 @@ class Image(models.Model):
 
     # HTML for user field in admin panel
     def user_html(self):
-        return user_html(self)
+        return user_html(self.user)
     user_html.short_description = "User"
 
     # Image data for admin panel
@@ -415,12 +428,12 @@ class Comment(models.Model):
 
     # HTML for voting field in admin panel
     def voting_html(self):
-        return voting_html(self)
+        return voting_html(self.voting)
     voting_html.short_description = "Voting"
 
     # HTML for user field in admin panel
     def user_html(self):
-        return user_html(self)
+        return user_html(self.user)
     user_html.short_description = "User"
 
     # Convert to string (for site admin panel)

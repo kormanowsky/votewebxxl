@@ -23,7 +23,7 @@ class VoteAdmin(admin.ModelAdmin):
 
 
 class ReportAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user_html', 'datetime_created_str', 'voting_html', 'title', 'message', 'status', 'is_active')
+    list_display = ('id', 'user_html', 'datetime_created_str', 'voting_html', 'title', 'message', 'status_html', 'is_active')
     list_filter = ('status', 'datetime_created', 'is_active')
     search_fields = ('user__first_name', 'user__last_name', 'user__username', 'voting__title')
 
