@@ -39,7 +39,7 @@ def save_question(request):
     form = QuestionForm(request.POST)
     if form.is_valid():
         if form.data['question_id']:
-            question = Question.objects.filter(id=form.data['question_id'])
+            question = Question.objects.filter(id=form.data['question_id']).exclude(is_active=False)
             if not len(question):
                 return JsonResponse({
                     "ErrorCode": 404,
@@ -51,7 +51,7 @@ def save_question(request):
                     "Error": "NotAllowedError",
                 })
             if question[0].text != form.data['text'] or question[0].answers != form.data['answers']:
-                Vote.objects.filter(question=question[0].id).delete()
+                Vote.objects.filter(question=question[0].id).update(is_active=False)
             question.update(text=form.data['text'], type=form.data['type'], answers=form.data['answers'])
             question = question[0]
         else:
@@ -101,7 +101,7 @@ def save_voting(request):
             activity_item = ActivityItem(user=request.user, voting=voting, type=ActivityItem.ACTIVITY_NEW_VOTING)
             activity_item.save()
         else:
-            voting = Voting.objects.filter(id=formdata['voting_id'])
+            voting = Voting.objects.filter(id=formdata['voting_id']).exclude(is_active=False)
             if not len(voting) or not voting[0].owner == request.user:
                 return error_forbidden(request)
             voting.update(datetime_closed=formdata['datetime_closed'],
@@ -113,7 +113,7 @@ def save_voting(request):
                 question_ids.append(question.id)
             if question_ids != formdata['questions']:
                 for question_id in question_ids:
-                    Vote.objects.filter(question=question_id).delete()
+                    Vote.objects.filter(question=question_id).update(is_active=False)
             voting.questions().update(voting=None)
         for question_id in formdata['questions']:
             Question.objects.filter(id=question_id).update(voting=voting)
@@ -125,7 +125,7 @@ def save_voting(request):
 def favourites(request, action="add", voting_id=0):
     if request.method != "POST":
         return error_method_not_allowed(request)
-    voting = Voting.objects.filter(id=voting_id)
+    voting = Voting.objects.filter(id=voting_id).exclude(is_active=False)
     if len(voting):
         voting = voting[0]
         if action == "add":
@@ -140,7 +140,7 @@ def favourites(request, action="add", voting_id=0):
                 activity_item = ActivityItem.objects.filter(user=request.user.id,
                                                             type=ActivityItem.ACTIVITY_FAVOURITE,
                                                             voting=voting.id)
-                activity_item.delete()
+                activity_item.update(is_active=False)
                 return HttpResponse(voting.favourites_count())
     return error_forbidden(request)
 
@@ -153,11 +153,11 @@ def remove(request, model="report", id=0):
     if not model in models:
         return error_bad_request(request)
 
-    item = models[model].objects.filter(id=id)
+    item = models[model].objects.filter(id=id).exclude(is_active=False)
     if not len(item) or not item[0].creator == request.user:
         return error_forbidden(request)
     voting_id = item[0].voting.id
-    item[0].delete()
+    item.update(is_active=False)
     if model == "report":
         return redirect("/profile/" + request.user.username)
     else:

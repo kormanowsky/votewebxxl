@@ -41,6 +41,7 @@ class Voting(models.Model):
     banned = models.BooleanField(default=False)
     open_stats = models.BooleanField(default=True)
     datetime_closed = models.DateTimeField(null=True, blank=True)
+    is_active = models.BooleanField(default=True)
 
     # Returns voting status
     def status(self, user):
@@ -158,6 +159,7 @@ class Question(models.Model):
     ))
     text = models.CharField(max_length=300)
     answers = JSONField(max_length=10000)
+    is_active = models.BooleanField(default=True)
 
     # Returns question statistics for diagram
     def stats(self):
@@ -203,6 +205,7 @@ class Vote(models.Model):
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
     question = models.ForeignKey(to=Question, on_delete=models.CASCADE)
     answer = models.CharField(max_length=100)
+    is_active = models.BooleanField(default=True)
 
     def datetime_created_str(self):
         return datetime_human(self.datetime_created)
@@ -245,6 +248,7 @@ class Report(models.Model):
         (REPORT_DECLINED, 'Declined'),
         (REPORT_ACCEPTED, 'Accepted')
     ))
+    is_active = models.BooleanField(default=True)
 
     def datetime_created_str(self):
         return datetime_human(self.datetime_created)
@@ -285,6 +289,7 @@ class ActivityItem(models.Model):
     ))
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
     voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=True)
 
     # Returns human time difference between current time and voting creation time
     def creation_time_diff(self):
@@ -328,6 +333,7 @@ class Image(models.Model):
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
     data = models.ImageField(upload_to=generate_file_name, null=True)
     role = models.IntegerField(default=0, choices=[(IMAGE_ROLE_AVATAR, 'Avatar')])
+    is_active = models.BooleanField(default=True)
 
     @classmethod
     def role_str_to_int(cls, role_str):
@@ -369,6 +375,7 @@ class Comment(models.Model):
     voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE, null=True)
     message = models.CharField(max_length=512)
     datetime_created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    is_active = models.BooleanField(default=True)
 
     def datetime_created_str(self):
         return datetime_human(self.datetime_created)

@@ -13,7 +13,7 @@ from VoteWebCore.error_views import *
 
 @login_required
 def votings(request):
-    votings = Voting.objects.all()
+    votings = Voting.objects.exclude(is_active=False)
     form = VotingsSearchForm(request.GET)
     if form.is_valid():
         votings = votings.filter(title__contains=form.data['title'])
@@ -52,7 +52,7 @@ def register(request):
 
 # New view for a single voting
 def voting_single(request, voting_id=-1, action="index"):
-    voting_items = Voting.objects.filter(id=voting_id)
+    voting_items = Voting.objects.filter(id=voting_id).exclude(is_active=False)
     is_found = len(voting_items) == 1
     if not is_found:
         return error_not_found(request)
@@ -91,7 +91,8 @@ def voting_single(request, voting_id=-1, action="index"):
         return JsonResponse({'is_valid': form.is_valid(), 'errors': form.errors})
     elif action == "remove":
         if voting.owner == request.user:
-            voting.delete()
+            voting.is_active = False
+            voting.save()
             return redirect('/votings')
         else:
             return error_forbidden(request)
@@ -128,17 +129,17 @@ def profile(request, username=None):
             return redirect("/profile/" + request.user.username)
         else:
             return error_not_found(request)
-    profile_owner = User.objects.filter(username=username)
+    profile_owner = User.objects.filter(username=username).exclude(is_active=False)
     if len(profile_owner) == 1:
         profile_owner = profile_owner[0]
     else:
         return error_not_found(request)
     if profile_owner == request.user:
-        reports = Report.objects.filter(creator=profile_owner).order_by("-datetime_created")
+        reports = Report.objects.filter(creator=profile_owner).order_by("-datetime_created").exclude(is_active=False)
     else:
         reports = None
-    activity = ActivityItem.objects.filter(user=profile_owner.id).exclude(voting__banned=1).order_by('-datetime_created')
-    votings = Voting.objects.filter(owner=profile_owner.id).exclude(banned=1).order_by("-datetime_created")
+    activity = ActivityItem.objects.filter(user=profile_owner.id).exclude(voting__banned=1).order_by('-datetime_created').exclude(is_active=False)
+    votings = Voting.objects.filter(owner=profile_owner.id).exclude(banned=1).order_by("-datetime_created").exclude(is_active=False)
     activity_small = activity[:5]
     votings_small = votings[:5]
     votes_count=len(activity.filter(type=ActivityItem.ACTIVITY_VOTE))
@@ -198,7 +199,8 @@ def voting_create(request):
 
 @login_required
 def remove_account(request):
-    request.user.delete()
+    request.user.is_active = False
+    request.user.save()
     return render(request, "registration/remove_account.html", {
         "html_title": "Remove Account"
     })
