@@ -2,11 +2,13 @@ from django.contrib import admin
 from .models import *
 # Model admin pages
 class VotingAdmin(admin.ModelAdmin):
-    list_display = ('id', 'owner', 'title', 'questions_html', 'datetime_created_str', 'datetime_closed_str', 'banned', 'open', 'open_stats', )
+    list_display = ('id', 'owner', 'title', 'questions_html', 'datetime_created_str', 'datetime_closed_str', 'banned', 'open', 'open_stats')
+    search_fields = ['title']
 
 
 class QuestionAdmin(admin.ModelAdmin):
     list_display = ('id', 'owner', 'voting_html', 'text', 'type', 'answers_html')
+    search_fields = ['text']
 
 
 class VoteAdmin(admin.ModelAdmin):
