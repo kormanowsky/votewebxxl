@@ -344,7 +344,7 @@ class ActivityItem(models.Model):
         text = ["created voting", "voted in", "added to favourites"][self.type]
         icon = ["question", "check-square", "star"][self.type]
         return {
-            "text": text, 
+            "text": text,
             "icon": icon
         }
 

@@ -1,5 +1,4 @@
-{% extends "basic.html" %}
-{% block content %}
+{% extends "basic.html" %} {% block content %}
 <form action="/voting/create" method="post" onsubmit="return Votings.edit.checkForm(this);">
     {% csrf_token %}
     <input type="hidden" name="voting_id" value="0">
@@ -62,5 +61,4 @@
         </div>
     </div>
 </form>
-{% include "voting_question_modal.html" %}
-{% endblock content %}
+{% include "voting_question_modal.html" %} {% endblock content %}

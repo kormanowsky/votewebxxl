@@ -69,9 +69,7 @@
             <div class="row">
                 <div class="col-12">
                     <h5 class="pt-4 text-right h6 mb--4 pb-2">Activity</h5>
-                    {% for item in activity_small %}
-                    {% include "activity_item.html" with item=item %}
-                    {% empty %}
+                    {% for item in activity_small %} {% include "activity_item.html" with item=item %} {% empty %}
                     <p class="text-center my-5">No activity</p>
                     {% endfor %}
                 </div>

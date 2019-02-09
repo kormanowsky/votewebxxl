@@ -25,10 +25,8 @@
         </div>
         <div class="row">
             <div class="col-12 small text-light">
-                {{ comment.datetime_created_str }}
-                {% if comment.user == request.user %}
-                <a href="/api/remove/comment/{{ comment.id }}" class="ml-2 text-danger dangerous-action">Remove</a>
-                {% endif %}
+                {{ comment.datetime_created_str }} {% if comment.user == request.user %}
+                <a href="/api/remove/comment/{{ comment.id }}" class="ml-2 text-danger dangerous-action">Remove</a> {% endif %}
             </div>
         </div>
     </div>

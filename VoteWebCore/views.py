@@ -22,21 +22,21 @@ def index(request):
 
 @login_required
 def votings(request):
-    votings = Voting.objects.exclude(is_active=False)
+    votings_items = Voting.objects.exclude(is_active=False)
     form = VotingsSearchForm(request.GET)
     if form.is_valid():
-        votings = votings.filter(title__contains=form.data['title'])
-        votings = votings.filter(
+        votings_items = votings_items.filter(title__contains=form.data['title'])
+        votings_items = votings_items.filter(
             Q(user__last_name__contains=form.data['user']) |
             Q(user__first_name__contains=form.data['user']) |
             Q(user__username__contains=form.data['user']))
         if not form.data['datetime_created_from'] is None:
-            votings = votings.filter(datetime_created__gte=form.data['datetime_created_from'])
+            votings_items = votings_items.filter(datetime_created__gte=form.data['datetime_created_from'])
         if not form.data['datetime_created_to'] is None:
-            votings = votings.filter(datetime_created__lte=form.data['datetime_created_to'])
-    votings = votings.exclude(banned=1)
+            votings_items = votings_items.filter(datetime_created__lte=form.data['datetime_created_to'])
+        votings_items = votings_items.exclude(banned=1)
     context = {
-        "votings": votings,
+        "votings": votings_items,
         "html_title": "Votings",
         "form": form,
         "no_right_aside": True
@@ -85,7 +85,7 @@ def voting_single(request, voting_id=-1, action="index"):
             for answer in answers:
                 questions.append(answer['question'])
             for question in voting.questions():
-                if not question in questions:
+                if question not in questions:
                     return error_bad_request(request)
             for answer in answers:
                 vote = Vote(question=answer['question'], answer=answer['answer'], user=request.user)
@@ -158,7 +158,7 @@ def profile(request, username=None):
         .exclude(banned=1).order_by("-datetime_created").exclude(is_active=False)
     activity_small = activity[:5]
     votings_small = votings[:5]
-    votes_count=len(activity.filter(type=ActivityItem.ACTIVITY_VOTE))
+    votes_count = len(activity.filter(type=ActivityItem.ACTIVITY_VOTE))
     favourite_votings = []
     favourite = activity.filter(type=ActivityItem.ACTIVITY_FAVOURITE)
     for item in favourite:
@@ -209,8 +209,9 @@ def voting_create(request):
         return save_voting(request)
     else:
         return render(request, "voting_create.html", {
-            "html_title": "Create Voting", 
+            "html_title": "Create Voting",
         })
+
 
 @login_required
 def remove_account(request):

@@ -1,10 +1,6 @@
-{# Одно голосование. Для использования в циклах #}
-{% voting_status voting request as status %}
-{% voting_added_to_favourites voting request as added_to_favourites %}
-{% if status >= voting.VOTING_OPEN and not voting_small %}
+{# Одно голосование. Для использования в циклах #} {% voting_status voting request as status %} {% voting_added_to_favourites voting request as added_to_favourites %} {% if status >= voting.VOTING_OPEN and not voting_small %}
 <form action="/voting/{{ voting.id }}/save" method="post" onsubmit="return Votings.vote.checkForm(this);">
-    {% csrf_token %}
-    {% endif %}
+    {% csrf_token %} {% endif %}
     <div class="card shadow-sm">
         <div class="card-body">
             <p class="text-muted lh-110">Voting #{{ voting.id }}</p>
@@ -38,14 +34,8 @@
     <div class="row">
         {% if status >= voting.VOTING_VISIBLE %}
         <div class="col-12 col-xl-8">
-            {% if status >= voting.VOTING_OPEN_STATS %}
-            {% for question in voting.questions %}
-                {% include "question.html" with question=question voting=voting %}
-            {% endfor %}
-            {% if status >= voting.VOTING_OPEN and not voting_small %}
-            <button type="submit" class="btn btn-primary w-100 mt-4">Save votes</button>
-            {% endif %}
-            {% elif status == voting.VOTING_VISIBLE %}
+            {% if status >= voting.VOTING_OPEN_STATS %} {% for question in voting.questions %} {% include "question.html" with question=question voting=voting %} {% endfor %} {% if status >= voting.VOTING_OPEN and not voting_small %}
+            <button type="submit" class="btn btn-primary w-100 mt-4">Save votes</button> {% endif %} {% elif status == voting.VOTING_VISIBLE %}
             <div class="w-100">
                 <div class="card shadow-sm mt-4">
                     <p class="text-center m-5">The author of this voting decided to make stats private.
@@ -71,9 +61,7 @@
                 </div>
             </div>
             <div id="comments">
-                {% for comment in voting.comments %}
-                {% include "comment.html" with comment=comment %}
-                {% empty %}
+                {% for comment in voting.comments %} {% include "comment.html" with comment=comment %} {% empty %}
                 <p class="w-100 my-5 text-center text-light">No comments</p>
                 {% endfor %}
             </div>
@@ -82,17 +70,12 @@
         <div class="col-12">
             <div class="card shadow-sm mt-4">
                 <p class="text-center m-5">
-                    {% if status == voting.VOTING_BANNED %}
-                    This voting was banned by administration due to users' reports.
-                    {% else %}
-                    You have to <a href="/login">log in</a> or <a href="/register">register</a> to view, create and vote in votings.
-                    {% endif %}
+                    {% if status == voting.VOTING_BANNED %} This voting was banned by administration due to users' reports. {% else %} You have to <a href="/login">log in</a> or <a href="/register">register</a> to view, create and vote in votings. {% endif %}
                 </p>
             </div>
         </div>
         {% endif %}
     </div>
-    {% endif %}
-    {% if status >= voting.VOTING_OPEN and not voting_small %}
+    {% endif %} {% if status >= voting.VOTING_OPEN and not voting_small %}
 </form>
 {% endif %}

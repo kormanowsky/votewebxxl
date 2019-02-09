@@ -6,12 +6,13 @@ from ..models import Image, Voting
 from ..functions import date_human
 
 
-
 register = template.Library()
+
 
 @register.simple_tag
 def avatar(request, user=None):
     return Image.get_avatar_url(request, user)
+
 
 @register.simple_tag
 def formatted_date(date=None):
@@ -25,6 +26,7 @@ def formatted_date(date=None):
         date = datetime.now() - timedelta(days=1)
     return date_human(date)
 
+
 @register.simple_tag
 def voting_status(voting, request, user=None):
     if not user:
@@ -35,6 +37,7 @@ def voting_status(voting, request, user=None):
                 return Voting.VOTING_VISIBLE
         user = request.user
     return voting.status(user)
+
 
 @register.simple_tag
 def voting_added_to_favourites(voting, request, user=None):

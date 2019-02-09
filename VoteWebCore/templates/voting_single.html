@@ -1,22 +1,16 @@
-{% extends "basic.html" %}
-{% block content %}
+{% extends "basic.html" %} {% block content %}
 <div class="row">
     <div class="col-12">
         {% include "voting.html" with voting=voting voting_small=0 %}
     </div>
 </div>
-{% endblock content %}
-{% block content_actions %}
-{% voting_status voting request as status %}
-{% if status > voting.VOTING_BANNED %}
-{% if request.user.is_authenticated %}
+{% endblock content %} {% block content_actions %} {% voting_status voting request as status %} {% if status > voting.VOTING_BANNED %} {% if request.user.is_authenticated %}
 <li class="nav-item">
     <a href="#" class="d-flex pb-3 align-items-center" data-toggle="modal" data-target="#commentModal">
         <p class="m-0">Comment</p>
     </a>
 </li>
-{% endif %}
-{% if voting.user == request.user %}
+{% endif %} {% if voting.user == request.user %}
 <li class="nav-item">
     <a href="/voting/{{ voting.id }}/edit" class="d-flex pb-3 align-items-center">
         <p class="m-0">Edit</p>
@@ -76,8 +70,7 @@
         </div>
     </div>
 </div>
-{% endif %}
-{% endif %}
+{% endif %} {% endif %}
 <!-- Modal -->
 <div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="shareModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -138,5 +131,4 @@
         </div>
     </div>
 </div>
-{% endif %}
-{% endblock content_actions %}
+{% endif %} {% endblock content_actions %}

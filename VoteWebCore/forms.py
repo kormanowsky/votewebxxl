@@ -54,7 +54,7 @@ class VoteForm(forms.Form):
                 })
 
         self.data["answers"] = answers
-        
+
 
 class ReportForm(forms.Form):
     title = forms.CharField(max_length=256)
@@ -77,7 +77,7 @@ class SaveVotingForm(forms.Form):
         for i, question in enumerate(parsed_data['questions']):
             parsed_data['questions'][i] = int(question)
         parsed_data['voting_id'] = int(parsed_data['voting_id'])
-        if(len(parsed_data['datetime_closed'])):
+        if len(parsed_data['datetime_closed']):
             parsed_data['datetime_closed'] = datetime_str_to_obj(parsed_data['datetime_closed'])
         else:
             parsed_data['datetime_closed'] = None
@@ -126,7 +126,7 @@ class VotingsSearchForm(forms.Form):
         self.data['user'] = raw_data.get('user', '')
         self.data['datetime_created_from'] = datetime_str_to_obj(raw_data.get("datetime_created_from", ''))
         self.data['datetime_created_to'] = datetime_str_to_obj(raw_data.get("datetime_created_to", ''))
-    
+
     def is_valid(self):
         return not len(self.errors.as_text())
 

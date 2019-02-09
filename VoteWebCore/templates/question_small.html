@@ -7,8 +7,7 @@
             {% for answer in question.answers %}
             <div>
                 {% if question.type == question.QUESTION_BUTTONS %}
-                <button type="button" class="col btn btn-outline-primary mb-3">{{ answer }}</button>
-                {% elif question.type == question.QUESTION_SINGLE_ANSWER %}
+                <button type="button" class="col btn btn-outline-primary mb-3">{{ answer }}</button> {% elif question.type == question.QUESTION_SINGLE_ANSWER %}
                 <div class="custom-control custom-radio mb-3">
                     <label class="custom-control-label">{{ answer }}</label>
                 </div>

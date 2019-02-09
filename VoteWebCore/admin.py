@@ -1,13 +1,16 @@
 from django.contrib import admin
+
 from .models import *
+
 
 # Admin panel pages
 
 
 class VotingAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user_html', 'title', 'questions_html', 'datetime_created_str', 'datetime_closed_str', 'banned', 'open', 'open_stats', 'is_active')
+    list_display = ('id', 'user_html', 'title', 'questions_html', 'datetime_created_str',
+                    'datetime_closed_str', 'banned', 'open', 'open_stats', 'is_active')
     list_filter = ('datetime_created', 'datetime_closed', 'banned',
-    'open_stats', 'is_active')
+                   'open_stats', 'is_active')
     search_fields = ('title', 'user__first_name', 'user__last_name', 'user__username')
 
 
@@ -23,7 +26,8 @@ class VoteAdmin(admin.ModelAdmin):
 
 
 class ReportAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user_html', 'datetime_created_str', 'voting_html', 'title', 'message', 'status_html', 'is_active')
+    list_display = ('id', 'user_html', 'datetime_created_str', 'voting_html', 'title', 'message',
+                    'status_html', 'is_active')
     list_filter = ('status', 'datetime_created', 'is_active')
     search_fields = ('user__first_name', 'user__last_name', 'user__username', 'voting__title')
 

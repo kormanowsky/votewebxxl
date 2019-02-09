@@ -3,14 +3,13 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect
 from django.template.loader import render_to_string
 
-from VoteWebCore.forms import *
 from VoteWebCore.error_views import *
+from VoteWebCore.forms import *
 
 
 # Get one question
-def get_question(request, id=0):
-
-    question = Question.objects.filter(id=id).exclude(is_active=False)
+def get_question(request, question_id=0):
+    question = Question.objects.filter(question_id=id).exclude(is_active=False)
 
     if not len(question):
         return error_not_found(request)
@@ -65,8 +64,8 @@ def save_question(request):
             question.save()
         return JsonResponse({
             "html": render_to_string(request=request,
-                                         context={"question": question},
-                                         template_name="question_small.html"),
+                                     context={"question": question},
+                                     template_name="question_small.html"),
             "id": question.id,
         })
     return error_bad_request(request)
@@ -178,7 +177,7 @@ def favourites(request, action="add", voting_id=0):
 
 # Remove reports and comments
 @login_required
-def remove(request, model="report", id=0):
+def remove(request, model="report", model_id=0):
     if request.method != 'POST':
         return error_method_not_allowed(request)
 
@@ -186,7 +185,7 @@ def remove(request, model="report", id=0):
         "comment": Comment,
         "report": Report
     }
-    if not model in model_classes:
+    if model not in model_classes:
         return error_bad_request(request)
 
     item = model_classes[model].objects.filter(id=id).exclude(is_active=False)

@@ -68,7 +68,7 @@ def datetime_str_to_obj(datetime_str):
         return None
     day, month, year = list(map(int, datetime_str.split(".")))
     datetime_obj = datetime(year=year, month=month, day=day, hour=0, minute=0, second=0, microsecond=0,
-                               tzinfo=tz.tzutc())
+                            tzinfo=tz.tzutc())
     return datetime_obj
 
 
