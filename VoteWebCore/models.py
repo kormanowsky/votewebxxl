@@ -128,6 +128,8 @@ class Voting(models.Model):
     questions_html.short_description = "Questions"
 
     def owner_html(self):
+        if not self.owner:
+            return "-"
         return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.owner.id, self.owner.first_name, self.owner.last_name, self.owner.username))
     owner_html.short_description = "Owner"
 
@@ -187,6 +189,8 @@ class Question(models.Model):
     answers_html.short_description = "Answers"
 
     def owner_html(self):
+        if not self.owner:
+            return "-"
         return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.owner.id, self.owner.first_name, self.owner.last_name, self.owner.username))
     owner_html.short_description = "Owner"
 
@@ -210,6 +214,8 @@ class Vote(models.Model):
     question_html.short_description = "Question"
 
     def creator_html(self):
+        if not self.creator:
+            return "-"
         return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.creator.id, self.creator.first_name, self.creator.last_name, self.creator.username))
     creator_html.short_description = "Creator"
 
@@ -250,6 +256,8 @@ class Report(models.Model):
     voting_html.short_description = "Voting"
 
     def creator_html(self):
+        if not self.creator:
+            return "-"
         return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.creator.id, self.creator.first_name, self.creator.last_name, self.creator.username))
     creator_html.short_description = "Creator"
 
@@ -300,6 +308,8 @@ class ActivityItem(models.Model):
     voting_html.short_description = "Voting"
 
     def user_html(self):
+        if not self.user:
+            return "-"
         return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.user.id, self.user.first_name, self.user.last_name, self.user.username))
     user_html.short_description = "User"
 
@@ -344,6 +354,8 @@ class Image(models.Model):
     datetime_created_str.short_description = "Datetime of creation"
 
     def owner_html(self):
+        if not self.owner:
+            return "-"
         return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.owner.id, self.owner.first_name, self.owner.last_name, self.owner.username))
     owner_html.short_description = "Owner"
 
@@ -368,5 +380,7 @@ class Comment(models.Model):
     voting_html.short_description = "Voting"
 
     def creator_html(self):
+        if not self.creator:
+            return "-"
         return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.creator.id, self.creator.first_name, self.creator.last_name, self.creator.username))
     creator_html.short_description = "Creator"
