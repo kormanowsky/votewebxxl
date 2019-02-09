@@ -9,8 +9,6 @@ from VoteWebCore.error_views import *
 
 # Get one question
 def get_question(request, id=0):
-    if request.method != "POST":
-        return error_method_not_allowed(request)
 
     question = Question.objects.filter(id=id).exclude(is_active=False)
 
@@ -66,13 +64,10 @@ def save_question(request):
                                 answers=form.data['answers'], voting=None, user=request.user)
             question.save()
         return JsonResponse({
-            "question": render_to_string(request=request,
+            "html": render_to_string(request=request,
                                          context={"question": question},
                                          template_name="question_small.html"),
             "id": question.id,
-            "text": question.text,
-            "type": question.type,
-            "answers": question.answers,
         })
     return error_bad_request(request)
 
