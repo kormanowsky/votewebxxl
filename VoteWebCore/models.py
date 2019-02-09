@@ -47,7 +47,9 @@ class Voting(models.Model):
         status = 0
         if not len(self.questions()):
             return status
-        if not self.banned:
+        if self.banned:
+            return status
+        else:
             status += self.VOTING_VISIBLE
         if self.open_stats or self.owner == user:
             status += self.VOTING_OPEN_STATS

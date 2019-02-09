@@ -134,7 +134,7 @@ def profile(request, username=None):
     else:
         return error_not_found(request)
     if profile_owner == request.user:
-        reports = Report.objects.filter(creator=profile_owner)
+        reports = Report.objects.filter(creator=profile_owner).order_by("-datetime_created")
     else:
         reports = None
     activity = ActivityItem.objects.filter(user=profile_owner.id).exclude(voting__banned=1).order_by('-datetime_created')
