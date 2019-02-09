@@ -3,6 +3,7 @@ from json import dumps as json_encode, loads as json_decode
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils.safestring import mark_safe
 from json import dumps as json_encode, loads as json_decode
 from VoteWebCore.functions import *
 
@@ -80,12 +81,14 @@ class Voting(models.Model):
     # Returns datetime_created in dd.mm.yyyy
     def datetime_created_str(self):
         return self.datetime_created.strftime("%d.%m.%Y at %H:%M")
+    datetime_created_str.short_description = "Datetime of creation"
 
     # Returns datetime_closed in dd.mm.yyyy
     def datetime_closed_str(self):
         if not self.datetime_closed:
             return None
         return self.datetime_closed.strftime("%d.%m.%Y")
+    datetime_closed_str.short_description = "Date of closing"
 
     # Returns human time difference between current time and voting closing time
     def closed_time_diff(self):
@@ -94,7 +97,7 @@ class Voting(models.Model):
     # Checks if voting is open
     def open(self):
         return not self.datetime_closed or self.datetime_closed.replace(tzinfo=None) > datetime.now()
-
+    open.boolean = True
     # Checks if user added to favourites
     def user_added_to_favourites(self, user):
         return len(ActivityItem.objects.filter(type=ActivityItem.ACTIVITY_FAVOURITE, voting=self.id, user=user.id))
@@ -106,10 +109,14 @@ class Voting(models.Model):
     # Returns count of favourites
     def favourites_count(self):
         return len(ActivityItem.objects.filter(type=ActivityItem.ACTIVITY_FAVOURITE, voting=self.id))
-
+    favourites_count.short_description = "Count of additions to Favourites"
     # Returns comments
     def comments(self):
         return Comment.objects.filter(voting=self.id).order_by("-datetime_created")
+
+    def comments_count(self):
+        return len(self.comments())
+    comments_count.short_description = "Comments count"
 
     def __str__(self):
         return self.title + " (#" + str(self.id) + ")"
@@ -239,6 +246,12 @@ class Image(models.Model):
         if len(image):
             avatar_url = 'http://' + request.get_host() + image[0].data.url
         return avatar_url
+
+    # Admin panel
+    def img(self):
+        src = self.data.url
+        return mark_safe('<img height=100 src="%s">' % src)
+    img.short_description = 'Image'
 
 
 # Comment

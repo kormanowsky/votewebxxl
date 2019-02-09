@@ -1,8 +1,11 @@
+from django.utils.safestring import mark_safe
+
 from dateutil import *
 from random import randint
 from uuid import uuid4
 from datetime import *
 from VoteWebCore.models import *
+
 
 # Useful functions
 def form_errors(form):
