@@ -71,10 +71,9 @@ function InitMasonry() {
     $(window).on('resize', LayoutMasonry);
 }
 
-function LayoutMasonry(method) {
-    method = method || 'layout';
+function LayoutMasonry() {
     $(".masonry-wrapper").each(function (i, e) {
-        $(e).masonry(method)
+        $(e).masonry('layout')
     });
 }
 
@@ -134,19 +133,8 @@ function AddConfirmationModal(e) {
     $(e).attr('data-dam-processed', 1);
 }
 
-function InitConfirmationModals() {
+function InitConfirmationModal() {
     $(".dangerous-action:not([data-dam-processed])").each(function (i, e) {
         AddConfirmationModal(e);
     });
 }
-
-jQuery(function ($) {
-    AjaxForm($("#report-form"));
-    AjaxForm($("#comment-form"), function(data){
-        if($("#comments>p").length){
-            $("#comments>p").remove();
-        }
-        $("#comments").prepend(data.comment);
-        $("#comments-count").text(data.comments_count);
-    }, false, true);
-});

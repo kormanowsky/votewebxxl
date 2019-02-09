@@ -44,7 +44,7 @@
                             <label for="input-email">Avatar</label>
                             <div><img class="my-3 avatar-current-user w-100" src="{% avatar request %}" alt=""></div>
                             <div class="custom-file">
-                                <input type="file" class="custom-file-input upload-image" data-upload-as="avatar" data-image-selector=".avatar-current-user" id="customFile">
+                                <input type="file" accept="image/*" class="custom-file-input upload-image" data-upload-as="avatar" data-image-selector=".avatar-current-user" id="customFile">
                                 {% csrf_token %}
                                 <label class="custom-file-label" for="customFile">Choose file</label>
                             </div>
