@@ -250,4 +250,4 @@ $RECYCLE.BIN/
 # Document folder
 Document/
 # User-generated content
-uploads/
+VoteWebCore/static/uploads/

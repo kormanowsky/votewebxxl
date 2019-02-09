@@ -4,3 +4,4 @@ python-dateutil==2.8.0
 pytz==2018.9
 six==1.12.0
 uuid==1.30
+whitenoise==4.1.2
