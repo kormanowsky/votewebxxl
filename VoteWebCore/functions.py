@@ -9,7 +9,12 @@ from django.utils.html import format_html
 from VoteWebCore.models import *
 
 
-# Useful functions
+# File name for file uploads
+def generate_file_name(file, src_name):
+    return str(uuid4()).replace("-", "/") + '.' + src_name.split('.')[-1]
+
+
+# Form errors to understandable format
 def form_errors(form):
     errors_str = form.errors.as_text()
     _errors = errors_str.split('*')
@@ -21,6 +26,10 @@ def form_errors(form):
     return errors
 
 
+# DATETIME FUNCTIONS
+
+
+# Convert datetime between timezones
 def datetime_convert(dt, from_zone, to_zone):
     return dt.replace(tzinfo=from_zone).astimezone(to_zone)
 
@@ -33,6 +42,7 @@ def datetime_to_local(dt):
     return datetime_convert(dt, tz.tzutc(), tz.tzlocal())
 
 
+# Get difference between two datetimes in format Dd Hh Mm Ss
 def datetime_human_diff(dt1, dt2):
     if dt1 < dt2:
         dt1, dt2 = dt2, dt1
@@ -51,6 +61,8 @@ def datetime_human_diff(dt1, dt2):
     result += str(seconds) + "s"
     return result
 
+
+# Convert string in format dd.mm.yyyy to datetime objects
 def datetime_str_to_obj(datetime_str):
     if len(datetime_str.split(".")) != 3:
         return None
@@ -59,14 +71,18 @@ def datetime_str_to_obj(datetime_str):
                                tzinfo=tz.tzutc())
     return datetime_obj
 
+
+# Convert datetime object to string
 def datetime_human(dt):
     return dt.strftime("%d.%m.%Y at %H:%M")
 
+
+# Convert datetime object to string (date only)
 def date_human(dt):
     return dt.strftime("%d.%m.%Y")
 
-def generate_file_name(file, src_name):
-    return str(uuid4()).replace("-", "/") + '.' + src_name.split('.')[-1]
+
+# HTML FOR ADMIN PANEL
 
 
 # User html for admin page
