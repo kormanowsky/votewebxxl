@@ -147,7 +147,11 @@ class Question(models.Model):
 
     owner = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True, default=None, blank=True)
     voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE, null=True, blank=True)
-    type = models.IntegerField()
+    type = models.IntegerField(choices=(
+        (QUESTION_BUTTONS, 'Buttons'),
+        (QUESTION_SINGLE_ANSWER, 'Radio inputs'),
+        (QUESTION_MULTIPLE_ANSWERS, 'Checkboxes')
+    ))
     text = models.CharField(max_length=300)
     answers = JSONField(max_length=10000)
 
@@ -228,10 +232,11 @@ class Report(models.Model):
     message = models.CharField(max_length=512)
     datetime_created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     # img = models.FileField()
-    status = models.IntegerField(default=0)
-
-    def status_str(self):
-        return ["Waiting", "Declined", "Accepted"][self.status]
+    status = models.IntegerField(default=0, choices=(
+        (REPORT_WAITING, 'Waiting'),
+        (REPORT_DECLINED, 'Declined'),
+        (REPORT_ACCEPTED, 'Accepted')
+    ))
 
     def datetime_created_str(self):
         return datetime_human(self.datetime_created)
@@ -262,7 +267,12 @@ class ActivityItem(models.Model):
     ACTIVITY_COMMENT = 3
 
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
-    type = models.IntegerField(default=0)
+    type = models.IntegerField(default=0, choices=(
+        (ACTIVITY_NEW_VOTING, 'New voting'),
+        (ACTIVITY_VOTE, 'Vote'),
+        (ACTIVITY_FAVOURITE, 'Added to favourite'),
+        (ACTIVITY_COMMENT, 'Comment'),
+    ))
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
     voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE)
 
@@ -305,7 +315,7 @@ class Image(models.Model):
     owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
     data = models.ImageField(upload_to=generate_file_name, null=True)
-    role = models.IntegerField(default=0)
+    role = models.IntegerField(default=0, choices=[(IMAGE_ROLE_AVATAR, 'Avatar')])
 
     @classmethod
     def role_str_to_int(cls, role_str):

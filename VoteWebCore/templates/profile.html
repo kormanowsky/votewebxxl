@@ -174,7 +174,7 @@
                                 <td>
                                     <p class="mb-1">{{ report.title }}</p>{{ report.message }}
                                 </td>
-                                <td class="font-weight-600 text-{% if report.status == report.REPORT_WAITING %}warning{% elif report.status == report.REPORT_ACCEPTED %}success{% else %}danger{% endif %}">{{ report.status_str }}</td>
+                                <td class="font-weight-600 text-{% if report.status == report.REPORT_WAITING %}warning{% elif report.status == report.REPORT_ACCEPTED %}success{% else %}danger{% endif %}">{{ report.get_status_display }}</td>
                                 <td class="td-actions text-right">
                                     <a href="/api/remove/report/{{ report.id }}" class="d-block text-danger dangerous-action">
                                         Remove report
