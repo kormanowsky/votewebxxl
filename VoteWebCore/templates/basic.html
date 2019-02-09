@@ -153,6 +153,14 @@
                                                     <p class="h6 small text-muted m-0 pl-3">Settings</p>
                                                 </a>
                                             </li>
+                                            {% if request.user.is_staff %}
+                                            <li class="nav-item">
+                                                <a href="/admin" title="Go to newsfeed page" class="d-flex pb-3 align-items-center">
+                                                    <i class="la la-edit"></i>
+                                                    <p class="h6 small text-muted m-0 pl-3">Admin panel</p>
+                                                </a>
+                                            </li>
+                                            {% endif %}
                                             <li class="nav-item">
                                                 <a href="/logout" title="Go to vote list page" class="d-flex align-items-center">
                                                     <i class="la la-sign-out"></i>
