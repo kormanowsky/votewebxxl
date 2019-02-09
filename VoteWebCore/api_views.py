@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect
+from django.template.loader import render_to_string
 
 from VoteWebCore.forms import *
 from VoteWebCore.error_views import *
@@ -65,6 +66,9 @@ def save_question(request):
                                 answers=form.data['answers'], voting=None, user=request.user)
             question.save()
         return JsonResponse({
+            "question": render_to_string(request=request,
+                                         context={"question": question},
+                                         template_name="question_small.html"),
             "id": question.id,
             "text": question.text,
             "type": question.type,

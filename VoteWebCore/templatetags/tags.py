@@ -37,7 +37,7 @@ def voting_status(voting, request, user=None):
     return voting.status(user)
 
 @register.simple_tag
-def votingaddedtofavourites(voting, request, user=None):
+def voting_added_to_favourites(voting, request, user=None):
     if not user:
         if not request.user.is_authenticated:
             return False

@@ -39,7 +39,7 @@ class Voting(models.Model):
     # User can vote
     VOTING_OPEN = 4
 
-    user = models.ForeignKey(to=User, on_delete=models.SET_CASCADE, null=True)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
     title = models.CharField(max_length=300)
     banned = models.BooleanField(default=False)
