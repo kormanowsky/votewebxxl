@@ -17,15 +17,15 @@ def get_question(request, id=0):
         voting_id = question.voting.id
     else:
         voting_id = None
-    if question.owner is not None:
-        owner_id = question.owner.id
+    if question.user is not None:
+        user_id = question.user.id
     else:
-        owner_id = None
+        user_id = None
 
     return JsonResponse({
         "id": question.id,
         "text": question.text,
-        "owner_id": owner_id,
+        "user_id": user_id,
         "voting_id": voting_id,
         "answers": question.answers,
         "type": question.type
@@ -45,7 +45,7 @@ def save_question(request):
                     "ErrorCode": 404,
                     "Error": "InvalidQuestionId",
                 })
-            if not question[0].owner == request.user:
+            if not question[0].user == request.user:
                 return JsonResponse({
                     "ErrorCode": 403,
                     "Error": "NotAllowedError",
@@ -56,7 +56,7 @@ def save_question(request):
             question = question[0]
         else:
             question = Question(text=form.data['text'], type=form.data['type'],
-                                answers=form.data['answers'], voting=None, owner=request.user)
+                                answers=form.data['answers'], voting=None, user=request.user)
             question.save()
         return JsonResponse({
             "id": question.id,
@@ -73,11 +73,11 @@ def upload(request, upload_as="avatar"):
     form = LoadImgForm(request.POST, request.FILES)
     if form.is_valid():
         role = Image.role_str_to_int(upload_as)
-        image = Image(owner=request.user, data=request.FILES['file'], role=role)
+        image = Image(user=request.user, data=request.FILES['file'], role=role)
         image.save()
         return JsonResponse({
             "id": image.id,
-            "owner": image.owner.id,
+            "user": image.user.id,
             "data": {
                 "url": image.data.url,
             },
@@ -93,7 +93,7 @@ def save_voting(request):
     if form.is_valid():
         formdata = form.data
         if not formdata['voting_id']:
-            voting = Voting(owner=request.user,
+            voting = Voting(user=request.user,
                             title=formdata['title'],
                             datetime_closed=formdata['datetime_closed'],
                             open_stats=formdata['open_stats'])
@@ -102,7 +102,7 @@ def save_voting(request):
             activity_item.save()
         else:
             voting = Voting.objects.filter(id=formdata['voting_id']).exclude(is_active=False)
-            if not len(voting) or not voting[0].owner == request.user:
+            if not len(voting) or not voting[0].user == request.user:
                 return error_forbidden(request)
             voting.update(datetime_closed=formdata['datetime_closed'],
                           title=formdata['title'],
@@ -154,7 +154,7 @@ def remove(request, model="report", id=0):
         return error_bad_request(request)
 
     item = models[model].objects.filter(id=id).exclude(is_active=False)
-    if not len(item) or not item[0].creator == request.user:
+    if not len(item) or not item[0].user == request.user:
         return error_forbidden(request)
     voting_id = item[0].voting.id
     item.update(is_active=False)

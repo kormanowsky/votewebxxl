@@ -24,7 +24,7 @@ def votings(request):
     form = VotingsSearchForm(request.GET)
     if form.is_valid():
         votings = votings.filter(title__contains=form.data['title'])
-        votings = votings.filter(Q(owner__last_name__contains=form.data['owner']) | Q(owner__first_name__contains=form.data['owner']) | Q(owner__username__contains=form.data['owner']))
+        votings = votings.filter(Q(user__last_name__contains=form.data['user']) | Q(user__first_name__contains=form.data['user']) | Q(user__username__contains=form.data['user']))
         if not form.data['datetime_created_from'] is None:
             votings = votings.filter(datetime_created__gte=form.data['datetime_created_from'])
         if not form.data['datetime_created_to'] is None:
@@ -97,14 +97,14 @@ def voting_single(request, voting_id=-1, action="index"):
             item.save()
         return JsonResponse({'is_valid': form.is_valid(), 'errors': form.errors})
     elif action == "remove":
-        if voting.owner == request.user:
+        if voting.user == request.user:
             voting.is_active = False
             voting.save()
             return redirect('/votings')
         else:
             return error_forbidden(request)
     elif action == "edit":
-        if voting.owner == request.user:
+        if voting.user == request.user:
             if request.method == "POST":
                 return save_voting(request)
             else:
@@ -136,17 +136,17 @@ def profile(request, username=None):
             return redirect("/profile/" + request.user.username)
         else:
             return error_not_found(request)
-    profile_owner = User.objects.filter(username=username).exclude(is_active=False)
-    if len(profile_owner) == 1:
-        profile_owner = profile_owner[0]
+    profile_user = User.objects.filter(username=username).exclude(is_active=False)
+    if len(profile_user) == 1:
+        profile_user = profile_user[0]
     else:
         return error_not_found(request)
-    if profile_owner == request.user:
-        reports = Report.objects.filter(creator=profile_owner).order_by("-datetime_created").exclude(is_active=False)
+    if profile_user == request.user:
+        reports = Report.objects.filter(creator=profile_user).order_by("-datetime_created").exclude(is_active=False)
     else:
         reports = None
-    activity = ActivityItem.objects.filter(user=profile_owner.id).exclude(voting__banned=1).order_by('-datetime_created').exclude(is_active=False)
-    votings = Voting.objects.filter(owner=profile_owner.id).exclude(banned=1).order_by("-datetime_created").exclude(is_active=False)
+    activity = ActivityItem.objects.filter(user=profile_user.id).exclude(voting__banned=1).order_by('-datetime_created').exclude(is_active=False)
+    votings = Voting.objects.filter(user=profile_user.id).exclude(banned=1).order_by("-datetime_created").exclude(is_active=False)
     activity_small = activity[:5]
     votings_small = votings[:5]
     votes_count=len(activity.filter(type=ActivityItem.ACTIVITY_VOTE))
@@ -156,8 +156,8 @@ def profile(request, username=None):
         favourite_votings.append(item.voting)
     context = {
         "html_title": "@" + request.user.username,
-        "profile_owner": profile_owner,
-        "profile_owner_reports": reports,
+        "profile_user": profile_user,
+        "profile_user_reports": reports,
         "votings": votings,
         "votings_small": votings_small,
         "activity": activity,

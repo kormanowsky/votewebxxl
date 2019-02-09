@@ -112,19 +112,20 @@ class LoadImgForm(forms.Form):
 
 class VotingsSearchForm(forms.Form):
     title = forms.CharField(max_length=100, required=False)
-    owner = forms.CharField(max_length=100, required=False)
+    user = forms.CharField(max_length=100, required=False)
     datetime_created_from = forms.DateTimeField(required=False)
     datetime_created_to = forms.DateTimeField(required=False)
 
     def __init__(self, raw_data, *args, **kwargs):
         super(VotingsSearchForm, self).__init__(*args, **kwargs)
         self.data['title'] = raw_data.get('title', '')
-        self.data['owner'] = raw_data.get('owner', '')
+        self.data['user'] = raw_data.get('user', '')
         self.data['datetime_created_from'] = datetime_str_to_obj(raw_data.get("datetime_created_from", ''))
         self.data['datetime_created_to'] = datetime_str_to_obj(raw_data.get("datetime_created_to", ''))
     
     def is_valid(self):
         return not len(self.errors.as_text())
+
 
 class CommentForm(forms.Form):
     message = forms.CharField(max_length=512)

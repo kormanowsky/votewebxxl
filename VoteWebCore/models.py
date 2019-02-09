@@ -39,7 +39,7 @@ class Voting(models.Model):
     # User can vote
     VOTING_OPEN = 4
 
-    owner = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True)
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
     title = models.CharField(max_length=300)
     banned = models.BooleanField(default=False)
@@ -54,7 +54,7 @@ class Voting(models.Model):
             return status
         else:
             status += self.VOTING_VISIBLE
-        if self.open_stats or self.owner == user:
+        if self.open_stats or self.user == user:
             status += self.VOTING_OPEN_STATS
         if self.open() and not self.user_voted(user):
             status += self.VOTING_OPEN
@@ -136,12 +136,12 @@ class Voting(models.Model):
         return mark_safe(html)
     questions_html.short_description = "Questions"
 
-    # HTML for owner field in admin panel
-    def owner_html(self):
-        if not self.owner:
+    # HTML for user field in admin panel
+    def user_html(self):
+        if not self.user:
             return "-"
-        return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.owner.id, self.owner.first_name, self.owner.last_name, self.owner.username))
-    owner_html.short_description = "Owner"
+        return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.user.id, self.user.first_name, self.user.last_name, self.user.username))
+    user_html.short_description = "Owner"
 
     # Convert to string (for site admin panel)
     def __str__(self):
@@ -158,7 +158,7 @@ class Question(models.Model):
     # Question with checkboxes
     QUESTION_MULTIPLE_ANSWERS = 2
 
-    owner = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True, default=None, blank=True)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True, default=None, blank=True)
     voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE, null=True, blank=True)
     type = models.IntegerField(choices=(
         (QUESTION_BUTTONS, 'Buttons'),
@@ -178,7 +178,7 @@ class Question(models.Model):
 
     # Checks if user has voted
     def user_voted(self, user):
-        return len(Vote.objects.filter(question=self.id, creator=user.id)) > 0
+        return len(Vote.objects.filter(question=self.id, user=user.id)) > 0
 
     # Checks if current user has voted
     def current_user_voted(self, request):
@@ -199,11 +199,11 @@ class Question(models.Model):
         return mark_safe("<br/>".join(list(map(str, self.answers))))
     answers_html.short_description = "Answers"
 
-    def owner_html(self):
-        if not self.owner:
+    def user_html(self):
+        if not self.user:
             return "-"
-        return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.owner.id, self.owner.first_name, self.owner.last_name, self.owner.username))
-    owner_html.short_description = "Owner"
+        return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.user.id, self.user.first_name, self.user.last_name, self.user.username))
+    user_html.short_description = "Owner"
 
     def __str__(self):
         return self.text + " (#" + str(self.id) + ")"
@@ -211,7 +211,7 @@ class Question(models.Model):
 
 # Vote
 class Vote(models.Model):
-    creator = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
     question = models.ForeignKey(to=Question, on_delete=models.CASCADE)
     answer = models.CharField(max_length=100)
@@ -228,11 +228,11 @@ class Vote(models.Model):
         return mark_safe(html)
     question_html.short_description = "Question"
 
-    def creator_html(self):
-        if not self.creator:
+    def user_html(self):
+        if not self.user:
             return "-"
-        return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.creator.id, self.creator.first_name, self.creator.last_name, self.creator.username))
-    creator_html.short_description = "Creator"
+        return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.user.id, self.user.first_name, self.user.last_name, self.user.username))
+    user_html.short_description = "Creator"
 
     def __str__(self):
         return "Vote #" + str(self.id) + ""
@@ -250,7 +250,7 @@ class Report(models.Model):
     # Report that was accepted by admins
     REPORT_ACCEPTED = 2
 
-    creator = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
     voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=256)
     message = models.CharField(max_length=512)
@@ -273,11 +273,11 @@ class Report(models.Model):
                          % (self.voting.id, self.voting.title, self.voting.id))
     voting_html.short_description = "Voting"
 
-    def creator_html(self):
-        if not self.creator:
+    def user_html(self):
+        if not self.user:
             return "-"
-        return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.creator.id, self.creator.first_name, self.creator.last_name, self.creator.username))
-    creator_html.short_description = "Creator"
+        return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.user.id, self.user.first_name, self.user.last_name, self.user.username))
+    user_html.short_description = "Creator"
 
 
 # Activity item
@@ -341,7 +341,7 @@ class Image(models.Model):
     # Avatar
     IMAGE_ROLE_AVATAR = 0
 
-    owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
     data = models.ImageField(upload_to=generate_file_name, null=True)
     role = models.IntegerField(default=0, choices=[(IMAGE_ROLE_AVATAR, 'Avatar')])
@@ -358,7 +358,7 @@ class Image(models.Model):
         if not user:
             user = request.user
         avatar_url = "https://bizraise.pro/wp-content/uploads/2014/09/no-avatar-300x300.png"
-        image = Image.objects.filter(owner=user, role=Image.IMAGE_ROLE_AVATAR).order_by('-datetime_created')
+        image = Image.objects.filter(user=user, role=Image.IMAGE_ROLE_AVATAR).order_by('-datetime_created')
         if len(image):
             avatar_url = 'http://' + request.get_host() + image[0].data.url
         return avatar_url
@@ -373,17 +373,17 @@ class Image(models.Model):
         return datetime_human(self.datetime_created)
     datetime_created_str.short_description = "Datetime of creation"
 
-    def owner_html(self):
-        if not self.owner:
+    def user_html(self):
+        if not self.user:
             return "-"
-        return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.owner.id, self.owner.first_name, self.owner.last_name, self.owner.username))
-    owner_html.short_description = "Owner"
+        return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.user.id, self.user.first_name, self.user.last_name, self.user.username))
+    user_html.short_description = "Owner"
 
 
 # Comment
 class Comment(models.Model):
 
-    creator = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
     voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE, null=True)
     message = models.CharField(max_length=512)
     datetime_created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
@@ -400,8 +400,8 @@ class Comment(models.Model):
                          % (self.voting.id, self.voting.title, self.voting.id))
     voting_html.short_description = "Voting"
 
-    def creator_html(self):
-        if not self.creator:
+    def user_html(self):
+        if not self.user:
             return "-"
-        return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.creator.id, self.creator.first_name, self.creator.last_name, self.creator.username))
-    creator_html.short_description = "Creator"
+        return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.user.id, self.user.first_name, self.user.last_name, self.user.username))
+    user_html.short_description = "Creator"
