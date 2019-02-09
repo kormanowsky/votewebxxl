@@ -4,6 +4,7 @@ from json import dumps as json_encode, loads as json_decode
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.safestring import mark_safe
+from django.db.models.signals import post_save
 
 from VoteWebCore.functions import *
 
@@ -294,6 +295,21 @@ class Report(models.Model):
     # Convert to string (for site admin panel)
     def __str__(self):
         return "Report #{}".format(self.id)
+
+    # Automatic voting ban. Callback for post_save signal
+    @staticmethod
+    def auto_ban_voting(sender, **kwargs):
+        instance = kwargs.get('instance')
+        if instance.status == Report.REPORT_ACCEPTED:
+            instance.voting.banned = 1
+            instance.voting.save()
+        else:
+            instance.voting.banned = 0
+            instance.voting.save()
+
+
+# Attach callback
+post_save.connect(Report.auto_ban_voting, sender=Report)
 
 
 # Activity item
