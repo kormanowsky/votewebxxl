@@ -75,7 +75,7 @@ class Voting(models.Model):
 
     # Checks if current user has voted
     def current_user_voted(self, request):
-        if not is_logged_in(request):
+        if not request.user.is_authenticated:
             return False
         return self.user_voted(request.user)
 
@@ -179,7 +179,7 @@ class Question(models.Model):
 
     # Checks if current user has voted
     def current_user_voted(self, request):
-        if not is_logged_in(request):
+        if not request.user.is_authenticated:
             return False
         return self.user_voted(request.user)
 

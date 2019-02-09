@@ -21,10 +21,6 @@ def form_errors(form):
     return errors
 
 
-def is_logged_in(request):
-    return request.user.username
-
-
 def datetime_convert(dt, from_zone, to_zone):
     return dt.replace(tzinfo=from_zone).astimezone(to_zone)
 
@@ -75,7 +71,7 @@ def generate_file_name(file, src_name):
 
 # User html for admin page
 def user_html(user):
-    if not isinstance(obj, User):
+    if not isinstance(user, User):
         return "-"
     return format_html('<a href="/admin/auth/user/{0}/change/">{1} {2}</a><br/>@{3}',
                        mark_safe(user.id),

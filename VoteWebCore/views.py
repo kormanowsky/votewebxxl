@@ -12,7 +12,7 @@ from VoteWebCore.api_views import save_voting
 from VoteWebCore.error_views import *
 
 def index(request):
-    if is_logged_in(request):
+    if request.user.is_authenticated:
         return redirect("/votings")
     return render(request, "index.html", {
         "html_title": "Home"
@@ -69,7 +69,7 @@ def voting_single(request, voting_id=-1, action="index"):
         'html_title': voting.title,
     }
     # Actions
-    if action != "index" and not is_logged_in(request):
+    if action != "index" and not request.user.is_authenticated:
         return error_forbidden(request)
     if action == "save" and request.method == "POST":
         if not voting.current_user_voted(request):
