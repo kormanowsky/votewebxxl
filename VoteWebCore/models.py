@@ -279,13 +279,16 @@ class Report(models.Model):
     def status_html(self):
         status_str = self.get_status_display()
         if self.status == self.REPORT_WAITING:
-            html_class = "danger"
+            html_class = "warning"
+            html_color = "#fb6340"
         elif self.status == self.REPORT_ACCEPTED:
             html_class = "success"
+            html_color = "#2dce89"
         else:
             html_class = "danger"
-        html = '<p class="font-weight-600 text-{}">{}</p>'
-        return mark_safe(html.format(html_class, status_str))
+            html_color = "#f5365c"
+        html = '<p style="color: {}; font-weight: 600;" class="small m-0 font-weight-600 text-{}">{}</p>'
+        return mark_safe(html.format(html_color, html_class, status_str))
     status_html.short_description = "Status"
 
     # Convert to string (for site admin panel)
