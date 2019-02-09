@@ -30,10 +30,14 @@ class JSONField(models.CharField):
 class Voting(models.Model):
 
     # Voting statuses (more statuses can be computed through summing these)
-    VOTING_BANNED = 0 # User cannot view voting
-    VOTING_VISIBLE = 1 # User can view voting
-    VOTING_OPEN_STATS = 2 # User can view stats
-    VOTING_OPEN = 4 # User can vote
+    # User cannot view voting
+    VOTING_BANNED = 0
+    # User can view voting
+    VOTING_VISIBLE = 1
+    # User can view stats
+    VOTING_OPEN_STATS = 2
+    # User can vote
+    VOTING_OPEN = 4
 
     owner = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True)
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
@@ -46,9 +50,7 @@ class Voting(models.Model):
     # Returns voting status
     def status(self, user):
         status = self.VOTING_BANNED
-        if not len(self.questions()):
-            return status
-        if self.banned:
+        if not len(self.questions()) or self.banned:
             return status
         else:
             status += self.VOTING_VISIBLE
@@ -101,26 +103,30 @@ class Voting(models.Model):
     def open(self):
         return not self.datetime_closed or self.datetime_closed.replace(tzinfo=None) > datetime.now()
     open.boolean = True
+
     # Checks if user added to favourites
     def user_added_to_favourites(self, user):
         return len(ActivityItem.objects.filter(type=ActivityItem.ACTIVITY_FAVOURITE, voting=self.id, user=user.id))
 
     # Checks if current user added to favourites
     def current_user_added_to_favourites(self, request):
-        return self.user_added_to_favourites(request.user)\
+        return self.user_added_to_favourites(request.user)
 
     # Returns count of favourites
     def favourites_count(self):
         return len(ActivityItem.objects.filter(type=ActivityItem.ACTIVITY_FAVOURITE, voting=self.id))
     favourites_count.short_description = "Count of additions to Favourites"
-    # Returns comments
+
+    # Returns comments list
     def comments(self):
         return Comment.objects.filter(voting=self.id).order_by("-datetime_created")
 
+    # Returns comments count
     def comments_count(self):
         return len(self.comments())
     comments_count.short_description = "Comments count"
 
+    # HTML for questions field in admin panel
     def questions_html(self):
         if not len(self.questions()):
             return "-"
@@ -130,12 +136,14 @@ class Voting(models.Model):
         return mark_safe(html)
     questions_html.short_description = "Questions"
 
+    # HTML for owner field in admin panel
     def owner_html(self):
         if not self.owner:
             return "-"
         return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.owner.id, self.owner.first_name, self.owner.last_name, self.owner.username))
     owner_html.short_description = "Owner"
 
+    # Convert to string (for site admin panel)
     def __str__(self):
         return self.title + " (#" + str(self.id) + ")"
 
@@ -178,8 +186,7 @@ class Question(models.Model):
             return False
         return self.user_voted(request.user)
 
-    def __str__(self):
-        return self.text + " (#" + str(self.id) + ")"
+
 
     def voting_html(self):
         if not self.voting:
@@ -197,6 +204,9 @@ class Question(models.Model):
             return "-"
         return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.owner.id, self.owner.first_name, self.owner.last_name, self.owner.username))
     owner_html.short_description = "Owner"
+
+    def __str__(self):
+        return self.text + " (#" + str(self.id) + ")"
 
 
 # Vote
@@ -224,6 +234,9 @@ class Vote(models.Model):
         return mark_safe('<a href="/admin/auth/user/%d/change/">%s %s</a><br/>@%s' % (self.creator.id, self.creator.first_name, self.creator.last_name, self.creator.username))
     creator_html.short_description = "Creator"
 
+    def __str__(self):
+        return "Vote #" + str(self.id) + ""
+
 
 
 
@@ -242,7 +255,6 @@ class Report(models.Model):
     title = models.CharField(max_length=256)
     message = models.CharField(max_length=512)
     datetime_created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-    # img = models.FileField()
     status = models.IntegerField(default=0, choices=(
         (REPORT_WAITING, 'Waiting'),
         (REPORT_DECLINED, 'Declined'),
