@@ -182,6 +182,9 @@ function InitConfirmationModals() {
 jQuery(function ($) {
     AjaxForm($("#report-form"));
     AjaxForm($("#comment-form"), function(data){
+        if($("#comments>p").length){
+            $("#comments>p").remove();
+        }
         $("#comments").prepend(data.comment);
         $("#comments-count").text(data.comments_count);
     }, false, true);
