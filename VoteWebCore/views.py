@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.db.models import Q
+from django.contrib import messages
 
 from VoteWebCore.forms import *
 from VoteWebCore.models import *
@@ -57,7 +58,8 @@ def register(request):
             context['form'].save()
             return redirect('/login?register_success=1')
         else:
-            context['errors'] = form_errors(context['form'])
+            for error in form_errors(context['form']):
+                messages.add_message(request, messages.ERROR, error)
     return render(request, 'registration/registration.html', context)
 
 
@@ -188,6 +190,7 @@ def settings(request):
             formdata = form.cleaned_data
             if request.user.username != formdata['username']:
                 if len(User.objects.filter(username=formdata['username'])):
+                    messages.add_message(request, messages.ERROR, "Username is already in use")
                     return render(request, 'settings.html', context)
             item = User.objects.filter(id=request.user.id)
             if len(item):

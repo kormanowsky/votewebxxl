@@ -148,7 +148,7 @@ textarea {
     word-wrap: break-word;
 }
 
-:not(script)+.modal-backdrop {
+:not(script) + .modal-backdrop {
     z-index: 1058;
 }
 
@@ -184,11 +184,11 @@ textarea {
     right: 12px;
 }
 
-.tab-content>.row {
+.tab-content > .row {
     display: none;
 }
 
-.tab-content>.row.active {
+.tab-content > .row.active {
     display: flex;
 }
 
@@ -307,9 +307,11 @@ section#top {
     from {
         bottom: 1em;
     }
+
     50% {
         bottom: 1.5em;
     }
+
     to {
         bottom: 1em;
     }
@@ -340,7 +342,7 @@ section#top {
     animation-iteration-count: infinite;
 }
 
-#landing-image{
+#landing-image {
     position: absolute;
     opacity: .5;
     width: 100vw;
@@ -349,15 +351,33 @@ section#top {
     left: 45%;
 }
 
+/* Сообщения */
+#messages {
+    position: fixed;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+}
+
+#messages .alert {
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5vh;
+    z-index: 9999;
+}
+
 /* ÐÐ´Ð°Ð¿Ñ‚Ð¸Ð²Ð½Ð¾ÑÑ‚ÑŒ */
 
 @media(min-width: 768px) {
     header {
         padding: 0 16px;
     }
+
     #root {
         padding: 96px 16px 0;
     }
+
     #root aside,
     #root main {
         height: calc(100vh - 64px);
@@ -365,35 +385,44 @@ section#top {
         padding-bottom: 48px;
         margin-top: -48px;
     }
+
     .side {
         width: 20%;
         max-width: 250px;
     }
+
     .avatar-tiny {
         height: 32px;
         width: 32px;
     }
+
     .avatar-small {
         height: 40px;
         width: 40px;
     }
+
     .avatar-medium {
         height: 56px;
         width: 56px;
     }
+
     .avatar-big {
         height: 96px;
         width: 96px;
     }
+
     #profile-info h4 {
         font-size: 1.3rem;
     }
+
     .profile-stats-number {
         font-size: 150%;
     }
-    .modal-wide>.modal-dialog {
+
+    .modal-wide > .modal-dialog {
         max-width: 700px;
     }
+
     #landing-sitename {
         padding-top: 3em;
         padding-bottom: 0;
@@ -406,20 +435,25 @@ section#top {
     header {
         padding: 0 56px;
     }
+
     header * {
         color: #fff !important;
     }
+
     .navbar li.nav-item span {
         font-size: 90%;
         line-height: 64px;
     }
+
     #top-logo-text,
     .navbar li.nav-item:hover {
         background: #4527a0;
     }
+
     #root {
         padding: 112px 56px 0;
     }
+
     #root aside,
     #root main {
         height: calc(100vh - 64px);
@@ -427,22 +461,27 @@ section#top {
         padding-bottom: 48px;
         margin-top: -48px;
     }
+
     .avatar-tiny {
         height: 40px;
         width: 40px;
     }
+
     .avatar-small {
         height: 48px;
         width: 48px;
     }
+
     .avatar-medium {
         height: 80px;
         width: 80px;
     }
+
     .avatar-big {
         height: 120px;
         width: 120px;
     }
+
     .profile-activity-main h6 {
         font-size: 80%;
     }
@@ -452,13 +491,16 @@ section#top {
     table {
         table-layout: fixed !important;
     }
+
     .avatar-big {
         height: 150px;
         width: 150px;
     }
+
     #profile-info h4 {
         font-size: 1.5rem;
     }
+
     .profile-stats-number {
         font-size: 175%;
     }
@@ -468,15 +510,19 @@ section#top {
     .pl-xxl-4 {
         padding-left: 1.5rem !important;
     }
+
     .pr-xxl-4 {
         padding-right: 1.5rem !important;
     }
+
     .pr-xxl-0 {
         padding-right: 0 !important;
     }
+
     .justify-content-xxl-around {
         justify-content: space-around !important;
     }
+
     .profile-activity-main h6 {
         font-size: 100%;
     }

@@ -1,13 +1,9 @@
 function AjaxForm(element, success, error, autoClose) {
     autoClose = autoClose || false;
-    var $errorsDiv = $('<div class="p-4"></div>');
-    $errorsDiv.insertBefore($(element)).hide();
     // For forms in modal
     if ($(element).parents(".modal").length) {
         $(element).parents(".modal").find(".close").click(function () {
             setTimeout(function () {
-                $errorsDiv.hide();
-                $(element).show();
                 ClearForm($(element));
             }, 600);
         });
@@ -21,18 +17,13 @@ function AjaxForm(element, success, error, autoClose) {
             if (typeof data === "object") {
                 if ('is_valid' in data) {
                     if (data['is_valid'] === false) {
-                        var errors_list = $('ul');
                         for (var key in data['errors']) {
-                            var error_li = $('li');
-                            error_li.text(data['errors'][key] + ': ' + key);
-                            errors_list.append(error_li);
+                            ShowMessage("danger", data['errors'][key]);
                         }
-                        $errrosDiv.addClass('text-danger').append(errors_list).show();
                     } else {
-                        $(element).hide();
-                        $errorsDiv.addClass('text-success').html('Success!').show();
                         if (autoClose)
                             $(element).parents(".modal").find(".close").click();
+                        ShowMessage("success", "Success!");
                         if (typeof success === "function")
                             success(data);
                     }
@@ -137,4 +128,22 @@ function InitConfirmationModal() {
     $(".dangerous-action:not([data-dam-processed])").each(function (i, e) {
         AddConfirmationModal(e);
     });
+}
+
+function ShowMessage(type, message) {
+    var $message = $('<div class="alert alert-' + type + ' alert-dismissible fade show shadow"></div>'),
+        $btn = $('<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>');
+    $message.text(message);
+    $message.append($btn);
+    $("#messages").append($message);
+}
+
+function DefaultAjaxError() {
+    message = "An error occured while doing request to server";
+    if (arguments.length) {
+        message += ": " + arguments[0].statusText;
+    } else {
+        message += ".";
+    }
+    ShowMessage("warning", message);
 }
