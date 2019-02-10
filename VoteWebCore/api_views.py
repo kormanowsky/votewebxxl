@@ -9,7 +9,7 @@ from VoteWebCore.forms import *
 
 # Get one question
 def get_question(request, question_id=0):
-    question = Question.objects.filter(question_id=id).exclude(is_active=False)
+    question = Question.objects.filter(id=question_id).exclude(is_active=False)
 
     if not len(question):
         return error_not_found(request)
