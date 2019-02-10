@@ -45,6 +45,7 @@ def error_not_a_teapot(request, *args, **kwargs):
         "text": "I'm a teapot",
     }, status=418)
 
+
 def error_csrf(request, *args, **kwargs):
     return render(request, 'error.html', {
         "code": 403,
