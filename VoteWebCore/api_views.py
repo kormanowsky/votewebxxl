@@ -22,7 +22,7 @@ def get_question(request, question_id=0):
         voting_id = None
 
     if question.user is not None:
-        user_id = question.user.id
+        user_id = question.user.id 
     else:
         user_id = None
 
