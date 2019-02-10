@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block body %}
+{% extends "base.html" %} {% block body %} {% load static %}
 <style>
     html,
     body {
@@ -7,11 +7,12 @@
 </style>
 <div id="wrap">
     <section id="top" class="bg-gradient-primary h-100vh d-flex align-items-center justify-content-center">
+        <img id="landing-image" src="{% static 'images/screen1.png' %}" alt="" class="d-none d-lg-block shadow-lg">
         <div class="container">
             <div class="row">
                 <div class="col-12">
                     <h1 class="text-white text-center font-weight-700" id="landing-sitename">VoteWebXXL</h1>
-                    <h3 class="text-white text-center font-weight-100" id="landing-supporting">Web app for organising votings<br>
+                    <h3 class="text-white text-center font-weight-300" id="landing-supporting">Web app for organising votings<br>
                         <a href="/login" class="btn btn-outline-white mt-4">Log in</a>
                     </h3>
                 </div>
@@ -30,18 +31,19 @@
                     </h1>
                     <h4 class="font-weight-300">With our app you can easily create votings and collect people's opinions!</h4>
                     <div class="row">
-                        {% load static %}
                         <div class="col-12 col-md-6 pl-lg-0 col-lg-4">
                             <div class="p-3">
+                                <h5 class="text-primary font-weight-300 mb-3">1. Create voting</h5>
                                 <img src="{% static 'images/screen1.png' %}" alt="" class="w-100">
-                                <h5 class="text-primary font-weight-300 mt-3">1. Create voting</h5>
+
                                 <p></p>
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-4">
                             <div class="p-3">
+                                <h5 class="text-primary font-weight-300 mb-3">2. Add questions</h5>
                                 <img src="{% static 'images/screen2.png' %}" alt="" class="w-100">
-                                <h5 class="text-primary font-weight-300 mt-3">2. Add questions</h5>
+
                                 <p></p>
                             </div>
                         </div>

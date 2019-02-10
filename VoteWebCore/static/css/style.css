@@ -148,9 +148,10 @@ textarea {
     word-wrap: break-word;
 }
 
-:not(script) + .modal-backdrop {
+:not(script)+.modal-backdrop {
     z-index: 1058;
 }
+
 
 /* Ð¡Ñ‚Ð¸Ð»Ð¸ ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ñ‹ ÐŸÑ€Ð¾Ñ„Ð¸Ð»ÑŒ */
 
@@ -183,11 +184,11 @@ textarea {
     right: 12px;
 }
 
-.tab-content > .row {
+.tab-content>.row {
     display: none;
 }
 
-.tab-content > .row.active {
+.tab-content>.row.active {
     display: flex;
 }
 
@@ -199,6 +200,7 @@ textarea {
 table td {
     white-space: normal !important;
 }
+
 
 /* Ð¡Ñ‚Ð¸Ð»Ð¸ ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ñ‹ Ð¡Ð¿Ð¸ÑÐ¾Ðº Ð³Ð¾Ð»Ð¾ÑÐ¾Ð²Ð°Ð½Ð¸Ð¹ */
 
@@ -277,6 +279,7 @@ table td {
     background: #5e2eb4 !important;
 }
 
+
 /* Ð¡Ñ‚Ð¸Ð»Ð¸ ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ñ‹ Ð’Ñ…Ð¾Ð´ */
 
 #auth-root {
@@ -285,18 +288,31 @@ table td {
     overflow: auto;
 }
 
+
 /* Стили страницы ошибки */
 
 #error-code {
     font-size: 12em;
 }
 
+
 /* Стили лендинга */
 
+section#top {
+    overflow: hidden;
+    position: relative;
+}
+
 @keyframes landing_scroll {
-    from {bottom: 1em;}
-    50% {bottom: 1.5em;}
-    to {bottom: 1em;}
+    from {
+        bottom: 1em;
+    }
+    50% {
+        bottom: 1.5em;
+    }
+    to {
+        bottom: 1em;
+    }
 }
 
 #landing-sitename {
@@ -324,17 +340,24 @@ table td {
     animation-iteration-count: infinite;
 }
 
+#landing-image{
+    position: absolute;
+    opacity: .5;
+    width: 100vw;
+    transform: rotate(-10deg);
+    top: 45%;
+    left: 45%;
+}
+
 /* ÐÐ´Ð°Ð¿Ñ‚Ð¸Ð²Ð½Ð¾ÑÑ‚ÑŒ */
 
 @media(min-width: 768px) {
     header {
         padding: 0 16px;
     }
-
     #root {
         padding: 96px 16px 0;
     }
-
     #root aside,
     #root main {
         height: calc(100vh - 64px);
@@ -342,44 +365,35 @@ table td {
         padding-bottom: 48px;
         margin-top: -48px;
     }
-
     .side {
         width: 20%;
         max-width: 250px;
     }
-
     .avatar-tiny {
         height: 32px;
         width: 32px;
     }
-
     .avatar-small {
         height: 40px;
         width: 40px;
     }
-
     .avatar-medium {
         height: 56px;
         width: 56px;
     }
-
     .avatar-big {
         height: 96px;
         width: 96px;
     }
-
     #profile-info h4 {
         font-size: 1.3rem;
     }
-
     .profile-stats-number {
         font-size: 150%;
     }
-
-    .modal-wide > .modal-dialog {
+    .modal-wide>.modal-dialog {
         max-width: 700px;
     }
-
     #landing-sitename {
         padding-top: 3em;
         padding-bottom: 0;
@@ -392,25 +406,20 @@ table td {
     header {
         padding: 0 56px;
     }
-
     header * {
         color: #fff !important;
     }
-
     .navbar li.nav-item span {
         font-size: 90%;
         line-height: 64px;
     }
-
     #top-logo-text,
     .navbar li.nav-item:hover {
         background: #4527a0;
     }
-
     #root {
         padding: 112px 56px 0;
     }
-
     #root aside,
     #root main {
         height: calc(100vh - 64px);
@@ -418,27 +427,22 @@ table td {
         padding-bottom: 48px;
         margin-top: -48px;
     }
-
     .avatar-tiny {
         height: 40px;
         width: 40px;
     }
-
     .avatar-small {
         height: 48px;
         width: 48px;
     }
-
     .avatar-medium {
         height: 80px;
         width: 80px;
     }
-
     .avatar-big {
         height: 120px;
         width: 120px;
     }
-
     .profile-activity-main h6 {
         font-size: 80%;
     }
@@ -448,16 +452,13 @@ table td {
     table {
         table-layout: fixed !important;
     }
-
     .avatar-big {
         height: 150px;
         width: 150px;
     }
-
     #profile-info h4 {
         font-size: 1.5rem;
     }
-
     .profile-stats-number {
         font-size: 175%;
     }
@@ -467,19 +468,15 @@ table td {
     .pl-xxl-4 {
         padding-left: 1.5rem !important;
     }
-
     .pr-xxl-4 {
         padding-right: 1.5rem !important;
     }
-
     .pr-xxl-0 {
         padding-right: 0 !important;
     }
-
     .justify-content-xxl-around {
         justify-content: space-around !important;
     }
-
     .profile-activity-main h6 {
         font-size: 100%;
     }
