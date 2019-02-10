@@ -46,6 +46,6 @@ urlpatterns = [
     path('api/favourites/<str:action>/<int:voting_id>', api_views.favourites),
     path('api/remove/<str:model>/<int:model_id>', api_views.remove),
 
-    # Default view
-    path(r'', error_views.error_not_found)
+    # Error 418 view )))
+    path('418', error_views.error_not_a_teapot),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
