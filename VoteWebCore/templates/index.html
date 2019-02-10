@@ -34,7 +34,9 @@
                         <div class="col-12 col-md-6 pl-lg-0 col-lg-4">
                             <div class="p-3">
                                 <h5 class="text-primary font-weight-300 mb-3">1. Create voting</h5>
-                                <img src="{% static 'images/screen1.png' %}" alt="" class="w-100">
+                                <img src="{% static 'images/screen1.png' %}" alt="" class="w-100"
+                                     data-toggle="modal" data-target="#modal-default"
+                                     onclick="MakeImageAlert({% static 'images/screen1.png' %});">
 
                                 <p></p>
                             </div>
@@ -247,4 +249,5 @@
         </div>
     </footer>
 </div>
+    {% include 'ImageViewer.html' %}
 {% endblock body %}

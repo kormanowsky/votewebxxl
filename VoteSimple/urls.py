@@ -1,7 +1,7 @@
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path
-from django.conf.urls.static import static
 
 from VoteSimple import settings
 from VoteWebCore import views, api_views, error_views
@@ -35,6 +35,7 @@ urlpatterns = [
 
     # Settings
     path('settings', views.settings),
+                  path('test', views.test_page),
 
     # Voting create
     path('voting/create', views.voting_create),

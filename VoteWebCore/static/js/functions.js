@@ -147,3 +147,7 @@ function DefaultAjaxError() {
     }
     ShowMessage("warning", message);
 }
+
+function MakeImageAlert(img_path) {
+    $('#big_img').attr('src', img_path);
+}
