@@ -290,7 +290,7 @@ Votings.favourites = {
                     $(element).attr("onclick", onclick.replace("remove", "add"));
                     $(element).toggleClass("text-light text-primary");
                 }else{
-                    defaultAjaxError();
+                    DefaultAjaxError();
                 }
             }, 
             "error": DefaultAjaxError,
