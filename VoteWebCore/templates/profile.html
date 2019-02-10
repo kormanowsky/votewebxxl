@@ -5,19 +5,14 @@
             <div class="card-body align-items-center row mx-0">
                 <div class="col-md-6 col-xl-8 pr-0 pl-0 pl-xxl-4">
                     <div class="py-xl-4 d-flex align-items-center justify-content-center justify-content-xl-start">
-                        <img id="profile-avatar" src="{% avatar request profile_owner %}" class="avatar avatar-big shadow-lg">
+                        <img id="profile-avatar" src="{% avatar request profile_user %}" class="avatar avatar-big shadow-lg">
                         <div id="profile-info" class="w-auto ml-3 ml-xl-4">
                             <h4 class="lh-110 mb-1">
-                                {{ profile_owner.first_name }} {{ profile_owner.last_name }}
+                                {{ profile_user.first_name }} {{ profile_user.last_name }}
                             </h4>
                             <h6 class="font-weight-300 lh-100 mt-0">
-                                @{{ profile_owner.username }}
+                                @{{ profile_user.username }}
                             </h6>
-                            <!--
-                            <div id="profile-actions" class="d-flex mt-2">
-                                <button class="btn btn-primary btn-sm">Follow</button>
-                            </div>
-                            -->
                         </div>
                     </div>
                 </div>
@@ -36,20 +31,6 @@
                                     <p class="lh-100 mt-2 profile-statis-description small text-center text-uppercase mb-0 mb-lg-3">Vote{% if votes_count != 1 %}s{%endif %}</p>
                                 </div>
                             </li>
-                            <!--
-                            <li class="profile-stats-item pr-2 pr-md-3">
-                                <div>
-                                    <p class="font-weight-700 lh-100 m-0 profile-stats-number text-center text-primary">2K</p>
-                                    <p class="lh-100 mt-2 profile-statis-description small text-center text-uppercase mb-0 mb-lg-3">Followers</p>
-                                </div>
-                            </li>
-                            <li class="profile-stats-item pr-2 pr-md-3 pr-xxl-0">
-                                <div>
-                                    <p class="font-weight-700 lh-100 m-0 profile-stats-number text-center text-primary">1.1K</p>
-                                    <p class="lh-100 mt-2 profile-statis-description small text-center text-uppercase mb-0 mb-lg-3">Following</p>
-                                </div>
-                            </li>
-                            -->
                         </ul>
                     </div>
                 </div>
@@ -73,7 +54,7 @@
                 <li class="nav-item">
                     <a class="d-flex align-items-center justify-content-center nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-5-tab" data-toggle="tab" href="#tabs-icons-text-5" role="tab" aria-controls="tabs-icons-text-5" aria-selected="false"><i class="mr-2 la la-star"></i>Favourites</a>
                 </li>
-                {% if request.user == profile_owner %}
+                {% if request.user == profile_user %}
                 <li class="nav-item">
                     <a class="d-flex align-items-center justify-content-center nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-4-tab" data-toggle="tab" href="#tabs-icons-text-4" role="tab" aria-controls="tabs-icons-text-3" aria-selected="false"><i class="mr-2 la la-exclamation"></i>Reports</a>
                 </li>
@@ -88,9 +69,7 @@
             <div class="row">
                 <div class="col-12">
                     <h5 class="pt-4 text-right h6 mb--4 pb-2">Activity</h5>
-                    {% for item in activity_small %}
-                    {% include "activity_item.html" with item=item %}
-                    {% empty %}
+                    {% for item in activity_small %} {% include "activity_item.html" with item=item %} {% empty %}
                     <p class="text-center my-5">No activity</p>
                     {% endfor %}
                 </div>
@@ -148,11 +127,11 @@
         </div>
         {% endfor %}
     </div>
-    {% if request.user == profile_owner %}
+    {% if request.user == profile_user %}
     <div class="row mt-4" id="tabs-icons-text-4" role="tabpanel" aria-labelledby="tabs-icons-text-4-tab">
         <div class="col-12">
             <div class="card shadow-sm">
-                {% if profile_owner_reports.count %}
+                {% if profile_user_reports.count %}
                 <div class="table-responsive">
                     <table class="table align-items-center table-flush">
                         <thead class="thead-light">
@@ -166,7 +145,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for report in profile_owner_reports %}
+                            {% for report in profile_user_reports %}
                             <tr>
                                 <td>{{ report.id }}</td>
                                 <td>{{ report.datetime_created_str }}</td>
@@ -174,7 +153,7 @@
                                 <td>
                                     <p class="mb-1">{{ report.title }}</p>{{ report.message }}
                                 </td>
-                                <td class="font-weight-600 text-{% if report.status == report.REPORT_WAITING %}warning{% elif report.status == report.REPORT_ACCEPTED %}success{% else %}danger{% endif %}">{{ report.status_str }}</td>
+                                <td>{{ report.status_html }}</td>
                                 <td class="td-actions text-right">
                                     <a href="/api/remove/report/{{ report.id }}" class="d-block text-danger dangerous-action">
                                         Remove report

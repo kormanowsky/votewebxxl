@@ -122,9 +122,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'VoteWebCore/static')
 
 LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = '/votings'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'VoteWebCore/uploads')
 MEDIA_URL = '/uploads/'
+
+CSRF_FAILURE_VIEW = 'VoteWebCore.views.error_csrf'
+

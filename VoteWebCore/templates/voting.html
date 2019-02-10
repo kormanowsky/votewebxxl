@@ -1,22 +1,18 @@
-{# Одно голосование. Для использования в циклах #}
-{% votingstatus voting request as status %}
-{% votingaddedtofavourites voting request as addedtofavourites %}
-{% if status >= voting.VOTING_OPEN and not voting_small %}
+{# Одно голосование. Для использования в циклах #} {% voting_status voting request as status %} {% voting_added_to_favourites voting request as added_to_favourites %} {% if status >= voting.VOTING_OPEN and not voting_small %}
 <form action="/voting/{{ voting.id }}/save" method="post" onsubmit="return Votings.vote.checkForm(this);">
-    {% csrf_token %}
-    {% endif %}
+    {% csrf_token %} {% endif %}
     <div class="card shadow-sm">
         <div class="card-body">
             <p class="text-muted lh-110">Voting #{{ voting.id }}</p>
             <h1 class="display-2 lh-110 mt-2 my-4"><a href="/voting/{{voting.id}}">{{ voting.title }}</a></h1>
             <div class="row d-flex align-items-center">
                 <div class="col-12{% if not voting_small %} col-md-6{% endif %}">
-                    <a href="/profile/{{ voting.owner.username }}">
+                    <a href="/profile/{{ voting.user.username }}">
                         <div class="d-flex align-items-center">
-                            <img src="{% avatar request voting.owner %}" class="avatar avatar-small shadow-sm">
+                            <img src="{% avatar request voting.user %}" class="avatar avatar-small shadow-sm">
                             <div class="ml-3">
-                                <p class="lh-100 font-weight-100 mb-1">{{ voting.owner.first_name }}&nbsp;{{ voting.owner.last_name }}</p>
-                                <p class="lh-100 small h6 text-muted">@{{ voting.owner.username }}</p>
+                                <p class="lh-100 font-weight-100 mb-1">{{ voting.user.first_name }}&nbsp;{{ voting.user.last_name }}</p>
+                                <p class="lh-100 small h6 text-muted">@{{ voting.user.username }}</p>
                             </div>
                         </div>
                     </a>
@@ -38,51 +34,8 @@
     <div class="row">
         {% if status >= voting.VOTING_VISIBLE %}
         <div class="col-12 col-xl-8">
-            {% if status >= voting.VOTING_OPEN_STATS %}
-            {% for question in voting.questions %}
-            <div class="w-100">
-                <div class="card shadow-sm mt-4">
-                    <div class="card-body">
-                        <p class="text-muted lh-110 small">Question #{{ question.id }}</p>
-                        <h3 class="mb-4">{{ question.text }}</h3>
-                        {% if status >= voting.VOTING_OPEN %}
-                        {% if question.type == question.QUESTION_BUTTONS %}
-                        <input type="hidden" name="answer_{{ question.id }}" value="">
-                        <div class="row mx-0">
-                            {% for answer in question.answers %}
-                            <button onclick="return Votings.vote.setCurrentButtonAnswer(this);" data-question-id="{{ question.id }}" type="button" class="col-12 mb-3 btn btn-outline-primary" id="question_{{ question.id }}_answers_{{ forloop.counter }}">
-                                {{ answer }}
-                            </button>
-                            {% endfor %}
-                        </div>
-                        {% elif question.type == question.QUESTION_SINGLE_ANSWER %}
-                        {% for answer in question.answers %}
-                        <div class="custom-control custom-radio mb-3">
-                            <input name="answer_{{ question.id }}" class="custom-control-input" id="question_{{ question.id }}_answers_{{ forloop.counter }}" value="{{answer}}" type="radio" required>
-                            <label class="custom-control-label" for="question_{{ question.id }}_answers_{{ forloop.counter }}">{{ answer }}</label>
-                        </div>
-                        {% endfor %}
-                        {% elif question.type == question.QUESTION_MULTIPLE_ANSWERS %}
-                        {% for answer in question.answers %}
-                        <div class="custom-control custom-checkbox mb-3">
-                            <input class="custom-control-input" id="question_{{ question.id }}_answers_{{ forloop.counter }}" name="answer_{{ question.id }}[]" type="checkbox" value="{{ answer }}">
-                            <label class="custom-control-label" for="question_{{ question.id }}_answers_{{ forloop.counter }}">{{ answer }}</label>
-                        </div>
-                        {% endfor %}
-                        {% endif %}
-                        {% else %}
-                        <p class="text-muted text-center my-3">Answer stats</p>
-                        <canvas id="question-{{ question.id }}-stats"></canvas>
-                        <script>jQuery(function($){ window.Votings.stats.init({{ question.id }}, {{question.type}}, {{question.stats|safe}}); });</script>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-            {% if status >= voting.VOTING_OPEN and not voting_small %}
-            <button type="submit" class="btn btn-primary w-100 mt-4">Save votes</button>
-            {% endif %}
-            {% elif status == voting.VOTING_VISIBLE %}
+            {% if status >= voting.VOTING_OPEN_STATS %} {% for question in voting.questions %} {% include "question.html" with question=question voting=voting %} {% endfor %} {% if status >= voting.VOTING_OPEN and not voting_small %}
+            <button type="submit" class="btn btn-primary w-100 mt-4">Save votes</button> {% endif %} {% elif status == voting.VOTING_VISIBLE %}
             <div class="w-100">
                 <div class="card shadow-sm mt-4">
                     <p class="text-center m-5">The author of this voting decided to make stats private.
@@ -95,22 +48,20 @@
             <div class="card shadow-sm mt-4">
                 <div class="card-body">
                     <div class="text-light font-weight-300 d-flex justify-content-around m-0 h4">
-                        <a href="#" onclick="Votings.favourites.{% if not addedtofavourites %}add{% else %}remove{% endif %}(this, {{ voting.id }}); return false;" class="d-flex align-items-center {% if addedtofavourites %}text-primary{% else %}text-light{% endif %}">
+                        <a href="#" onclick="Votings.favourites.{% if not added_to_favourites %}add{% else %}remove{% endif %}(this, {{ voting.id }}); return false;" class="d-flex align-items-center {% if added_to_favourites %}text-primary{% else %}text-light{% endif %}">
                             <i class="la la-star"></i>
                             <p class="my-0 lh-100 ml-2">{{ voting.favourites_count }}</p>
                         </a>
                         {% csrf_token %}
                         <div class="d-flex align-items-center">
                             <i class="la la-comments"></i>
-                            <p class="my-0 lh-100 ml-2" id="comments-count">{{ voting.comments|length }}</p>
+                            <p class="my-0 lh-100 ml-2" id="comments-count">{{ voting.comments_count }}</p>
                         </div>
                     </div>
                 </div>
             </div>
             <div id="comments">
-                {% for comment in voting.comments %}
-                {% include "comment.html" with comment=comment %}
-                {% empty %}
+                {% for comment in voting.comments %} {% include "comment.html" with comment=comment %} {% empty %}
                 <p class="w-100 my-5 text-center text-light">No comments</p>
                 {% endfor %}
             </div>
@@ -119,17 +70,12 @@
         <div class="col-12">
             <div class="card shadow-sm mt-4">
                 <p class="text-center m-5">
-                    {% if status == voting.VOTING_BANNED %}
-                    This voting was banned by administration due to users' reports.
-                    {% else %}
-                    You have to <a href="/login">log in</a> or <a href="/register">register</a> to view, create and vote in votings.
-                    {% endif %}
+                    {% if status == voting.VOTING_BANNED %} This voting was banned by administration due to users' reports. {% else %} You have to <a href="/login">log in</a> or <a href="/register">register</a> to view, create and vote in votings. {% endif %}
                 </p>
             </div>
         </div>
         {% endif %}
     </div>
-    {% endif %}
-    {% if status >= voting.VOTING_OPEN and not voting_small %}
+    {% endif %} {% if status >= voting.VOTING_OPEN and not voting_small %}
 </form>
 {% endif %}

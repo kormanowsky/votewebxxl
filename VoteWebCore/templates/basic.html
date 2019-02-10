@@ -1,5 +1,4 @@
-{% extends "base.html" %}
-{% block body %}
+{% extends "base.html" %} {% block body %}
 <!-- Шапка -->
 <header class="bg-primary d-flex align-items-center text-white shadow">
     <div class="w-100">
@@ -23,7 +22,7 @@
                                     <i class="navbar-toggler-icon la la-close"></i>
                                 </button>
                             </div>
-                            {% if request.user.username %}
+                            {% if request.user.is_authenticated %}
                             <div class="nav-item m-0 px-3 d-flex d-lg-none align-items-center">
                                 <!-- Данные текущего пользователя -->
                                 <img src="{% avatar request %}" class="avatar avatar-medium d-block avatar-current-user">
@@ -34,19 +33,12 @@
                             </div>
                             {% endif %}
                             <ul class="navbar-nav navbar-nav-hover align-items-lg-center d-lg-none border-bottom">
-                                {% if request.user.username %}
+                                {% if request.user.is_authenticated %}
                                 <li class="nav-item m-0">
                                     <a href="/profile/{{ request.user.username }}" class="nav-link m-0 px-3 px-lg-4 pb-0 pt-1 pt-lg-0">
                                         <span class="font-weight-300">Profile</span>
                                     </a>
                                 </li>
-                                <!--
-                                <li class="nav-item m-0">
-                                    <a href="/feed" class="nav-link m-0 px-3 px-lg-4 pb-0 pt-1 pt-lg-0">
-                                        <span class="font-weight-300">Feed</span>
-                                    </a>
-                                </li>
-                                -->
                                 <li class="nav-item m-0">
                                     <a href="/votings" class="nav-link m-0 px-3 px-lg-4 pb-0 pt-1 pt-lg-0">
                                         <span class="font-weight-300">Votings</span>
@@ -78,23 +70,13 @@
                             </ul>
                             <ul class="navbar-nav navbar-nav-hover align-items-lg-center">
                                 <li class="nav-item m-0">
-                                    <a href="/about" class="nav-link m-0 px-3 px-lg-4 pb-0 pt-1 pt-lg-0">
+                                    <a href="/#about" class="nav-link m-0 px-3 px-lg-4 pb-0 pt-1 pt-lg-0">
                                         <span class="font-weight-300">About</span>
                                     </a>
                                 </li>
                                 <li class="nav-item m-0">
-                                    <a href="/about/team" class="nav-link m-0 px-3 px-lg-4 pb-0 pt-1 pt-lg-0">
+                                    <a href="/#team" class="nav-link m-0 px-3 px-lg-4 pb-0 pt-1 pt-lg-0">
                                         <span class="font-weight-300">Team</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item m-0">
-                                    <a href="/blog" class="nav-link m-0 px-3 px-lg-4 pb-0 pt-1 pt-lg-0">
-                                        <span class="font-weight-300">Blog</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item m-0">
-                                    <a href="/donate" class="nav-link m-0 px-3 px-lg-4 pb-3 pb-lg-0 pt-1 pt-lg-0">
-                                        <span class="font-weight-300">Donate</span>
                                     </a>
                                 </li>
                             </ul>
@@ -117,7 +99,7 @@
                             <div class="col-12">
                                 <div class="card shadow-sm">
                                     <div class="card-body">
-                                        {% if request.user.username %}
+                                        {% if request.user.is_authenticated %}
                                         <!-- Даннные текущего пользователя -->
                                         <img src="{% avatar request %}" class="shadow avatar avatar-medium d-block ml-auto mr-auto avatar-current-user">
                                         <p class="h6 mt-3 mb-4 lh-120 text-bold text-center">{{ request.user.first_name }}<br />{{ request.user.last_name }}<br />
@@ -125,22 +107,14 @@
                                         </p>
                                         {% endif %}
                                         <!-- Меню аккаунта -->
-                                        <ul class="navbar-nav{% if request.user.username %} border-top mt-4 pt-4{% endif %} ml--4 mr--4 pl-4 pr-4">
-                                            {% if request.user.username %}
+                                        <ul class="navbar-nav{% if request.user.is_authenticated %} border-top mt-4 pt-4{% endif %} ml--4 mr--4 pl-4 pr-4">
+                                            {% if request.user.is_authenticated %}
                                             <li class="nav-item">
                                                 <a href="/profile/{{ request.user.username }}" title="Go to my profile page" class="d-flex pb-3 align-items-center">
                                                     <i class="la la-user"></i>
                                                     <p class="h6 small text-muted m-0 pl-3">Profile</p>
                                                 </a>
                                             </li>
-                                            <!--
-                                            <li class="nav-item">
-                                                <a href="/feed" title="Go to newsfeed page" class="d-flex pb-3 align-items-center">
-                                                    <i class="la la-newspaper-o"></i>
-                                                    <p class="h6 small text-muted m-0 pl-3">Feed</p>
-                                                </a>
-                                            </li>
-                                            -->
                                             <li class="nav-item">
                                                 <a href="/votings" title="Go to vote list page" class="d-flex pb-3 align-items-center">
                                                     <i class="la la-question"></i>
@@ -153,6 +127,14 @@
                                                     <p class="h6 small text-muted m-0 pl-3">Settings</p>
                                                 </a>
                                             </li>
+                                            {% if request.user.is_staff %}
+                                            <li class="nav-item">
+                                                <a href="/admin" title="Go to newsfeed page" class="d-flex pb-3 align-items-center">
+                                                    <i class="la la-edit"></i>
+                                                    <p class="h6 small text-muted m-0 pl-3">Admin panel</p>
+                                                </a>
+                                            </li>
+                                            {% endif %}
                                             <li class="nav-item">
                                                 <a href="/logout" title="Go to vote list page" class="d-flex align-items-center">
                                                     <i class="la la-sign-out"></i>
@@ -181,7 +163,7 @@
                         <!-- Копирайт -->
                         <div class="row mt-3">
                             <div class="col-12">
-                                <p class="m-0 px-1 small"><span class="font-weight-700 text-primary">VoteWebXXL v0.9</span><br/>&copy; 2019 The VoteWebXXL Team. All rights reserved.</p>
+                                <p class="m-0 px-1 small"><span class="font-weight-700 text-primary">VoteWebXXL v1.0</span><br/>&copy; 2019 The VoteWebXXL Team. All rights reserved.</p>
                             </div>
                         </div>
                     </div>
@@ -201,13 +183,6 @@
                         <div class="row">
                             <div class="col-12">
                                 <!-- Меню действий с отображаемым контентом. Например, если отображается голосование, можно изменить или удалить его -->
-                                <!-- Код одного элемента: 
-                                    <li class="nav-item">
-                                            <a href="" class="d-flex pb-3 align-items-center">
-                                                <p class="m-0">Edit</p>
-                                            </a>
-                                        </li>
-                                    -->
                                 <ul class="mt-md-4 navbar-nav">
                                     {% block content_actions %}{% endblock content_actions %}
                                 </ul>

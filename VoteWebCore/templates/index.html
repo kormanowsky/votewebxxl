@@ -1,0 +1,250 @@
+{% extends "base.html" %} {% block body %} {% load static %}
+<style>
+    html,
+    body {
+        overflow: auto !important;
+    }
+</style>
+<div id="wrap">
+    <section id="top" class="bg-gradient-primary h-100vh d-flex align-items-center justify-content-center">
+        <img id="landing-image" src="{% static 'images/screen1.png' %}" alt="" class="d-none d-lg-block shadow-lg">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="text-white text-center font-weight-700" id="landing-sitename">VoteWebXXL</h1>
+                    <h3 class="text-white text-center font-weight-300" id="landing-supporting">Web app for organising votings<br>
+                        <a href="/login" class="btn btn-outline-white mt-4">Log in</a>
+                    </h3>
+                </div>
+            </div>
+            <div id="landing-scroll">
+                <a class="text-white" href="#about" onclick="$('html').animate({ scrollTop: $(window).height()+'px'}, 600); return false;"><i class="la la-arrow-down"></i></a>
+            </div>
+        </div>
+    </section>
+    <section id="about" class="bg-white py-5 px-3 px-lg-0 font-weight-300">
+        <div class="container py-0 py-lg-5">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="text-primary font-weight-300">
+                        About VoteWebXXL
+                    </h1>
+                    <h4 class="font-weight-300">With our app you can easily create votings and collect people's opinions!</h4>
+                    <div class="row">
+                        <div class="col-12 col-md-6 pl-lg-0 col-lg-4">
+                            <div class="p-3">
+                                <h5 class="text-primary font-weight-300 mb-3">1. Create voting</h5>
+                                <img src="{% static 'images/screen1.png' %}" alt="" class="w-100">
+
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="p-3">
+                                <h5 class="text-primary font-weight-300 mb-3">2. Add questions</h5>
+                                <img src="{% static 'images/screen2.png' %}" alt="" class="w-100">
+
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="col-12 pr-lg-0 col-lg-4">
+                            <div class="d-flex h-100 w-100 align-items-center justify-content-center">
+                                <h4 class="text-center my-4 font-weight-300 text-primary">And you're done!</h4>
+                            </div>
+                        </div>
+                        <div class="col-12 my-5">
+                            <h4 class="font-weight-300">Also included:</h4>
+                        </div>
+                        <div class="col-12 pl-lg-0 col-lg-4">
+                            <div class="p-3">
+                                <h5 class="text-primary font-weight-300">Voting stats</h5>
+                                <img src="{% static 'images/screen3.png' %}" alt="" class="w-100">
+
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="p-3">
+                                <h5 class="text-primary font-weight-300">Comments</h5>
+                                <img src="{% static 'images/screen4.png' %}" alt="" class="w-100">
+
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 pr-lg-0 col-lg-4">
+                            <div class="p-3">
+                                <h5 class="text-primary font-weight-300">Voting share</h5>
+                                <img src="{% static 'images/screen8.png' %}" alt="" class="w-100">
+
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 pl-lg-0 col-lg-4">
+                            <div class="p-3">
+                                <h5 class="text-primary font-weight-300">Profile page</h5>
+                                <img src="{% static 'images/screen5.png' %}" alt="" class="w-100">
+                                <h5 class="text-primary"></h5>
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="p-3">
+                                <h5 class="text-primary font-weight-300">Settings page</h5>
+                                <img src="{% static 'images/screen6.png' %}" alt="" class="w-100">
+                                <h5 class="text-primary"></h5>
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 pr-lg-0 col-lg-4">
+                            <div class="p-3">
+                                <h5 class="text-primary font-weight-300">Votings Search Page</h5>
+                                <img src="{% static 'images/screen7.png' %}" alt="" class="w-100">
+                                <h5 class="text-primary"></h5>
+                                <p></p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <section id="team" class="bg-primary py-5 px-3 px-lg-0">
+        <div class="container py-0 py-lg-5">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="text-white font-weight-300">
+                        Team
+                    </h1>
+                    <div class="row mt-5">
+                        <div class="col-12 col-md-6 col-lg-3 text-center mb-3">
+                            <img src="{% static 'images/avatar1.png' %}" alt="" class="avatar avatar-big shadow-lg">
+                            <h6 class="text-white mt-3">Obuhov<br/>Semyon Pavlovich</h6>
+                            <p class="small text-white font-weight-300">Teacher</p>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3 text-center mb-3">
+                            <img src="{% static 'images/avatar2.png' %}" alt="" class="avatar avatar-big shadow-lg">
+                            <h6 class="text-white mt-3">Leikin<br/>Grigoriy</h6>
+                            <p class="small text-white font-weight-300">Team Leader</p>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3 text-center mb-3">
+                            <img src="{% static 'images/avatar3.png' %}" alt="" class="avatar avatar-big shadow-lg">
+                            <h6 class="text-white mt-3">Gasparyan<br/>Artem</h6>
+                            <p class="small text-white font-weight-300">Developer</p>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3 text-center mb-3">
+                            <img src="{% static 'images/avatar4.jpg' %}" alt="" class="avatar avatar-big shadow-lg">
+                            <h6 class="text-white mt-3">Kormanovskiy<br>Mikhail</h6>
+                            <p class="small text-white font-weight-300">Developer</p>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3 text-center mb-3">
+                            <img src="{% static 'images/avatar5.png' %}" alt="" class="avatar avatar-big shadow-lg">
+                            <h6 class="text-white mt-3">Kos'yanov<br>Oleg</h6>
+                            <p class="small text-white font-weight-300">Developer</p>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3 text-center mb-3">
+                            <img src="{% static 'images/avatar6.jpg' %}" alt="" class="avatar avatar-big shadow-lg">
+                            <h6 class="text-white mt-3">Kreydenko<br>Aleksandr</h6>
+                            <p class="small text-white font-weight-300">Developer</p>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3 text-center mb-3">
+                            <img src="{% static 'images/avatar7.png' %}" alt="" class="avatar avatar-big shadow-lg">
+                            <h6 class="text-white mt-3">Pavlov<br>Saveliy</h6>
+                            <p class="small text-white font-weight-300">Developer</p>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3 text-center mb-3">
+                            <img src="{% static 'images/avatar8.png' %}" alt="" class="avatar avatar-big shadow-lg">
+                            <h6 class="text-white mt-3">Sadovskiy<br>Mikhail</h6>
+                            <p class="small text-white font-weight-300">Developer</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="register" class="bg-white py-5 px-3 px-lg-0">
+        <div class="container py-0 py-lg-5">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="text-primary font-weight-300">
+                        Try it yourself!
+                    </h1>
+                    <div class="mt-4 mx-2">
+                        <form role="form" action="/register" method="post">
+                            {% csrf_token %} {% if not form.is_valid %}
+                            <div class="row">
+                                <div class="col-12">
+                                    {% for error in errors %}
+                                    <p class="text-danger">{{error}}</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                            <div class="row">
+                                <div class="col-6">
+                                    <p>Account info</p>
+                                    <div class="form-group mb-3">
+                                        <div class="input-group input-group-alternative">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="la la-user"></i></span>
+                                            </div>
+                                            <input class="form-control" placeholder="Username" type="text" name="username" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <div class="input-group input-group-alternative">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="la la-envelope"></i></span>
+                                            </div>
+                                            <input class="form-control" placeholder="Email" type="email" name="email" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group input-group-alternative">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="la la-key"></i></span>
+                                            </div>
+                                            <input class="form-control" placeholder="Password" type="password" name="password1" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group input-group-alternative">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="la la-key"></i></span>
+                                            </div>
+                                            <input class="form-control" placeholder="Password confirmation" type="password" name="password2" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <p>Personal info</p>
+                                    <div class="form-group">
+                                        <div class="input-group input-group-alternative">
+                                            <input class="form-control" placeholder="Firstname" type="text" name="first_name" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group input-group-alternative">
+                                            <input class="form-control" placeholder="Lastname" type="text" name="last_name" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <button type="submit" class="btn btn-primary my-4">Register</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer class="bg-primary">
+        <div class="text-center p-4 text-white font-weight-300">
+            VoteWebXXL v1.0<br>&copy; 2019 The VoteWebXXL Team. All Rights Reserved.
+        </div>
+    </footer>
+</div>
+{% endblock body %}

@@ -1,0 +1,28 @@
+<div class="col-12 col-md-6 masonry-item">
+    <div class="card shadow-sm mt-4" data-q-id="{{ question.id }}">
+        <div class="card-body">
+            <input type="hidden" name="questions[]" value="{{ question.id }}">
+            <p class="text-muted lh-110 small">Question #{{ question.id }}</p>
+            <h3 class="mb-4">{{ question.text }}</h3>
+            {% for answer in question.answers %}
+            <div>
+                {% if question.type == question.QUESTION_BUTTONS %}
+                <button type="button" class="col btn btn-outline-primary mb-3">{{ answer }}</button> {% elif question.type == question.QUESTION_SINGLE_ANSWER %}
+                <div class="custom-control custom-radio mb-3">
+                    <label class="custom-control-label">{{ answer }}</label>
+                </div>
+                {% elif question.type == question.QUESTION_MULTIPLE_ANSWERS %}
+                <div class="custom-control custom-checkbox mb-3">
+                    <label class="custom-control-label">{{ answer }}</label>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <div class="row mx-0 mt-4">
+                <a href="#" onclick="return Votings.edit.openQuestionModal({{ question.id }});" class="mr-4">Edit</a>
+                <a href="#" onclick="return Votings.edit.removeQuestion(this);" class="text-danger dangerous-action">Remove
+                    question</a>
+            </div>
+        </div>
+    </div>
+</div>

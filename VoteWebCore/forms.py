@@ -8,6 +8,10 @@ from VoteWebCore.functions import *
 from querystring_parser import parser
 
 
+# Shorten 'csrfmiddlewaretoken'
+CSRF_KEY = "csrfmiddlewaretoken"
+
+
 class RegisterForm(UserCreationForm):
     email = forms.EmailField()
     first_name = forms.CharField(max_length=32)
@@ -36,20 +40,21 @@ class VoteForm(forms.Form):
     def __init__(self, raw_data, *args, **kwargs):
         super(VoteForm, self).__init__(*args, **kwargs)
         raw_answers = parser.parse(raw_data.urlencode(), normalized=True)
+        del raw_answers[CSRF_KEY]
         answers = []
         for answer_key in raw_answers:
-            if answer_key != "csrfmiddlewaretoken":
-                question_id = int(answer_key[answer_key.find("_") + 1:])
-                question_answers = raw_answers[answer_key]
-                if not isinstance(question_answers, list):
-                    question_answers = [question_answers]
-                for answer in question_answers:
-                    answers.append({
-                        "question": Question(id=question_id),
-                        "answer": answer
-                    })
+            question_id = int(answer_key[answer_key.find("_") + 1:])
+            question_answers = raw_answers[answer_key]
+            if not isinstance(question_answers, list):
+                question_answers = [question_answers]
+            for answer in question_answers:
+                answers.append({
+                    "question": Question(id=question_id),
+                    "answer": answer
+                })
+
         self.data["answers"] = answers
-        
+
 
 class ReportForm(forms.Form):
     title = forms.CharField(max_length=256)
@@ -63,17 +68,16 @@ class SaveVotingForm(forms.Form):
     datetime_closed = forms.DateField()
     open_stats = forms.BooleanField()
 
-
     def __init__(self, raw_data, *args, **kwargs):
         super(SaveVotingForm, self).__init__(*args, **kwargs)
         parsed_data = parser.parse(raw_data.urlencode(), normalized=True)
-        del parsed_data['csrfmiddlewaretoken']
+        del parsed_data[CSRF_KEY]
         if not isinstance(parsed_data['questions'], list):
             parsed_data['questions'] = [parsed_data['questions']]
         for i, question in enumerate(parsed_data['questions']):
             parsed_data['questions'][i] = int(question)
         parsed_data['voting_id'] = int(parsed_data['voting_id'])
-        if(len(parsed_data['datetime_closed'])):
+        if len(parsed_data['datetime_closed']):
             parsed_data['datetime_closed'] = datetime_str_to_obj(parsed_data['datetime_closed'])
         else:
             parsed_data['datetime_closed'] = None
@@ -112,19 +116,20 @@ class LoadImgForm(forms.Form):
 
 class VotingsSearchForm(forms.Form):
     title = forms.CharField(max_length=100, required=False)
-    owner = forms.CharField(max_length=100, required=False)
+    user = forms.CharField(max_length=100, required=False)
     datetime_created_from = forms.DateTimeField(required=False)
     datetime_created_to = forms.DateTimeField(required=False)
 
     def __init__(self, raw_data, *args, **kwargs):
         super(VotingsSearchForm, self).__init__(*args, **kwargs)
         self.data['title'] = raw_data.get('title', '')
-        self.data['owner'] = raw_data.get('owner', '')
+        self.data['user'] = raw_data.get('user', '')
         self.data['datetime_created_from'] = datetime_str_to_obj(raw_data.get("datetime_created_from", ''))
         self.data['datetime_created_to'] = datetime_str_to_obj(raw_data.get("datetime_created_to", ''))
-    
+
     def is_valid(self):
         return not len(self.errors.as_text())
+
 
 class CommentForm(forms.Form):
     message = forms.CharField(max_length=512)

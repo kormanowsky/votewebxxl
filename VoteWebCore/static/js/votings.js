@@ -94,8 +94,8 @@ Votings.stats = {
             }
         }
         for (var i = 0; i < colors.length; ++i) {
-            background.push('rgba(' + colors[i] + ', 0.2)');
-            border.push('rgba(' + colors[i] + ', 1)');
+            background.push('rgba(' + colors[i] + ', 1)');
+            border.push('rgba(' + colors[i] + ', 0)');
         }
         for (var label in stats) {
             labels.push(label);
@@ -212,56 +212,15 @@ Votings.edit = {
             "url": "/api/save-question",
             "data": question_data,
             "method": "POST",
-            "success": function (question_data) {
-                var qId = question_data.id,
-                    $qWrap = $('<div class="col-12 col-md-6 masonry-item"></div>'),
-                    $qCard = $('<div class="card shadow-sm mt-4"></div>'),
-                    $qCardBody = $('<div class="card-body"></div>'),
-                    $qIdP = $('<p class="text-muted lh-110 small"></p>').text('Question #' + qId),
-                    $qText = $('<h3 class="mb-4"></h3>').text(question_data.text),
-                    $qIdInput = $('<input type="hidden" name="questions[]" value="' + qId + '">'),
-                    $qEditLink = $('<a href="#" onclick="return Votings.edit.openQuestionModal(' + qId + ');" class="mr-4"></a>'),
-                    $qRemoveLink = $('<a href="#" onclick="return Votings.edit.removeQuestion(this);" class="text-danger dangerous-action"></a>');
-                $qCardBody.append($qIdInput);
-                $qCardBody.append($qIdP);
-                $qCardBody.append($qText);
-                $qCard.append($qCardBody);
-                $qCard.attr("data-q-id", qId);
-                $qWrap.append($qCard);
-                question_data.answers.forEach(function (answer) {
-                    var $div = $("<div></div>");
-                    switch (question_data.type) {
-                        case 0:
-                            var $btn = $('<button type="button" class="col btn btn-outline-primary mb-3">' + answer + '</button>');
-                            $div.append($btn);
-                            break;
-                        case 1:
-                            var $divControl = $('<div class="custom-control custom-radio mb-3"></div>'),
-                                $label = $('<label class="custom-control-label">' + answer + '</label>');
-                            $divControl.append($label);
-                            $div.append($divControl);
-                            break;
-                        case 2:
-                            var $divControl = $('<div class="custom-control custom-checkbox mb-3"></div>'),
-                                $label = $('<label class="custom-control-label">' + answer + '</label>');
-                            $divControl.append($label);
-                            $div.append($divControl);
-                            break;
-                    }
-                    $qCardBody.append($div);
-                    $qRemoveLink.text('Remove question');
-                    $qEditLink.text('Edit');
-                    $qCardBody.append($qEditLink);
-                    $qCardBody.append($qRemoveLink);
-
-                });
+            "success": function (question) {
+                $question = $(question.html);
                 if ($("#no-questions").length) {
                     $("#no-questions").remove();
                 }
-                if ($(".row#questions div[data-q-id='" + question_data.id + "']").length) {
-                    $(".row#questions div[data-q-id='" + question_data.id + "']").parent().remove();
+                if ($(".row#questions div[data-q-id='" + question.id + "']").length) {
+                    $(".row#questions div[data-q-id='" + question.id + "']").parent().remove();
                 }
-                $(".row#questions").append($qWrap);
+                $(".row#questions").append($question);
                 Votings.edit.clearQuestion();
                 Votings.edit.closeQuestionModal();
                 return false;

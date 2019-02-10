@@ -3,7 +3,9 @@ from json import dumps as json_encode, loads as json_decode
 
 from django.contrib.auth.models import User
 from django.db import models
-from json import dumps as json_encode, loads as json_decode
+from django.utils.safestring import mark_safe
+from django.db.models.signals import post_save
+
 from VoteWebCore.functions import *
 
 
@@ -29,26 +31,31 @@ class JSONField(models.CharField):
 class Voting(models.Model):
 
     # Voting statuses (more statuses can be computed through summing these)
-    VOTING_BANNED = 0 # User cannot view voting
-    VOTING_VISIBLE = 1 # User can view voting
-    VOTING_OPEN_STATS = 2 # User can view stats
-    VOTING_OPEN = 4 # User can vote
+    # User cannot view voting
+    VOTING_BANNED = 0
+    # User can view voting
+    VOTING_VISIBLE = 1
+    # User can view stats
+    VOTING_OPEN_STATS = 2
+    # User can vote
+    VOTING_OPEN = 4
 
-    owner = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
     title = models.CharField(max_length=300)
-    banned = models.IntegerField(default=0)
+    banned = models.BooleanField(default=False)
     open_stats = models.BooleanField(default=True)
     datetime_closed = models.DateTimeField(null=True, blank=True)
+    is_active = models.BooleanField(default=True)
 
     # Returns voting status
     def status(self, user):
-        status = 0
-        if not len(self.questions()):
+        status = self.VOTING_BANNED
+        if not len(self.questions()) or self.banned:
             return status
-        if not self.banned:
+        else:
             status += self.VOTING_VISIBLE
-        if self.open_stats or self.owner == user:
+        if self.open_stats or self.user == user:
             status += self.VOTING_OPEN_STATS
         if self.open() and not self.user_voted(user):
             status += self.VOTING_OPEN
@@ -69,7 +76,7 @@ class Voting(models.Model):
 
     # Checks if current user has voted
     def current_user_voted(self, request):
-        if not is_logged_in(request):
+        if not request.user.is_authenticated:
             return False
         return self.user_voted(request.user)
 
@@ -79,13 +86,15 @@ class Voting(models.Model):
 
     # Returns datetime_created in dd.mm.yyyy
     def datetime_created_str(self):
-        return self.datetime_created.strftime("%d.%m.%Y at %H:%M")
+        return datetime_human(self.datetime_created)
+    datetime_created_str.short_description = "Datetime of creation"
 
     # Returns datetime_closed in dd.mm.yyyy
     def datetime_closed_str(self):
         if not self.datetime_closed:
             return None
-        return self.datetime_closed.strftime("%d.%m.%Y")
+        return date_human(self.datetime_closed)
+    datetime_closed_str.short_description = "Date of closing"
 
     # Returns human time difference between current time and voting closing time
     def closed_time_diff(self):
@@ -94,27 +103,53 @@ class Voting(models.Model):
     # Checks if voting is open
     def open(self):
         return not self.datetime_closed or self.datetime_closed.replace(tzinfo=None) > datetime.now()
+    open.boolean = True
 
     # Checks if user added to favourites
     def user_added_to_favourites(self, user):
-        return len(ActivityItem.objects.filter(type=ActivityItem.ACTIVITY_FAVOURITE, voting=self.id, user=user.id))
+        return len(ActivityItem.objects.filter(type=ActivityItem.ACTIVITY_FAVOURITE,
+                                               voting=self.id,
+                                               user=user.id).exclude(is_active=False))
 
     # Checks if current user added to favourites
     def current_user_added_to_favourites(self, request):
-        return self.user_added_to_favourites(request.user)\
+        return self.user_added_to_favourites(request.user)
 
     # Returns count of favourites
     def favourites_count(self):
-        return len(ActivityItem.objects.filter(type=ActivityItem.ACTIVITY_FAVOURITE, voting=self.id))
+        return len(ActivityItem.objects.filter(type=ActivityItem.ACTIVITY_FAVOURITE,
+                                               voting=self.id).exclude(is_active=False))
+    favourites_count.short_description = "Count of additions to Favourites"
 
-    # Returns comments
+    # Returns comments list
     def comments(self):
-        return Comment.objects.filter(voting=self.id).order_by("-datetime_created")
+        return Comment.objects.filter(voting=self.id).order_by("-datetime_created").exclude(is_active=False)
+
+    # Returns comments count
+    def comments_count(self):
+        return len(self.comments())
+    comments_count.short_description = "Comments count"
+
+    # HTML for questions field in admin panel
+    def questions_html(self):
+        return questions_html(self.questions())
+    questions_html.short_description = "Questions"
+
+    # HTML for user field in admin panel
+    def user_html(self):
+        return user_html(self.user)
+    user_html.short_description = "User"
+
+    # Convert to string (for site admin panel)
+    def __str__(self):
+        return "{} (#{})".format(self.title, self.id)
 
 
 # Question
 class Question(models.Model):
+
     # Question types
+
     # Question with two buttons (usually 'yes' and 'no')
     QUESTION_BUTTONS = 0
     # Question with radio inputs
@@ -122,41 +157,93 @@ class Question(models.Model):
     # Question with checkboxes
     QUESTION_MULTIPLE_ANSWERS = 2
 
-    owner = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True, default=None, blank=True)
+    QUESTION_TYPES = [
+        (QUESTION_BUTTONS, 'Buttons'),
+        (QUESTION_SINGLE_ANSWER, 'Radio inputs'),
+        (QUESTION_MULTIPLE_ANSWERS, 'Checkboxes')
+    ]
+
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True, default=None, blank=True)
     voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE, null=True, blank=True)
-    type = models.IntegerField()
+    type = models.IntegerField(choices=QUESTION_TYPES)
     text = models.CharField(max_length=300)
     answers = JSONField(max_length=10000)
+    is_active = models.BooleanField(default=True)
 
     # Returns question statistics for diagram
     def stats(self):
         stats = {}
         for answer in self.answers:
-            stats[answer] = len(Vote.objects.filter(question=self.id, answer=answer))
+            stats[answer] = len(Vote.objects.filter(question=self.id, answer=answer).exclude(is_active=False))
         return stats
 
     # Checks if user has voted
     def user_voted(self, user):
-        return len(Vote.objects.filter(question=self.id, creator=user.id)) > 0
+        return len(Vote.objects.filter(question=self.id, user=user.id)) > 0
 
     # Checks if current user has voted
     def current_user_voted(self, request):
-        if not is_logged_in(request):
+        if not request.user.is_authenticated:
             return False
         return self.user_voted(request.user)
+
+    # Checks if question has votes
+    def has_votes(self):
+        return len(Vote.objects.filter(question=self.id).exclude(is_active=False))
+
+    # HTML for voting field in admin panel
+    def voting_html(self):
+        return voting_html(self.voting)
+    voting_html.short_description = "Voting"
+
+    # HTML for answers field in admin panel
+    def answers_html(self):
+        return mark_safe("<br/>".join(list(map(str, self.answers))))
+    answers_html.short_description = "Answers"
+
+    # HTML for user field in admin panel
+    def user_html(self):
+        return user_html(self)
+    user_html.short_description = "User"
+
+    # Convert to string (for site admin panel)
+    def __str__(self):
+        return "{} (#{})".format(self.text, self.id)
 
 
 # Vote
 class Vote(models.Model):
-    creator = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
     question = models.ForeignKey(to=Question, on_delete=models.CASCADE)
     answer = models.CharField(max_length=100)
+    is_active = models.BooleanField(default=True)
+
+    # Returns datetime_created in dd.mm.yyyy
+    def datetime_created_str(self):
+        return datetime_human(self.datetime_created)
+    datetime_created_str.short_description = "Datetime of creation"
+
+    # HTML for question field in admin panel
+    def question_html(self):
+        return question_html(self.question)
+    question_html.short_description = "Question"
+
+    # HTML for user field in admin panel
+    def user_html(self):
+        return user_html(self.user)
+    user_html.short_description = "User"
+
+    # Convert to string (for site admin panel)
+    def __str__(self):
+        return "Vote #{}".format(self.id)
 
 
 # Report
 class Report(models.Model):
+
     # Report statuses
+
     # Report that is waiting for resolution
     REPORT_WAITING = 0
     # Report that was declined by admins
@@ -164,24 +251,76 @@ class Report(models.Model):
     # Report that was accepted by admins
     REPORT_ACCEPTED = 2
 
-    creator = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
+    REPORT_STATUSES = [
+        (REPORT_WAITING, 'Waiting'),
+        (REPORT_DECLINED, 'Declined'),
+        (REPORT_ACCEPTED, 'Accepted')
+    ]
+
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
     voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=256)
     message = models.CharField(max_length=512)
     datetime_created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-    # img = models.FileField()
-    status = models.IntegerField(default=0)
+    status = models.IntegerField(default=REPORT_WAITING, choices=REPORT_STATUSES)
+    is_active = models.BooleanField(default=True)
 
-    def status_str(self):
-        return ["Waiting", "Declined", "Accepted"][self.status]
-
+    # Returns datetime_created as a readable string
     def datetime_created_str(self):
-        return self.datetime_created.strftime("%d.%m.%Y at %H:%M")
+        return datetime_human(self.datetime_created)
+    datetime_created_str.short_description = "Datetime of creation"
+
+    # HTML for voting field in admin panel
+    def voting_html(self):
+        return voting_html(self.voting)
+    voting_html.short_description = "Voting"
+
+    # HTML for user field in admin panel
+    def user_html(self):
+        return user_html(self.user)
+    user_html.short_description = "User"
+
+    # HTML for status
+    def status_html(self):
+        status_str = self.get_status_display()
+        if self.status == self.REPORT_WAITING:
+            html_class = "warning"
+            html_color = "#fb6340"
+        elif self.status == self.REPORT_ACCEPTED:
+            html_class = "success"
+            html_color = "#2dce89"
+        else:
+            html_class = "danger"
+            html_color = "#f5365c"
+        html = '<p style="color: {}; font-weight: 600;" class="small m-0 font-weight-600 text-{}">{}</p>'
+        return mark_safe(html.format(html_color, html_class, status_str))
+    status_html.short_description = "Status"
+
+    # Convert to string (for site admin panel)
+    def __str__(self):
+        return "Report #{}".format(self.id)
+
+    # Automatic voting ban. Callback for post_save signal
+    @staticmethod
+    def auto_ban_voting(sender, **kwargs):
+        instance = kwargs.get('instance')
+        if instance.status == Report.REPORT_ACCEPTED:
+            instance.voting.banned = 1
+            instance.voting.save()
+        else:
+            instance.voting.banned = 0
+            instance.voting.save()
+
+
+# Attach callback
+post_save.connect(Report.auto_ban_voting, sender=Report)
 
 
 # Activity item
 class ActivityItem(models.Model):
+
     # Activity item types
+
     # New voting
     ACTIVITY_NEW_VOTING = 0
     # Vote in voting
@@ -191,48 +330,106 @@ class ActivityItem(models.Model):
     # Comment on voting
     ACTIVITY_COMMENT = 3
 
+    ACTIVITY_TYPES = [
+        (ACTIVITY_NEW_VOTING, 'New voting'),
+        (ACTIVITY_VOTE, 'Vote'),
+        (ACTIVITY_FAVOURITE, 'Added to favourite'),
+        (ACTIVITY_COMMENT, 'Comment'),
+    ]
+
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
-    type = models.IntegerField(default=0)
+    type = models.IntegerField(default=ACTIVITY_NEW_VOTING, choices=ACTIVITY_TYPES)
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
     voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=True)
+
+    # Returns data for activity_item.html
+    def display_data(self):
+        text = ["created voting", "voted in", "added to favourites"][self.type]
+        icon = ["question", "check-square", "star"][self.type]
+        return {
+            "text": text,
+            "icon": icon
+        }
 
     # Returns human time difference between current time and voting creation time
     def creation_time_diff(self):
         return datetime_human_diff(datetime.utcnow(), self.datetime_created.replace(tzinfo=None))
-    
-    def display_data(self):
-        text = ["created voting", "voted in", "added to favourites", "added comment to"][self.type]
-        icon = ["question", "check-square", "star", "comment"][self.type]
-        return {
-            "text": text, 
-            "icon": icon
-        }
+
+    # Returns datetime_created as a readable string
+    def datetime_created_str(self):
+        return datetime_human(self.datetime_created)
+    datetime_created_str.short_description = "Datetime of creation"
+
+    # HTML for voting field in admin panel
+    def voting_html(self):
+        return voting_html(self.voting)
+    voting_html.short_description = "Voting"
+
+    # HTML for user field in admin panel
+    def user_html(self):
+        return user_html(self.user)
+    user_html.short_description = "User"
+
+    # Convert to string (for site admin panel)
+    def __str__(self):
+        return "Activity item #{}".format(self.id)
 
 
 # Image
 class Image(models.Model):
 
     # Image roles
+
     # Avatar
     IMAGE_ROLE_AVATAR = 0
 
-    owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    IMAGE_ROLES = [
+        (IMAGE_ROLE_AVATAR, 'Avatar')
+    ]
+
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
     data = models.ImageField(upload_to=generate_file_name, null=True)
-    role = models.IntegerField(default=0)
+    role = models.IntegerField(default=IMAGE_ROLE_AVATAR, choices=IMAGE_ROLES)
+    is_active = models.BooleanField(default=True)
 
+    # Returns datetime_created as a readable string
+    def datetime_created_str(self):
+        return datetime_human(self.datetime_created)
+    datetime_created_str.short_description = "Datetime of creation"
+
+    # HTML for user field in admin panel
+    def user_html(self):
+        return user_html(self.user)
+    user_html.short_description = "User"
+
+    # Image data for admin panel
+    def img(self):
+        return format_html('<img height=100 src="{0}">',
+                           mark_safe(self.data.url)
+                           )
+    img.short_description = 'Image'
+
+    # Convert to string (for site admin panel)
+    def __str__(self):
+        return "Image #{}".format(self.id)
+
+    # Converts string role to int role
     @classmethod
     def role_str_to_int(cls, role_str):
-        if role_str == "avatar":
-            return cls.IMAGE_ROLE_AVATAR
+        for role in cls.IMAGE_ROLES:
+            if role[1].lower() == role_str.replace("_", " "):
+                return role[0]
         return -1
 
+    # Returns avatar url for specified user
     @classmethod
     def get_avatar_url(cls, request, user=None):
         if not user:
             user = request.user
         avatar_url = "https://bizraise.pro/wp-content/uploads/2014/09/no-avatar-300x300.png"
-        image = Image.objects.filter(owner=user, role=Image.IMAGE_ROLE_AVATAR).order_by('-datetime_created')
+        image = Image.objects.filter(user=user, role=Image.IMAGE_ROLE_AVATAR).order_by('-datetime_created')
         if len(image):
             avatar_url = 'http://' + request.get_host() + image[0].data.url
         return avatar_url
@@ -241,10 +438,27 @@ class Image(models.Model):
 # Comment
 class Comment(models.Model):
 
-    creator = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
     voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE, null=True)
     message = models.CharField(max_length=512)
     datetime_created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    is_active = models.BooleanField(default=True)
 
+    # Returns datetime_created as a readable string
     def datetime_created_str(self):
-        return self.datetime_created.strftime("%d.%m.%Y at %H:%M")
+        return datetime_human(self.datetime_created)
+    datetime_created_str.short_description = "Datetime of creation"
+
+    # HTML for voting field in admin panel
+    def voting_html(self):
+        return voting_html(self.voting)
+    voting_html.short_description = "Voting"
+
+    # HTML for user field in admin panel
+    def user_html(self):
+        return user_html(self.user)
+    user_html.short_description = "User"
+
+    # Convert to string (for site admin panel)
+    def __str__(self):
+        return "Comment #{}".format(self.id)

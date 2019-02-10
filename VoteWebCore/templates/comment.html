@@ -7,12 +7,12 @@
         </div>
         <div class="row">
             <div class="col-12">
-                <a href="/profile/{{ comment.creator.username }}">
+                <a href="/profile/{{ comment.user.username }}">
                     <div class="d-flex align-items-center">
-                        <img src="{% avatar request comment.creator %}" class="avatar avatar-tiny shadow-sm">
+                        <img src="{% avatar request comment.user %}" class="avatar avatar-tiny shadow-sm">
                         <div class="ml-2">
-                            <p class="lh-100 font-weight-100 mb-1 small">{{ comment.creator.first_name }}&nbsp;{{ comment.creator.last_name }}</p>
-                            <p class="lh-100 small text-muted m-0">@{{ comment.creator.username }}</p>
+                            <p class="lh-100 font-weight-100 mb-1 small">{{ comment.user.first_name }}&nbsp;{{ comment.user.last_name }}</p>
+                            <p class="lh-100 small text-muted m-0">@{{ comment.user.username }}</p>
                         </div>
                     </div>
                 </a>
@@ -25,10 +25,8 @@
         </div>
         <div class="row">
             <div class="col-12 small text-light">
-                {{ comment.datetime_created_str }}
-                {% if comment.creator == request.user %}
-                <a href="/api/remove/comment/{{ comment.id }}" class="ml-2 text-danger dangerous-action">Remove</a>
-                {% endif %}
+                {{ comment.datetime_created_str }} {% if comment.user == request.user %}
+                <a href="/api/remove/comment/{{ comment.id }}" class="ml-2 text-danger dangerous-action">Remove</a> {% endif %}
             </div>
         </div>
     </div>

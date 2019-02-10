@@ -9,21 +9,32 @@ from VoteWebCore.forms import *
 from VoteWebCore.models import *
 from VoteWebCore.functions import *
 from VoteWebCore.api_views import save_voting
+from VoteWebCore.error_views import *
+
+
+def index(request):
+    return render(request, "index.html", {
+        "html_title": "Home"
+    })
+
 
 @login_required
 def votings(request):
-    votings = Voting.objects.all()
+    votings_items = Voting.objects.exclude(is_active=False)
     form = VotingsSearchForm(request.GET)
     if form.is_valid():
-        votings = votings.filter(title__contains=form.data['title'])
-        votings = votings.filter(Q(owner__last_name__contains=form.data['owner']) | Q(owner__first_name__contains=form.data['owner']) | Q(owner__username__contains=form.data['owner']))
+        votings_items = votings_items.filter(title__contains=form.data['title'])
+        votings_items = votings_items.filter(
+            Q(user__last_name__contains=form.data['user']) |
+            Q(user__first_name__contains=form.data['user']) |
+            Q(user__username__contains=form.data['user']))
         if not form.data['datetime_created_from'] is None:
-            votings = votings.filter(datetime_created__gte=form.data['datetime_created_from'])
+            votings_items = votings_items.filter(datetime_created__gte=form.data['datetime_created_from'])
         if not form.data['datetime_created_to'] is None:
-            votings = votings.filter(datetime_created__lte=form.data['datetime_created_to'])
-    votings = votings.exclude(banned=1)
+            votings_items = votings_items.filter(datetime_created__lte=form.data['datetime_created_to'])
+        votings_items = votings_items.exclude(banned=1)
     context = {
-        "votings": votings,
+        "votings": votings_items,
         "html_title": "Votings",
         "form": form,
         "no_right_aside": True
@@ -49,26 +60,21 @@ def register(request):
             context['errors'] = form_errors(context['form'])
     return render(request, 'registration/registration.html', context)
 
+
 # New view for a single voting
 def voting_single(request, voting_id=-1, action="index"):
-    voting_items = Voting.objects.filter(id=voting_id)
+    voting_items = Voting.objects.filter(id=voting_id).exclude(is_active=False)
     is_found = len(voting_items) == 1
     if not is_found:
-        return JsonResponse({
-            "ErrorCode": 404,
-            "Error": "VoteNotFound"
-        })
+        return error_not_found(request)
     voting = voting_items[0]
     context = {
         "voting": voting,
         'html_title': voting.title,
     }
     # Actions
-    if action != "index" and not is_logged_in(request):
-        return JsonResponse({
-            "ErrorCode": 403,
-            "Error": "MustBeLoggedInToDoError"
-        })
+    if action != "index" and not request.user.is_authenticated:
+        return error_forbidden(request)
     if action == "save" and request.method == "POST":
         if not voting.current_user_voted(request):
             form = VoteForm(request.POST)
@@ -77,37 +83,32 @@ def voting_single(request, voting_id=-1, action="index"):
             for answer in answers:
                 questions.append(answer['question'])
             for question in voting.questions():
-                if not question in questions:
-                    return JsonResponse({
-                        "ErrorCode": 403, 
-                        "Error": "PartialDataError",
-                    })
+                if question not in questions:
+                    return error_bad_request(request)
             for answer in answers:
-                vote = Vote(question=answer['question'], answer=answer['answer'], creator=request.user)
+                vote = Vote(question=answer['question'], answer=answer['answer'], user=request.user)
                 vote.save()
             activity_item = ActivityItem(user=request.user, voting=voting, type=ActivityItem.ACTIVITY_VOTE)
             activity_item.save()
         else:
-            return JsonResponse({
-                "ErrorCode": 403,
-                "Error": "NotAllowedError"
-            })
+            return error_forbidden(request)
         return redirect("/voting/" + str(voting.id))
     elif action == "report" and request.method == "POST":
         form = ReportForm(request.POST)
         if form.is_valid():
             item = Report(status=Report.REPORT_WAITING, voting=voting,
-                          creator=request.user, title=form.data['title'], message=form.data['message'])
+                          user=request.user, title=form.data['title'], message=form.data['message'])
             item.save()
-        return JsonResponse({'is_valid': form.is_valid(), 'errors': form.errors})
+        return error_bad_request(request)
     elif action == "remove":
-        if voting.owner == request.user:
-            voting.delete()
+        if voting.user == request.user:
+            voting.is_active = False
+            voting.save()
             return redirect('/votings')
         else:
-            return JsonResponse({"ErrorCode": 403, "Error": "NotAllowedError"})
+            return error_forbidden(request)
     elif action == "edit":
-        if voting.owner == request.user:
+        if voting.user == request.user:
             if request.method == "POST":
                 return save_voting(request)
             else:
@@ -116,11 +117,11 @@ def voting_single(request, voting_id=-1, action="index"):
                     "voting": voting
                 })
         else:
-            return JsonResponse({"ErrorCode": 403, "Error": "NotAllowedError"})
+            return error_forbidden(request)
     elif action == "comment":
         form = CommentForm(request.POST)
         if form.is_valid():
-            item = Comment(creator=request.user, message=form.data['message'], voting=voting)
+            item = Comment(user=request.user, message=form.data['message'], voting=voting)
             item.save()
             return JsonResponse({
                 "is_valid": True,
@@ -129,47 +130,41 @@ def voting_single(request, voting_id=-1, action="index"):
                     "comment": item
                 })
             })
-        return JsonResponse({
-            "ErrorCode": 403,
-            "Error": "PartialDataError"
-        })
+        return error_bad_request(request)
     return render(request, "voting_single.html", context)
 
 
 def profile(request, username=None):
     if username is None:
-        if request.user.username:
+        if request.user.is_authenticated:
             return redirect("/profile/" + request.user.username)
         else:
-            return JsonResponse({
-                "ErrorCode": 404,
-                "Error": "UserNotFound"
-            })
-    profile_owner = User.objects.filter(username=username)
-    if len(profile_owner) == 1:
-        profile_owner = profile_owner[0]
+            return error_not_found(request)
+    profile_user = User.objects.filter(username=username).exclude(is_active=False)
+    if len(profile_user) == 1:
+        profile_user = profile_user[0]
     else:
-        return JsonResponse({
-            "ErrorCode": 404,
-            "Error": "UserNotFound"
-        })
-    if profile_owner == request.user:
-        reports = Report.objects.filter(creator=profile_owner)
+        return error_not_found(request)
+    if profile_user == request.user:
+        reports = Report.objects.filter(user=profile_user)\
+            .order_by("-datetime_created").exclude(is_active=False)
     else:
         reports = None
-    activity = ActivityItem.objects.filter(user=profile_owner.id).exclude(voting__banned=1).order_by('-datetime_created')
-    votings = Voting.objects.filter(owner=profile_owner.id).exclude(banned=1).order_by("-datetime_created")
+    activity = ActivityItem.objects.filter(user=profile_user.id)\
+        .exclude(voting__banned=1).order_by('-datetime_created').exclude(is_active=False)
+    votings = Voting.objects.filter(user=profile_user.id)\
+        .exclude(banned=1).order_by("-datetime_created").exclude(is_active=False)
     activity_small = activity[:5]
     votings_small = votings[:5]
-    votes_count=len(activity.filter(type=ActivityItem.ACTIVITY_VOTE))
+    votes_count = len(activity.filter(type=ActivityItem.ACTIVITY_VOTE))
     favourite_votings = []
     favourite = activity.filter(type=ActivityItem.ACTIVITY_FAVOURITE)
     for item in favourite:
         favourite_votings.append(item.voting)
     context = {
         "html_title": "@" + request.user.username,
-        "profile_owner": profile_owner,
-        "profile_owner_reports": reports,
+        "profile_user": profile_user,
+        "profile_user_reports": reports,
         "votings": votings,
         "votings_small": votings_small,
         "activity": activity,
@@ -193,7 +188,6 @@ def settings(request):
             formdata = form.cleaned_data
             if request.user.username != formdata['username']:
                 if len(User.objects.filter(username=formdata['username'])):
-                    form.add_error('username', 'User name already register')
                     return render(request, 'settings.html', context)
             item = User.objects.filter(id=request.user.id)
             if len(item):
@@ -213,12 +207,15 @@ def voting_create(request):
         return save_voting(request)
     else:
         return render(request, "voting_create.html", {
-            "html_title": "Create Voting", 
+            "html_title": "Create Voting",
         })
+
 
 @login_required
 def remove_account(request):
-    request.user.delete()
+    request.user.is_active = False
+    request.user.save()
     return render(request, "registration/remove_account.html", {
         "html_title": "Remove Account"
     })
+

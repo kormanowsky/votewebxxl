@@ -1,16 +1,21 @@
-from django import template
-from ..models import Image, Voting
 from datetime import datetime, timedelta
-from ..functions import is_logged_in
+
+from django import template
+
+from ..models import Image, Voting
+from ..functions import date_human
+
 
 register = template.Library()
+
 
 @register.simple_tag
 def avatar(request, user=None):
     return Image.get_avatar_url(request, user)
 
+
 @register.simple_tag
-def formatteddate(date=None):
+def formatted_date(date=None):
     if not date:
         date = datetime.now()
     elif date == "today":
@@ -19,12 +24,13 @@ def formatteddate(date=None):
         date = datetime.now() + timedelta(days=1)
     elif date == "yesterday":
         date = datetime.now() - timedelta(days=1)
-    return date.strftime("%d.%m.%Y")
+    return date_human(date)
+
 
 @register.simple_tag
-def votingstatus(voting, request, user=None):
+def voting_status(voting, request, user=None):
     if not user:
-        if not is_logged_in(request):
+        if not request.user.is_authenticated:
             if voting.open_stats:
                 return Voting.VOTING_OPEN_STATS
             else:
@@ -32,10 +38,11 @@ def votingstatus(voting, request, user=None):
         user = request.user
     return voting.status(user)
 
+
 @register.simple_tag
-def votingaddedtofavourites(voting, request, user=None):
+def voting_added_to_favourites(voting, request, user=None):
     if not user:
-        if not is_logged_in(request):
+        if not request.user.is_authenticated:
             return False
         user = request.user
     return voting.user_added_to_favourites(user)
