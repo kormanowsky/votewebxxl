@@ -1,13 +1,16 @@
 <!DOCTYPE html> {# Базовый шаблон #}
 <html lang="en">
-
+{% load static %}
 <head>
     <meta charset="UTF-8">
     <title>{% if html_title %}{{ html_title }}{% else %}{% block html_title %}{% endblock %}{% endif %} | VoteWebXXL</title>
     <!-- Мета-теги: адаптивность и цвет адресной строки в мобильном Google Chrome -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#5e35b1">
-    <meta property="og:title" content="{% if html_title %}{{ html_title }} | {% endif %}VoteWebXXL"> {# Подключение статики #} {% load static %}
+    
+    <meta property="og:title" content="{% if html_title %}{{ html_title }} | {% endif %}VoteWebXXL"> {# Подключение статики #} 
+    <!-- Иконка -->
+    <link rel="icon" href="{% static 'images/favicon.ico' %}">
     <!-- Шрифты -->
     <link type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,700,800&amp;subset=cyrillic-ext" rel="stylesheet">
     <!-- Стили -->
