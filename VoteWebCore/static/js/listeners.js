@@ -18,7 +18,7 @@ jQuery(function ($) {
     var MutationObserver = window.MutationObserver;
     if (typeof MutationObserver === "function") {
         var observer = new MutationObserver(function (records) {
-            InitConfirmationModals();
+            InitConfirmationModal();
             records.forEach(function (record) {
                 if (record.addedNodes.length && $(record.target).hasClass('masonry-wrapper')) {
                     $(record.target).masonry('addItems', record.addedNodes);

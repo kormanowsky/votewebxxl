@@ -28,8 +28,81 @@
                     <h1 class="text-primary font-weight-300">
                         About VoteWebXXL
                     </h1>
-                    <h4>With our app you can easily create votings and collect people's opinions!</h4>
-                    
+                    <h4 class="font-weight-300">With our app you can easily create votings and collect people's opinions!</h4>
+                    <div class="row">
+                        {% load static %}
+                        <div class="col-12 col-md-6 pl-lg-0 col-lg-4">
+                            <div class="p-3">
+                                <img src="{% static 'images/screen1.png' %}" alt="" class="w-100">
+                                <h5 class="text-primary font-weight-300 mt-3">1. Create voting</h5>
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="p-3">
+                                <img src="{% static 'images/screen2.png' %}" alt="" class="w-100">
+                                <h5 class="text-primary font-weight-300 mt-3">2. Add questions</h5>
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="col-12 pr-lg-0 col-lg-4">
+                            <div class="d-flex h-100 w-100 align-items-center justify-content-center">
+                                <h4 class="text-center my-4 font-weight-300 text-primary">And you're done!</h4>
+                            </div>
+                        </div>
+                        <div class="col-12 my-5">
+                            <h4 class="font-weight-300">Also included:</h4>
+                        </div>
+                        <div class="col-12 pl-lg-0 col-lg-4">
+                            <div class="p-3">
+                                <h5 class="text-primary font-weight-300">Voting stats</h5>
+                                <img src="{% static 'images/screen3.png' %}" alt="" class="w-100">
+
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="p-3">
+                                <h5 class="text-primary font-weight-300">Comments</h5>
+                                <img src="{% static 'images/screen4.png' %}" alt="" class="w-100">
+
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 pr-lg-0 col-lg-4">
+                            <div class="p-3">
+                                <h5 class="text-primary font-weight-300">Voting share</h5>
+                                <img src="{% static 'images/screen8.png' %}" alt="" class="w-100">
+
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 pl-lg-0 col-lg-4">
+                            <div class="p-3">
+                                <h5 class="text-primary font-weight-300">Profile page</h5>
+                                <img src="{% static 'images/screen5.png' %}" alt="" class="w-100">
+                                <h5 class="text-primary"></h5>
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="p-3">
+                                <h5 class="text-primary font-weight-300">Settings page</h5>
+                                <img src="{% static 'images/screen6.png' %}" alt="" class="w-100">
+                                <h5 class="text-primary"></h5>
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 pr-lg-0 col-lg-4">
+                            <div class="p-3">
+                                <h5 class="text-primary font-weight-300">Votings Search Page</h5>
+                                <img src="{% static 'images/screen7.png' %}" alt="" class="w-100">
+                                <h5 class="text-primary"></h5>
+                                <p></p>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -42,7 +115,48 @@
                     <h1 class="text-white font-weight-300">
                         Team
                     </h1>
-                    <div><h1>Team Here</h1></div>
+                    <div class="row mt-5">
+                        <div class="col-12 col-md-6 col-lg-3 text-center mb-3">
+                            <img src="{% static 'images/avatar1.png' %}" alt="" class="avatar avatar-big shadow-lg">
+                            <h6 class="text-white mt-3">Obuhov<br/>Semyon Pavlovich</h6>
+                            <p class="small text-white font-weight-300">Teacher</p>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3 text-center mb-3">
+                            <img src="{% static 'images/avatar2.png' %}" alt="" class="avatar avatar-big shadow-lg">
+                            <h6 class="text-white mt-3">Leikin<br/>Grigoriy</h6>
+                            <p class="small text-white font-weight-300">Team Leader</p>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3 text-center mb-3">
+                            <img src="{% static 'images/avatar3.png' %}" alt="" class="avatar avatar-big shadow-lg">
+                            <h6 class="text-white mt-3">Gasparyan<br/>Artem</h6>
+                            <p class="small text-white font-weight-300">Developer</p>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3 text-center mb-3">
+                            <img src="{% static 'images/avatar4.jpg' %}" alt="" class="avatar avatar-big shadow-lg">
+                            <h6 class="text-white mt-3">Kormanovskiy<br>Mikhail</h6>
+                            <p class="small text-white font-weight-300">Developer</p>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3 text-center mb-3">
+                            <img src="{% static 'images/avatar5.png' %}" alt="" class="avatar avatar-big shadow-lg">
+                            <h6 class="text-white mt-3">Kos'yanov<br>Oleg</h6>
+                            <p class="small text-white font-weight-300">Developer</p>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3 text-center mb-3">
+                            <img src="{% static 'images/avatar6.jpg' %}" alt="" class="avatar avatar-big shadow-lg">
+                            <h6 class="text-white mt-3">Kreydenko<br>Aleksandr</h6>
+                            <p class="small text-white font-weight-300">Developer</p>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3 text-center mb-3">
+                            <img src="{% static 'images/avatar7.png' %}" alt="" class="avatar avatar-big shadow-lg">
+                            <h6 class="text-white mt-3">Pavlov<br>Saveliy</h6>
+                            <p class="small text-white font-weight-300">Developer</p>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3 text-center mb-3">
+                            <img src="{% static 'images/avatar8.png' %}" alt="" class="avatar avatar-big shadow-lg">
+                            <h6 class="text-white mt-3">Sadovskiy<br>Mikhail</h6>
+                            <p class="small text-white font-weight-300">Developer</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
