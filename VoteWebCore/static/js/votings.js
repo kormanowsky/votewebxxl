@@ -3,7 +3,8 @@ Votings.getQuestion = function (id, success) {
     return $.ajax({
         "url": "/api/get-question/" + id,
         "method": "GET",
-        "success": success
+        "success": success,
+        "error": DefaultAjaxError,
     });
 }
 Votings.vote = {
@@ -42,6 +43,9 @@ Votings.vote = {
             });
             result = result && _result;
         });
+        if(!result){
+            ShowMessage("danger", "You have not voted in all questions. Check your votes and try again.");
+        }
         return result;
     }
 }
@@ -203,6 +207,7 @@ Votings.edit = {
         };
         // data checks
         if (!question_data.text || question_data.type === false || question_data.answers.length < 2) {
+            ShowMessage("danger", "You have not filled all fields or have added less than 2 possible answers. Check the form and try again.");
             return false;
         }
         if (question_data.type === 0 && question_data.answers.length > 2 || question_data.type === 2 && question_data.answers.length < 3) {
@@ -224,7 +229,8 @@ Votings.edit = {
                 Votings.edit.clearQuestion();
                 Votings.edit.closeQuestionModal();
                 return false;
-            }
+            }, 
+            "error": DefaultAjaxError,
         });
     },
     clearQuestion: function () {
@@ -244,6 +250,7 @@ Votings.edit = {
     checkForm: function (element) {
         var $element = $(element);
         if ($element.find("#questions .card").length == 0) {
+            ShowMessage("danger", "You have not added any questions. Add at least one question and try again.");
             return false;
         }
     }
@@ -263,9 +270,10 @@ Votings.favourites = {
                     $(element).attr("onclick", onclick.replace("add", "remove"));
                     $(element).toggleClass("text-light text-primary");
                 }else{
-                    console.error(data);
+                    DefaultAjaxError();
                 }
-            }
+            }, 
+            "error": DefaultAjaxError,
         });
     }, 
     remove: function(element, id){
@@ -282,9 +290,10 @@ Votings.favourites = {
                     $(element).attr("onclick", onclick.replace("remove", "add"));
                     $(element).toggleClass("text-light text-primary");
                 }else{
-                    console.error(data);
+                    defaultAjaxError();
                 }
-            }
+            }, 
+            "error": DefaultAjaxError,
         });
     }
 }

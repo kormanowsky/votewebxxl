@@ -1,5 +1,6 @@
 var Upload = window.Upload = {};
 Upload.init = function (input, success, error) {
+    error = error || DefaultAjaxError;
     var image = false,
         upload_as = input.attr('data-upload-as'),
         csrf_token = input.next().attr('value'), 
