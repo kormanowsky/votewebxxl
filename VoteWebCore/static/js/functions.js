@@ -1,3 +1,7 @@
+function CSRF_Token(){
+    return $("#global_scrf_token").attr('value');
+}
+
 function AjaxForm(element, success, error, autoClose) {
     autoClose = autoClose || false;
     // For forms in modal

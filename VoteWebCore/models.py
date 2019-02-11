@@ -47,7 +47,6 @@ class Voting(models.Model):
     open_stats = models.BooleanField(default=True)
     datetime_closed = models.DateTimeField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
-    image=models.ForeignKey('Image', on_delete=models.SET_NULL, null=True)
 
     # Returns voting status
     def status(self, user):
@@ -385,15 +384,12 @@ class Image(models.Model):
 
     # Avatar
     IMAGE_ROLE_AVATAR = 0
-    # Voting image
-    IMAGE_ROLE_VOING = 1
     # Question image
-    IMAGE_ROLE_QUESTION = 2
+    IMAGE_ROLE_QUESTION = 1
 
     IMAGE_ROLES = [
         (IMAGE_ROLE_AVATAR, 'Avatar'),
-        (IMAGE_ROLE_VOING, 'Voting image'),
-        (IMAGE_ROLE_QUESTION, 'Question image')
+        (IMAGE_ROLE_QUESTION, 'Question image'),
     ]
 
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)

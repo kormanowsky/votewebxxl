@@ -29,6 +29,7 @@
 </head>
 
 <body>
+    <input id="global_scrf_token" value="{{ csrf_token }}" type="hidden">
     {% block body %} {% endblock body %}
     <!-- Модальное окно опасного действия -->
     <div class="modal fade" id="dangerousActionConfirmModal" tabindex="-1" role="dialog" aria-labelledby="dangerousActionConfirmModalLabel" aria-hidden="true">

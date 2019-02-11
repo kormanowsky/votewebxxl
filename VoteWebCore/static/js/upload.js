@@ -3,7 +3,7 @@ Upload.init = function (input, success, error) {
     error = error || DefaultAjaxError;
     var image = false,
         upload_as = input.attr('data-upload-as'),
-        csrf_token = input.next().attr('value'), 
+        csrf_token = CSRF_Token(),
         label = $("[for='" + input.attr('id')+"']");
     if (input.attr("data-image-selector")) {
         image = $(input.attr("data-image-selector"));
