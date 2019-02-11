@@ -45,4 +45,12 @@ jQuery(function ($) {
         $("#comments").prepend(data.comment);
         $("#comments-count").text(data.comments_count);
     }, false, true);
+    // Картинки на главной
+    $('.img_data').click(function () {
+        $('#big_img').attr('src', this.currentSrc);
+        var temp_link = $('<a id="Test3213" href="#" data-toggle="modal" data-target="#modal-big-img"></a>');
+        temp_link.appendTo('body');
+        temp_link.trigger('click');
+        temp_link.remove();
+    });
 });

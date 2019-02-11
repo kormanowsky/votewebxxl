@@ -420,10 +420,6 @@ section#top {
         font-size: 150%;
     }
 
-    .modal-wide > .modal-dialog {
-        max-width: 700px;
-    }
-
     #landing-sitename {
         padding-top: 3em;
         padding-bottom: 0;
