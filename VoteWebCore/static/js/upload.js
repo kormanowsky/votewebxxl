@@ -8,6 +8,18 @@ Upload.init = function (input, success, error) {
         label = $("[for='" + input.attr('id')+"']");
     if (input.attr("data-image-selector")) {
         image = $(input.attr("data-image-selector"));
+        if(!parseInt(image.attr('data-no-helper'))){
+            var p = $('<p class="text-center">No image</p>');
+            p.insertBefore(image);
+            image.on('load', function(){
+                p.addClass('d-none');
+                return false;
+            });
+            image.on('error', function(){
+                p.removeClass('d-none');
+                return false;
+            });
+        }
     }
     if (input.attr("data-input-id-selector")) {
         id_input = $(input.attr("data-input-id-selector"));

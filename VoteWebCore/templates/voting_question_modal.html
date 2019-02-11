@@ -18,14 +18,22 @@
                     </div>
                     <div class="form-group">
                         <label for="input-text">Question image</label>
-                        <div class="input-group">
-                            <img src="" alt="No question image" id="question-image">
-                            <input type="hidden" name="image_id" id="question-image-id-input">
-                            <div class="custom-file">
-                                <input type="file" accept="image/*" class="custom-file-input upload-image" data-input-id-selector="#question-image-id-input" data-upload-as="question_image" data-image-selector="#question-image" id="question-image-input">
-                                <label class="custom-file-label" for="question-image-input">Choose file</label>
-                            </div>
 
+                        <div class="row">
+                            <div class="col-12">
+                                <img src="" id="question-image" class="mb-3" height=150>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <input type="hidden" name="image_id" id="question-image-id-input">
+                                <div class="custom-file">
+                                    <div class="input-group">
+                                        <input type="file" accept="image/*" class="custom-file-input upload-image" data-input-id-selector="#question-image-id-input" data-upload-as="question_image" data-image-selector="#question-image" id="question-image-input">
+                                        <label class="custom-file-label" for="question-image-input">Choose file</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
