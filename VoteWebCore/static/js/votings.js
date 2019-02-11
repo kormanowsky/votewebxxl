@@ -161,6 +161,10 @@ Votings.edit = {
                     var answer = question.answers[answer_index];
                     Votings.edit.addPossibleAnswerInput(answer);
                 }
+                if(question.image){
+                    $("#question-image").attr('src', question.image.data.url);
+                    $("#question-image-id-input").attr('value', question.image.id);
+                }
             });
         } else {
             $("#questionModalLabel").text("Add question");
@@ -203,6 +207,14 @@ Votings.edit = {
                     }
                 });
                 return answers;
+            })(),
+            "image_id": (function(){
+                var image_id = 0,
+                    id_input_value = parseInt($("#question-image-id-input").attr('value'));
+                if(!isNaN(id_input_value)){
+                    image_id = id_input_value
+                }
+                return image_id;
             })(),
         };
         // data checks

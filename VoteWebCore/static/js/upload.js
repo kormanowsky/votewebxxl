@@ -2,11 +2,15 @@ var Upload = window.Upload = {};
 Upload.init = function (input, success, error) {
     error = error || DefaultAjaxError;
     var image = false,
+        id_input = false,
         upload_as = input.attr('data-upload-as'),
         csrf_token = CSRF_Token(),
         label = $("[for='" + input.attr('id')+"']");
     if (input.attr("data-image-selector")) {
         image = $(input.attr("data-image-selector"));
+    }
+    if (input.attr("data-input-id-selector")) {
+        id_input = $(input.attr("data-input-id-selector"));
     }
     input.on('change', function () {
         var file = input[0].files[0],
@@ -30,6 +34,9 @@ Upload.init = function (input, success, error) {
                 }
                 if(image){
                     image.attr('src', data.data.url);
+                }
+                if(id_input){
+                    id_input.attr('value', data.id);
                 }
                 if(typeof success === "function"){
                     return success(data);

@@ -93,6 +93,7 @@ class QuestionForm(forms.Form):
     text = forms.CharField(max_length=100)
     type = forms.IntegerField(min_value=0, max_value=2)
     answers = list()
+    image_id = forms.IntegerField()
 
     def __init__(self, raw_data, *args, **kwargs):
         super(QuestionForm, self).__init__(*args, **kwargs)
@@ -100,6 +101,10 @@ class QuestionForm(forms.Form):
         del parsed_data['csrfmiddlewaretoken']
         parsed_data['type'] = int(parsed_data['type'])
         parsed_data['question_id'] = int(parsed_data['question_id'])
+        if len(parsed_data['image_id']):
+            parsed_data['image_id'] = int(parsed_data['image_id'])
+        else:
+            parsed_data['image_id'] = 0
         self.data = parsed_data
 
     def is_valid(self):

@@ -16,6 +16,8 @@ def get_question(request, question_id=0):
 
     question = question[0]
 
+    #print(question.as_json())
+
     if question.voting is not None:
         voting_id = question.voting.id
     else:
@@ -26,13 +28,24 @@ def get_question(request, question_id=0):
     else:
         user_id = None
 
+    if question.image is not None:
+        image = {
+            "id": question.image.id,
+            "data": {
+                "url": question.image.data.url,
+            }
+        }
+    else:
+        image = None
+
     return JsonResponse({
         "id": question.id,
         "text": question.text,
         "user_id": user_id,
         "voting_id": voting_id,
         "answers": question.answers,
-        "type": question.type
+        "type": question.type,
+        "image": image,
     })
 
 
@@ -62,6 +75,20 @@ def save_question(request):
             question = Question(text=form.data['text'], type=form.data['type'],
                                 answers=form.data['answers'], voting=None, user=request.user)
             question.save()
+
+        # Question image
+        if form.data['image_id']:
+            image = Image.objects.filter(id=form.data['image_id']).exclude(is_active=False)
+            if not len(image):
+                return error_bad_request(request)
+            if not image[0].user == request.user:
+                return error_forbidden(request)
+            image = image[0]
+        else:
+            image = None
+        question.image = image
+        question.save()
+
         return JsonResponse({
             "html": render_to_string(request=request,
                                      context={"question": question},
