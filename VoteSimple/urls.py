@@ -12,7 +12,6 @@ handler404 = error_views.error_not_found
 handler500 = error_views.error_internal
 
 urlpatterns = [
-<<<<<<< HEAD
       # Index view
       path('', views.index),
       # Admin
