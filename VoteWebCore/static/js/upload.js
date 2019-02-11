@@ -8,7 +8,7 @@ Upload.init = function (input, success, error) {
         label = $("[for='" + input.attr('id')+"']");
     if (input.attr("data-image-selector")) {
         image = $(input.attr("data-image-selector"));
-        if(!parseInt(image.attr('data-no-helper'))){
+        if(parseInt(image.attr('data-no-helper'))){
             var p = $('<p class="text-center">No image</p>');
             p.insertBefore(image);
             image.on('load', function(){
