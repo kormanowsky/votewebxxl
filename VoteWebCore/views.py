@@ -1,16 +1,15 @@
+from django.contrib import messages
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
-from django.shortcuts import render, redirect
-from django.template.loader import render_to_string
 from django.db.models import Q
-from django.contrib import messages
+from django.http import JsonResponse
+from django.shortcuts import redirect
+from django.template.loader import render_to_string
 
-from VoteWebCore.forms import *
-from VoteWebCore.models import *
-from VoteWebCore.functions import *
 from VoteWebCore.api_views import save_voting
 from VoteWebCore.error_views import *
+from VoteWebCore.forms import *
+from VoteWebCore.functions import *
 
 
 def index(request):
@@ -149,13 +148,13 @@ def profile(request, username=None):
     else:
         return error_not_found(request)
     if profile_user == request.user:
-        reports = Report.objects.filter(user=profile_user)\
+        reports = Report.objects.filter(user=profile_user) \
             .order_by("-datetime_created").exclude(is_active=False)
     else:
         reports = None
-    activity = ActivityItem.objects.filter(user=profile_user.id)\
+    activity = ActivityItem.objects.filter(user=profile_user.id) \
         .exclude(voting__banned=1).order_by('-datetime_created').exclude(is_active=False)
-    votings = Voting.objects.filter(user=profile_user.id)\
+    votings = Voting.objects.filter(user=profile_user.id) \
         .exclude(banned=1).order_by("-datetime_created").exclude(is_active=False)
     activity_small = activity[:5]
     votings_small = votings[:5]
@@ -223,3 +222,6 @@ def remove_account(request):
         "html_title": "Remove Account"
     })
 
+
+def test_page(requets):
+    return render(requets, 'test.html', {})

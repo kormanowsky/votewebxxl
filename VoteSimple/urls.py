@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path, re_path
-from django.conf.urls.static import static
 from django.views.static import serve
 
 from VoteSimple import settings
@@ -13,6 +12,7 @@ handler404 = error_views.error_not_found
 handler500 = error_views.error_internal
 
 urlpatterns = [
+<<<<<<< HEAD
       # Index view
       path('', views.index),
       # Admin
@@ -58,3 +58,4 @@ urlpatterns = [
           'document_root': settings.STATIC_ROOT,
       }),
     ]
+
