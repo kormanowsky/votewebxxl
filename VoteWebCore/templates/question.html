@@ -3,6 +3,9 @@
         <div class="card-body">
             <p class="text-muted lh-110 small">Question #{{ question.id }}</p>
             <h3 class="mb-4">{{ question.text }}</h3>
+            {% if question.image %}
+            <img src="{{ question.image.data.url }}" alt="" class="w-100 mb-3">
+            {% endif %}
             {% if status >= voting.VOTING_OPEN %} {% if question.type == question.QUESTION_BUTTONS %}
             <input type="hidden" name="answer_{{ question.id }}" value="">
             <div class="row mx-0">
