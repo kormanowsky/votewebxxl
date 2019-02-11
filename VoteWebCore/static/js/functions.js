@@ -140,7 +140,7 @@ function ShowMessage(type, message) {
 
 function DefaultAjaxError() {
     message = "An error occured while doing request to server";
-    if (arguments.length) {
+    if (arguments.length && arguments[0].statusText != "error") {
         message += ": " + arguments[0].statusText;
     } else {
         message += ".";
