@@ -127,7 +127,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'VoteWebCore/static')
 LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = '/votings'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'VoteWebCore/uploads')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 MEDIA_URL = '/uploads/'
 
 CSRF_FAILURE_VIEW = 'VoteWebCore.views.error_csrf'
