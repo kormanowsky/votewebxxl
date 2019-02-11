@@ -357,6 +357,7 @@ section#top {
     bottom: 16px;
     left: 16px;
     right: 16px;
+    z-index: 9999;
 }
 
 #messages .alert {
@@ -364,7 +365,7 @@ section#top {
     margin-left: auto;
     margin-right: auto;
     margin-top: 5vh;
-    z-index: 9999;
+
 }
 
 /* ÐÐ´Ð°Ð¿Ñ‚Ð¸Ð²Ð½Ð¾ÑÑ‚ÑŒ */

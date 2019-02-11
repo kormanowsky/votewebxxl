@@ -37,7 +37,7 @@ jQuery(function ($) {
     // Выбор даты
     $('.input-daterange').datepicker();
     // Ajax-формы
-    AjaxForm($("#report-form"));
+    AjaxForm($("#report-form"), false, false, true);
     AjaxForm($("#comment-form"), function (data) {
         if ($("#comments>p").length) {
             $("#comments>p").remove();

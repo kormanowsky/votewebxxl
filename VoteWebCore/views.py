@@ -101,6 +101,7 @@ def voting_single(request, voting_id=-1, action="index"):
             item = Report(status=Report.REPORT_WAITING, voting=voting,
                           user=request.user, title=form.data['title'], message=form.data['message'])
             item.save()
+            return JsonResponse({"is_valid": True})
         return error_bad_request(request)
     elif action == "remove":
         if voting.user == request.user:
