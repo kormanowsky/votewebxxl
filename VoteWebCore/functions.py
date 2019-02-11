@@ -2,6 +2,7 @@ from dateutil import *
 from random import randint
 from uuid import uuid4
 from datetime import *
+# import magic
 
 from django.utils.safestring import mark_safe
 from django.utils.html import format_html
@@ -9,7 +10,9 @@ from django.utils.html import format_html
 from VoteWebCore.models import *
 
 
-# File name for file uploads
+# FILESYSTEM FUNCTIONS
+
+
 def generate_file_name(file, src_name):
     return str(uuid4()).replace("-", "/") + '.' + src_name.split('.')[-1]
 

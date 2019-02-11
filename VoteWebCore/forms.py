@@ -113,6 +113,9 @@ class QuestionForm(forms.Form):
 class LoadImgForm(forms.Form):
     file = forms.ImageField()
 
+    #def is_valid(self):
+    #    return is_image(self.data['image'])
+
 
 class VotingsSearchForm(forms.Form):
     title = forms.CharField(max_length=100, required=False)
