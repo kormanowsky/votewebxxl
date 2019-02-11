@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 ####################################################
-# VoteWebXXL v0.9
+# VoteWebXXL v1.0
 ####################################################
 
 import os
