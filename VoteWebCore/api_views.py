@@ -178,8 +178,9 @@ def favourites(request, action="add", voting_id=0):
 # Remove reports and comments
 @login_required
 def remove(request, model="report", model_id=0):
-    if request.method != 'POST':
-        return error_method_not_allowed(request)
+    # Maybe we will need this in the future
+    #if request.method != 'POST':
+    #    return error_method_not_allowed(request)
 
     model_classes = {
         "comment": Comment,
@@ -188,7 +189,7 @@ def remove(request, model="report", model_id=0):
     if model not in model_classes:
         return error_bad_request(request)
 
-    item = model_classes[model].objects.filter(id=id).exclude(is_active=False)
+    item = model_classes[model].objects.filter(id=model_id).exclude(is_active=False)
 
     if not len(item):
         return error_bad_request(request)
