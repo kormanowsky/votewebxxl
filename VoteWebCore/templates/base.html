@@ -31,18 +31,18 @@
 <body>
     <input id="global_scrf_token" value="{{ csrf_token }}" type="hidden">
     {% block body %} {% endblock body %}
-    <!-- Модальное окно опасного действия -->
-    <div class="modal fade" id="dangerousActionConfirmModal" tabindex="-1" role="dialog" aria-labelledby="dangerousActionConfirmModalLabel" aria-hidden="true">
+    <!-- Модальное окно подтверждения действия -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="dangerousActionConfirmModalLabel">Confirmation</h5>
+                    <h5 class="modal-title" id="confirmModalLabel">Confirmation</h5>
                 </div>
                 <div class="modal-body">
-                    <p>Do you really want to do this?</p>
+                    <p id="confirmModalText">Do you really want to do this?</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-danger" data-dismiss="modal" id="dangerousModalYes">Yes</button>
+                    <button type="button" class="btn btn-outline-danger" data-dismiss="modal" id="confirmModalYes">Yes</button>
                     <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
                 </div>
             </div>

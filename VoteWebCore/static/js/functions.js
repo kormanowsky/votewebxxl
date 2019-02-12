@@ -72,7 +72,7 @@ function LayoutMasonry() {
     });
 }
 
-function AddConfirmationModal(e) {
+function AddConfirmationModal(e, text) {
     // Повторно не делаем
     if (parseInt($(e).attr('data-dam-processed'))) {
         return;
@@ -114,11 +114,12 @@ function AddConfirmationModal(e) {
     $(e).off('click');
     // Установка нового обработчика
     $(e).click(function (event) {
-        var openModalLink = $('<a data-toggle="modal" data-target="#dangerousActionConfirmModal"></a>');
+        $('#confirmModalText').text(text);
+        var openModalLink = $('<a data-toggle="modal" data-target="#confirmModal"></a>');
         $('body').append(openModalLink);
         openModalLink.click().remove();
         // Проверка, хочет ли пользователь совершить действие
-        $('#dangerousModalYes').click(function () {
+        $('#confirmModalYes').click(function () {
             for (var i in newEventListeners) {
                 newEventListeners[i](event);
             }
@@ -129,8 +130,14 @@ function AddConfirmationModal(e) {
 }
 
 function InitConfirmationModal() {
-    $(".dangerous-action:not([data-dam-processed])").each(function (i, e) {
-        AddConfirmationModal(e);
+    $(".dangerous-action").each(function (i, e) {
+        AddConfirmationModal(e, 'Do you really want to do this?');
+    });
+}
+
+function TurnOnLeaveConfirmationModal(){
+    $("a").not(".dangerous-action").not("[href='#']").each(function(i, e){
+        AddConfirmationModal(e, 'You have unsaved changes. Do you really want to leave this page and lose them?');
     });
 }
 
