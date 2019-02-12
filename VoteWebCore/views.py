@@ -228,7 +228,6 @@ def remove_account(request):
     })
 
 
-# https://evileg.com/en/post/203/
 class LoginView(View):
 
     def get(self, request):

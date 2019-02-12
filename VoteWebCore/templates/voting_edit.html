@@ -1,6 +1,6 @@
 {% extends "basic.html" %}
 {% block content %}
-<form action="/voting/{{ voting.id }}/edit" method="post" onsubmit="return Votings.edit.checkForm(this);" onchange="TurnOnLeaveConfirmationModal();>
+<form action="/voting/{{ voting.id }}/edit" method="post" onsubmit="return Votings.edit.checkForm(this);" onchange="TurnOnLeaveConfirmationModal();">
     {% csrf_token %}
     <input type="hidden" name="voting_id" value="{{ voting.id }}">
     <div class="row mt-3">
@@ -23,10 +23,14 @@
                             <input type="text" class="form-control" name="title" id="input-title" placeholder="Name your voting" value="{{ voting.title }}" required>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="input-title">Datetime of closing (leave blank to make your voting open forever)</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control datepicker" data-date-start-date="{% formatted_date 'tomorrow' %}" data-date-format="dd.mm.yyyy" name="datetime_closed" id="input-datetime_closed" value="{% if voting.datetime_closed %}{{ voting.datetime_closed_str }}{% endif %}">
+                    <div class="form-group row">
+                        <label class="col-12">Datetime of closing (leave blank to make your voting open forever)</label>
+                        <div class="col-12 col-lg-6">
+                            <div class="d-flex align-items-center">
+                                <input value="{% if voting.datetime_closed %}{% formatted_date voting.datetime_closed %}{% endif %}" type="text" data-date-start-date="now" data-date-format="dd.mm.yyyy" class="form-control text-center datepicker" name="datetime_closed_date" id="input-datetime_closed_date">
+                                <span class="mx-4">at</span>
+                                <input value="{% if voting.datetime_closed %}{% formatted_time voting.datetime_closed %}{% endif %}" type="text" data-date-format="HH:mm" class="form-control text-center" name="datetime_closed_time" id="input-datetime_closed_time">
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">

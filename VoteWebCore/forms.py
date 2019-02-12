@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from VoteWebCore.models import *
 from VoteWebCore.functions import *
 
-# https://github.com/bernii/querystring-parser
+
 from querystring_parser import parser
 
 
@@ -77,8 +77,9 @@ class SaveVotingForm(forms.Form):
         for i, question in enumerate(parsed_data['questions']):
             parsed_data['questions'][i] = int(question)
         parsed_data['voting_id'] = int(parsed_data['voting_id'])
-        if len(parsed_data['datetime_closed']):
-            parsed_data['datetime_closed'] = datetime_str_to_obj(parsed_data['datetime_closed'])
+        print(parsed_data)
+        if len(parsed_data['datetime_closed_date']):
+            parsed_data['datetime_closed'] = datetime_to_utc(datetime_str_to_obj("{} {}".format(parsed_data['datetime_closed_date'], parsed_data['datetime_closed_time'])))
         else:
             parsed_data['datetime_closed'] = None
         parsed_data['open_stats'] = parsed_data['open_stats'] == '1'

@@ -93,7 +93,7 @@ class Voting(models.Model):
     def datetime_closed_str(self):
         if not self.datetime_closed:
             return None
-        return date_human(self.datetime_closed)
+        return datetime_human(self.datetime_closed)
     datetime_closed_str.short_description = "Date of closing"
 
     # Returns human time difference between current time and voting closing time

@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from django import template
 
 from ..models import Image, Voting
-from ..functions import date_human
+from ..functions import date_human, datetime_human, date_process, time_human
 
 
 register = template.Library()
@@ -16,15 +16,17 @@ def avatar(request, user=None):
 
 @register.simple_tag
 def formatted_date(date=None):
-    if not date:
-        date = datetime.now()
-    elif date == "today":
-        date = datetime.now()
-    elif date == "tomorrow":
-        date = datetime.now() + timedelta(days=1)
-    elif date == "yesterday":
-        date = datetime.now() - timedelta(days=1)
-    return date_human(date)
+    return date_human(date_process(date))
+
+
+@register.simple_tag
+def formatted_datetime(date=None, add_at=True):
+    return datetime_human(date_process(date), add_at)
+
+
+@register.simple_tag
+def formatted_time(date=None):
+    return time_human(date_process(date))
 
 
 @register.simple_tag

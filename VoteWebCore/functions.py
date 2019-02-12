@@ -33,6 +33,16 @@ def form_errors(form):
 
 
 # Convert datetime between timezones
+def date_process(date=None):
+    if not date or date == "today" or date == "now":
+        date = datetime.now()
+    elif date == "tomorrow":
+        date = datetime.now() + timedelta(days=1)
+    elif date == "yesterday":
+        date = datetime.now() - timedelta(days=1)
+    return date
+
+
 def datetime_convert(dt, from_zone, to_zone):
     return dt.replace(tzinfo=from_zone).astimezone(to_zone)
 
@@ -67,22 +77,39 @@ def datetime_human_diff(dt1, dt2):
 
 # Convert string in format dd.mm.yyyy to datetime objects
 def datetime_str_to_obj(datetime_str):
-    if len(datetime_str.split(".")) != 3:
-        return None
-    day, month, year = list(map(int, datetime_str.split(".")))
-    datetime_obj = datetime(year=year, month=month, day=day, hour=0, minute=0, second=0, microsecond=0,
-                            tzinfo=tz.tzutc())
-    return datetime_obj
-
-
-# Convert datetime object to string
-def datetime_human(dt):
-    return dt.strftime("%d.%m.%Y at %H:%M")
+    if len(datetime_str.split(" ")) == 2:
+        date_str, time_str = datetime_str.split(" ")
+        hour, minute = list(map(int, time_str.split(":")))
+    else:
+        date_str = datetime_str
+        hour, minute = 0, 0
+    if len(datetime_str.split(".")) == 3:
+        day, month, year = list(map(int, date_str.split(".")))
+        datetime_obj = datetime(year=year, month=month, day=day, hour=hour, minute=minute, second=0, microsecond=0,
+                                tzinfo=tz.tzutc())
+        return datetime_obj
+    return None
 
 
 # Convert datetime object to string (date only)
 def date_human(dt):
+    dt = datetime_convert(dt, tz.tzutc(), tz.tzlocal())
     return dt.strftime("%d.%m.%Y")
+
+
+# Convert datetime object to string (date only)
+def time_human(dt):
+    dt = datetime_convert(dt, tz.tzutc(), tz.tzlocal())
+    return dt.strftime("%H:%M")
+
+
+# Convert datetime object to string
+def datetime_human(dt, add_at=True):
+    dt_str = date_human(dt)
+    if add_at:
+        dt_str += " at "
+    dt_str += time_human(dt)
+    return dt_str
 
 
 # HTML FOR ADMIN PANEL
