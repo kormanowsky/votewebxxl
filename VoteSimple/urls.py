@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.contrib.auth import views as auth_views
 from django.urls import path, re_path
 from django.views.static import serve
 
@@ -21,7 +20,7 @@ urlpatterns = [
       path('votings', views.votings),
 
       # Auth module
-      path('login', auth_views.LoginView.as_view()),
+      path('login', views.LoginView.as_view()),
       path('logout', views.logout),
       path('register', views.register),
       path('remove-account', views.remove_account),

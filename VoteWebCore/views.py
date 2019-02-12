@@ -1,15 +1,20 @@
-from django.contrib import messages
+from django.contrib import auth, messages
 from django.contrib.auth import logout as auth_logout
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import JsonResponse
-from django.shortcuts import redirect
 from django.template.loader import render_to_string
+from django.shortcuts import redirect, render_to_response
+from django.views import View
+from django.template.context_processors import csrf
+
 
 from VoteWebCore.api_views import save_voting
 from VoteWebCore.error_views import *
 from VoteWebCore.forms import *
 from VoteWebCore.functions import *
+from VoteSimple.settings import LOGIN_REDIRECT_URL
 
 
 def index(request):
@@ -59,7 +64,7 @@ def register(request):
         else:
             for error in form_errors(context['form']):
                 messages.add_message(request, messages.ERROR, error)
-    return render(request, 'registration/registration.html', context)
+    return render(request, 'registration.html', context)
 
 
 # New view for a single voting
@@ -218,10 +223,29 @@ def voting_create(request):
 def remove_account(request):
     request.user.is_active = False
     request.user.save()
-    return render(request, "registration/remove_account.html", {
+    return render(request, "remove_account.html", {
         "html_title": "Remove Account"
     })
 
 
-def test_page(requets):
-    return render(requets, 'test.html', {})
+# https://evileg.com/en/post/203/
+class LoginView(View):
+
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect(LOGIN_REDIRECT_URL)
+        else:
+            if int(request.GET.get('register_success', '0')) == 1:
+                messages.add_message(request, messages.SUCCESS,
+                                     'Your registration process has finished successfully. You may now log in.')
+            return render(request, 'login.html', context=csrf(request))
+
+    def post(self, request):
+        form = AuthenticationForm(request, data=request.POST)
+        if not form.is_valid() or form.get_user() is None:
+            messages.add_message(request, messages.ERROR, 'Authentication data is empty or incorrect')
+        else:
+            auth.login(request, form.get_user())
+            next = request.GET.get('next', LOGIN_REDIRECT_URL)
+            return redirect(next)
+        return render(request, 'login.html', context=csrf(request))

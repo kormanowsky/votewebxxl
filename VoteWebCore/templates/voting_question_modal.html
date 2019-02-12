@@ -40,7 +40,7 @@
                         <label>Question type</label>
                         <label class="small text-light">If you choose Buttons question type and create more than 3 possible answers, question type will be changed to Single Answer. If you choose Multiple Answers question type and create less than 3 possible answers, question type will be changed to Single Answer.</label>
                         <div class="custom-control custom-radio mb-3">
-                            <input class="custom-control-input input-question-type" name="question-type" id="input-question_type_0" value="0" type="radio" required>
+                            <input class="custom-control-input input-question-type" name="question-type" id="input-question_type_0" value="0" type="radio" checked required>
                             <label class="custom-control-label" for="input-question_type_0">Buttons</label>
                         </div>
                         <div class="custom-control custom-radio mb-3">
@@ -55,13 +55,13 @@
                     <label for="input-text">Possible answers</label>
                     <div class="form-group row" id="form-group-answers">
                         <div class="input-group col-12 col-md-6 mt-2">
-                            <input type="text" class="input-possible-answer form-control" placeholder="Yes" value="Yes">
+                            <input type="text" class="input-possible-answer form-control" value="Yes">
                             <div class="input-group-append">
                                 <button onclick="return Votings.edit.removePossibleAnswerInput(this);" class="dangerous-action btn btn-outline-danger"><i class="la la-times"></i></button>
                             </div>
                         </div>
                         <div class="input-group col-12 col-md-6 mt-2">
-                            <input type="text" class="input-possible-answer form-control" placeholder="No" value="No">
+                            <input type="text" class="input-possible-answer form-control" value="No">
                             <div class="input-group-append">
                                 <button onclick="return Votings.edit.removePossibleAnswerInput(this);" class="dangerous-action btn btn-outline-danger"><i class="la la-times"></i></button>
                             </div>
