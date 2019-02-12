@@ -3,7 +3,8 @@ from django.urls import path, re_path
 from django.views.static import serve
 
 from VoteSimple import settings
-from VoteWebCore import views, api_views, error_views
+from VoteWebCore import views, error_views
+from VoteWebCore.api_views import APIViews
 
 handler400 = error_views.error_bad_request
 handler403 = error_views.error_forbidden
@@ -39,11 +40,11 @@ urlpatterns = [
       path('voting/create', views.voting_create),
 
       # Ajax API
-      path('api/get-question/<int:question_id>', api_views.get_question),
-      path('api/save-question', api_views.save_question),
-      path('api/upload/<str:upload_as>', api_views.upload),
-      path('api/favourites/<str:action>/<int:voting_id>', api_views.favourites),
-      path('api/remove/<str:model>/<int:model_id>', api_views.remove),
+      path('api/get-question/<int:question_id>', APIViews.Question.Get.as_view()),
+      path('api/save-question', APIViews.Question.Save.as_view()),
+      path('api/upload/<str:upload_as>', APIViews.Upload.as_view()),
+      path('api/favourites/<str:action>/<int:voting_id>', APIViews.Favourites.as_view()),
+      path('api/remove/<str:model>/<int:model_id>', APIViews.Remove.as_view()),
 
       # Error 418 view )))
       path('418', error_views.error_not_a_teapot),

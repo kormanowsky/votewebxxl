@@ -10,7 +10,7 @@ from django.views import View
 from django.template.context_processors import csrf
 
 
-from VoteWebCore.api_views import save_voting
+from VoteWebCore.api_views import APIViews
 from VoteWebCore.error_views import *
 from VoteWebCore.forms import *
 from VoteWebCore.functions import *
@@ -117,7 +117,7 @@ def voting_single(request, voting_id=-1, action="index"):
     elif action == "edit":
         if voting.user == request.user:
             if request.method == "POST":
-                return save_voting(request)
+                return APIViews.Voting.Save.as_view()(request)
             else:
                 return render(request, "voting_edit.html", {
                     "html_title": "Edit | " + voting.title,
@@ -212,7 +212,7 @@ def settings(request):
 @login_required
 def voting_create(request):
     if request.method == "POST":
-        return save_voting(request)
+        return APIViews.Voting.Save.as_view()(request)
     else:
         return render(request, "voting_create.html", {
             "html_title": "Create Voting",

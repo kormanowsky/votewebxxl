@@ -144,7 +144,6 @@ class Voting(models.Model):
     def __str__(self):
         return "{} (#{})".format(self.title, self.id)
 
-
 # Question
 class Question(models.Model):
 
