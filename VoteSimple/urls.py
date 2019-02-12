@@ -3,28 +3,28 @@ from django.urls import path, re_path
 from django.views.static import serve
 
 from VoteSimple import settings
-from VoteWebCore import views, error_views
-from VoteWebCore.api_views import APIViews
+from VoteWebCore import views
+from VoteWebCore.views import main, auth, error, api
 
-handler400 = error_views.error_bad_request
-handler403 = error_views.error_forbidden
-handler404 = error_views.error_not_found
-handler500 = error_views.error_internal
+handler400 = error.error_bad_request
+handler403 = error.error_forbidden
+handler404 = error.error_not_found
+handler500 = error.error_internal
 
 urlpatterns = [
       # Index view
-      path('', views.index),
+      path('', main.index),
       # Admin
       path('admin/', admin.site.urls),
 
       # Votings list & search
-      path('votings', views.votings),
+      path('votings', main.votings),
 
       # Auth module
-      path('login', views.LoginView.as_view()),
-      path('logout', views.logout),
-      path('register', views.register),
-      path('remove-account', views.remove_account),
+      path('login', auth.login),
+      path('logout', auth.logout),
+      path('register', auth.register),
+      path('remove-account', auth.remove_account),
 
       # Profile Page
       path('profile/<str:username>', views.profile),
@@ -40,14 +40,14 @@ urlpatterns = [
       path('voting/create', views.voting_create),
 
       # Ajax API
-      path('api/get-question/<int:question_id>', APIViews.Question.Get.as_view()),
-      path('api/save-question', APIViews.Question.Save.as_view()),
-      path('api/upload/<str:upload_as>', APIViews.Upload.as_view()),
-      path('api/favourites/<str:action>/<int:voting_id>', APIViews.Favourites.as_view()),
-      path('api/remove/<str:model>/<int:model_id>', APIViews.Remove.as_view()),
+      path('api/get-question/<int:question_id>', api.get_question),
+      path('api/save-question', api.save_question),
+      path('api/upload/<str:upload_as>', api.upload),
+      path('api/favourites/<str:action>/<int:voting_id>', api.favourites),
+      path('api/remove/<str:model>/<int:model_id>', api.remove),
 
       # Error 418 view )))
-      path('418', error_views.error_not_a_teapot),
+      path('418', error.error_not_a_teapot),
 
       # Media
       re_path(r'^uploads/(?P<path>.*)$', serve, {

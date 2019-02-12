@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 
-# Error handlers
+# ERROR HANDLERS
 
 
 def error_bad_request(request, *args, **kwargs):
