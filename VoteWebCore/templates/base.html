@@ -14,7 +14,6 @@
     <!-- Шрифты -->
     <link type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,700,800&amp;subset=cyrillic-ext" rel="stylesheet">
     <!-- Стили -->
-
     <link type="text/css" href='{% static "vendor/line-awesome/css/line-awesome.min.css" %}' rel="stylesheet">
     <link type="text/css" href='{% static "vendor/bootstrap-datepicker/css/bootstrap-datepicker.min.css" %}' rel="stylesheet">
     <link type="text/css" href='{% static "vendor/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" %}' rel="stylesheet">
@@ -51,13 +50,10 @@
         </div>
     </div>
     <!-- Сообщения -->
-    
     <div id="messages">
     {% if messages %}
     {% for message in messages %}
-
     <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible fade show shadow">
-
         {{ message }}
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
@@ -65,8 +61,7 @@
     </div>
     {% endfor %}
        {% endif %}
-        </div>
-    
+    </div>
     <!-- Скрипты подвала -->
     <script type="text/javascript" src='{% static "vendor/bootstrap/bootstrap.min.js" %}'></script>
     <script type="text/javascript" src='{% static "js/argon.min.js" %}'></script>

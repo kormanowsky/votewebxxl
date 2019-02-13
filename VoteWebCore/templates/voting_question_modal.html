@@ -8,8 +8,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="/voting/create/new-question" method="post" id="question-form">
-                    {% csrf_token %}
+                <form action="/voting/create" method="post" id="question-form">
                     <div class="form-group">
                         <label for="input-text">Question text</label>
                         <div class="input-group">
@@ -38,18 +37,17 @@
                     </div>
                     <div class="form-group">
                         <label>Question type</label>
-                        <label class="small text-light">If you choose Buttons question type and create more than 3 possible answers, question type will be changed to Single Answer. If you choose Multiple Answers question type and create less than 3 possible answers, question type will be changed to Single Answer.</label>
                         <div class="custom-control custom-radio mb-3">
                             <input class="custom-control-input input-question-type" name="question-type" id="input-question_type_0" value="0" type="radio" checked required>
-                            <label class="custom-control-label" for="input-question_type_0">Buttons</label>
+                            <label class="custom-control-label" for="input-question_type_0">Single answer (with buttons)</label>
                         </div>
                         <div class="custom-control custom-radio mb-3">
                             <input class="custom-control-input input-question-type" name="question-type" id="input-question_type_1" value="1" type="radio" required>
-                            <label class="custom-control-label" for="input-question_type_1">Single Answer</label>
+                            <label class="custom-control-label" for="input-question_type_1">Single answer (with radio inputs)</label>
                         </div>
                         <div class="custom-control custom-radio mb-3">
                             <input class="custom-control-input input-question-type" name="question-type" id="input-question_type_2" value="2" type="radio" required>
-                            <label class="custom-control-label" for="input-question_type_2">Multiple Answers</label>
+                            <label class="custom-control-label" for="input-question_type_2">Multiple answers (with checkboxes)</label>
                         </div>
                     </div>
                     <label for="input-text">Possible answers</label>

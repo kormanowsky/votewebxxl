@@ -5,17 +5,17 @@ Upload.init = function (input, success, error) {
         id_input = false,
         upload_as = input.attr('data-upload-as'),
         csrf_token = CSRF_Token(),
-        label = $("[for='" + input.attr('id')+"']");
+        label = $("[for='" + input.attr('id') + "']");
     if (input.attr("data-image-selector")) {
         image = $(input.attr("data-image-selector"));
-        if(parseInt(image.attr('data-no-helper'))){
+        if (parseInt(image.attr('data-no-helper'))) {
             var p = $('<p class="text-center">No image</p>');
             p.insertBefore(image);
-            image.on('load', function(){
+            image.on('load', function () {
                 p.addClass('d-none');
                 return false;
             });
-            image.on('error', function(){
+            image.on('error', function () {
                 p.removeClass('d-none');
                 return false;
             });
@@ -29,7 +29,7 @@ Upload.init = function (input, success, error) {
             data = new FormData();
         data.append("file", file);
         data.append("csrfmiddlewaretoken", csrf_token);
-        if(label.length){
+        if (label.length) {
             label.text(file.name);
         }
         $.ajax({
@@ -38,19 +38,19 @@ Upload.init = function (input, success, error) {
             "data": data,
             "contentType": false,
             "processData": false,
-            "success": function(data){
-                if(!("id" in data)){
-                    if(typeof error === "function"){
+            "success": function (data) {
+                if (!("id" in data)) {
+                    if (typeof error === "function") {
                         return error(data);
                     }
                 }
-                if(image){
+                if (image) {
                     image.attr('src', data.data.url);
                 }
-                if(id_input){
+                if (id_input) {
                     id_input.attr('value', data.id);
                 }
-                if(typeof success === "function"){
+                if (typeof success === "function") {
                     return success(data);
                 }
             },

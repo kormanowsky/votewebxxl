@@ -51,10 +51,10 @@ jQuery(function ($) {
         },
     };
     $('#input-datetime_closed_time').datetimepicker(timepickerConfig);
-    $('#input-datetime_closed_date').datepicker().on('changeDate', function(event){
-        if(event.date.getTime() < Date.now()){
+    $('#input-datetime_closed_date').datepicker().on('changeDate', function (event) {
+        if (event.date.getTime() < Date.now()) {
             $('#input-datetime_closed_time').data('DateTimePicker').minDate(new Date);
-        }else{
+        } else {
             $('#input-datetime_closed_time').data('DateTimePicker').minDate(false);
         }
     });
