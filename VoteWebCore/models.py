@@ -327,14 +327,11 @@ class ActivityItem(models.Model):
     ACTIVITY_VOTE = 1
     # Add to favourites
     ACTIVITY_FAVOURITE = 2
-    # Comment on voting
-    ACTIVITY_COMMENT = 3
 
     ACTIVITY_TYPES = [
         (ACTIVITY_NEW_VOTING, 'New voting'),
         (ACTIVITY_VOTE, 'Vote'),
         (ACTIVITY_FAVOURITE, 'Added to favourite'),
-        (ACTIVITY_COMMENT, 'Comment'),
     ]
 
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)

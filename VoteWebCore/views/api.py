@@ -119,55 +119,6 @@ def upload(request, upload_as="avatar"):
     return error_bad_request(request)
 
 
-# Save voting
-@login_required
-def save_voting(request):
-    if request.method != 'POST':
-        return error_method_not_allowed(request)
-
-    form = SaveVotingForm(request.POST)
-    if form.is_valid():
-        formdata = form.data
-        if not formdata['voting_id']:
-            voting = Voting(user=request.user,
-                            title=formdata['title'],
-                            datetime_closed=formdata['datetime_closed'],
-                            open_stats=formdata['open_stats'])
-            voting.save()
-            activity_item = ActivityItem(user=request.user, voting=voting, type=ActivityItem.ACTIVITY_NEW_VOTING)
-            activity_item.save()
-        else:
-            voting = Voting.objects.filter(id=formdata['voting_id']).exclude(is_active=False)
-
-            if not len(voting):
-                return error_bad_request(request)
-
-            if not voting[0].user == request.user:
-                return error_forbidden(request)
-
-            voting.update(datetime_closed=formdata['datetime_closed'],
-                          title=formdata['title'],
-                          open_stats=formdata['open_stats'])
-            voting = voting[0]
-
-            # If questions of voting were changed (e.g a question was added or removed),
-            # we remove all votes of this voting
-            question_ids = []
-            for question in voting.questions():
-                question_ids.append(question.id)
-            if question_ids != formdata['questions']:
-                for question_id in question_ids:
-                    Vote.objects.filter(question=question_id).update(is_active=False)
-            # Now we "remove" all questions of voting, then we will recover them
-            voting.questions().update(is_active=False, voting=None)
-        # Here we add voting to new questions
-        for question_id in formdata['questions']:
-            Question.objects.filter(id=question_id).update(is_active=True, voting=voting)
-        return redirect("/voting/{}".format(voting.id))
-    else:
-        return error_bad_request(request)
-
-
 # Add to favourites or remove from favourites
 @login_required
 def favourites(request, action="add", voting_id=0):
@@ -203,10 +154,6 @@ def favourites(request, action="add", voting_id=0):
 # Remove reports and comments
 @login_required
 def remove(request, model="report", model_id=0):
-    # Maybe we will need this in the future
-    #if request.method != 'POST':
-    #    return error_method_not_allowed(request)
-
     model_classes = {
         "comment": Comment,
         "report": Report
@@ -214,16 +161,14 @@ def remove(request, model="report", model_id=0):
     if model not in model_classes:
         return error_bad_request(request)
 
-    item = model_classes[model].objects.filter(id=model_id).exclude(is_active=False)
+    item = model_classes[model].objects.filter(id=model_id).exclude(is_active=False).get()
 
-    if not len(item):
-        return error_bad_request(request)
-
-    if not item[0].user == request.user:
+    if not item.user == request.user:
         return error_forbidden(request)
 
-    item.update(is_active=False)
-    voting = item[0].voting
+    item.is_active = False
+    item.save()
+    voting = item.voting
 
     if model == "report":
         voting.banned = 0

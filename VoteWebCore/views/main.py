@@ -17,7 +17,6 @@ def index(request):
     })
 
 
-@login_required
 def votings(request):
     votings_items = Voting.objects.exclude(is_active=False)
     form = VotingsSearchForm(request.GET)

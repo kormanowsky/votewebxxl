@@ -37,12 +37,8 @@ urlpatterns = [
       path('remove-account', auth.remove_account),
 
       # Voting module
-      path('voting/<int:voting_id>', voting.index),
-      path('voting/<int:voting_id>/save', voting.save_votes),
-      path('voting/<int:voting_id>/report', voting.report),
-      path('voting/<int:voting_id>/comment', voting.comment),
-      path('voting/<int:voting_id>/edit', voting.edit),
-      path('voting/<int:voting_id>/remove', voting.remove),
+      path('voting/<int:voting_id>', voting.view),
+      path('voting/<int:voting_id>/<str:action>', voting.view),
       path('voting/create', voting.create),
 
       # Media & static module
