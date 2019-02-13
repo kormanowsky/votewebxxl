@@ -1,17 +1,14 @@
-from django.contrib import auth, messages
-
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.http import JsonResponse
-from django.template.loader import render_to_string
 from django.shortcuts import redirect
 
-
-from VoteWebCore.views.api import save_voting
 from VoteWebCore.views.error import *
 from VoteWebCore.forms import *
 from VoteWebCore.functions import *
 
+
+# Main pages' views
 
 
 def index(request):
@@ -42,86 +39,6 @@ def votings(request):
         "no_right_aside": True
     }
     return render(request, 'votings.html', context)
-
-
-
-
-
-
-
-
-# New view for a single voting
-def voting_single(request, voting_id=-1, action="index"):
-    voting_items = Voting.objects.filter(id=voting_id).exclude(is_active=False)
-    is_found = len(voting_items) == 1
-    if not is_found:
-        return error_not_found(request)
-    voting = voting_items[0]
-    context = {
-        "voting": voting,
-        'html_title': voting.title,
-    }
-    # Actions
-    if action != "index" and not request.user.is_authenticated:
-        return error_forbidden(request)
-    if action == "save" and request.method == "POST":
-        if not voting.current_user_voted(request):
-            form = VoteForm(request.POST)
-            answers = form.data["answers"]
-            questions = []
-            for answer in answers:
-                questions.append(answer['question'])
-            for question in voting.questions():
-                if question not in questions:
-                    return error_bad_request(request)
-            for answer in answers:
-                vote = Vote(question=answer['question'], answer=answer['answer'], user=request.user)
-                vote.save()
-            activity_item = ActivityItem(user=request.user, voting=voting, type=ActivityItem.ACTIVITY_VOTE)
-            activity_item.save()
-        else:
-            return error_forbidden(request)
-        return redirect("/voting/" + str(voting.id))
-    elif action == "report" and request.method == "POST":
-        form = ReportForm(request.POST)
-        if form.is_valid():
-            item = Report(status=Report.REPORT_WAITING, voting=voting,
-                          user=request.user, title=form.data['title'], message=form.data['message'])
-            item.save()
-            return JsonResponse({"is_valid": True})
-        return error_bad_request(request)
-    elif action == "remove":
-        if voting.user == request.user:
-            voting.is_active = False
-            voting.save()
-            return redirect('/votings')
-        else:
-            return error_forbidden(request)
-    elif action == "edit":
-        if voting.user == request.user:
-            if request.method == "POST":
-                return save_voting(request)
-            else:
-                return render(request, "voting_edit.html", {
-                    "html_title": "Edit | " + voting.title,
-                    "voting": voting
-                })
-        else:
-            return error_forbidden(request)
-    elif action == "comment":
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            item = Comment(user=request.user, message=form.data['message'], voting=voting)
-            item.save()
-            return JsonResponse({
-                "is_valid": True,
-                "comments_count": len(voting.comments()),
-                "comment": render_to_string(request=request, template_name="comment.html", context={
-                    "comment": item
-                })
-            })
-        return error_bad_request(request)
-    return render(request, "voting_single.html", context)
 
 
 def profile(request, username=None):
@@ -190,13 +107,3 @@ def settings(request):
                 item.save()
                 request.user = item
     return render(request, "settings.html", context)
-
-
-@login_required
-def voting_create(request):
-    if request.method == "POST":
-        return save_voting(request)
-    else:
-        return render(request, "voting_create.html", {
-            "html_title": "Create Voting",
-        })

@@ -9,6 +9,7 @@ from VoteSimple.settings import LOGIN_REDIRECT_URL
 from VoteWebCore.forms import RegisterForm
 from VoteWebCore.functions import form_errors
 
+
 # Auth views
 
 

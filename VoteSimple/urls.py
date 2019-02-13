@@ -4,7 +4,7 @@ from django.views.static import serve
 
 from VoteSimple import settings
 from VoteWebCore import views
-from VoteWebCore.views import main, auth, error, api
+from VoteWebCore.views import main, auth, error, api, voting
 
 handler400 = error.error_bad_request
 handler403 = error.error_forbidden
@@ -12,13 +12,23 @@ handler404 = error.error_not_found
 handler500 = error.error_internal
 
 urlpatterns = [
-      # Index view
-      path('', main.index),
-      # Admin
+
+      # Admin module
       path('admin/', admin.site.urls),
 
-      # Votings list & search
+      # Main module
+      path('', main.index),
       path('votings', main.votings),
+      path('profile/<str:username>', main.profile),
+      path('settings', main.settings),
+      path('418', error.error_not_a_teapot),
+
+      # Ajax API module
+      path('api/get-question/<int:question_id>', api.get_question),
+      path('api/save-question', api.save_question),
+      path('api/upload/<str:upload_as>', api.upload),
+      path('api/favourites/<str:action>/<int:voting_id>', api.favourites),
+      path('api/remove/<str:model>/<int:model_id>', api.remove),
 
       # Auth module
       path('login', auth.login),
@@ -26,30 +36,16 @@ urlpatterns = [
       path('register', auth.register),
       path('remove-account', auth.remove_account),
 
-      # Profile Page
-      path('profile/<str:username>', views.profile),
+      # Voting module
+      path('voting/<int:voting_id>', voting.index),
+      path('voting/<int:voting_id>/save', voting.save_votes),
+      path('voting/<int:voting_id>/report', voting.report),
+      path('voting/<int:voting_id>/comment', voting.comment),
+      path('voting/<int:voting_id>/edit', voting.edit),
+      path('voting/<int:voting_id>/remove', voting.remove),
+      path('voting/create', voting.create),
 
-      # Single voting
-      path('voting/<int:voting_id>', views.voting_single),
-      path('voting/<int:voting_id>/<str:action>', views.voting_single),
-
-      # Settings
-      path('settings', views.settings),
-
-      # Voting create
-      path('voting/create', views.voting_create),
-
-      # Ajax API
-      path('api/get-question/<int:question_id>', api.get_question),
-      path('api/save-question', api.save_question),
-      path('api/upload/<str:upload_as>', api.upload),
-      path('api/favourites/<str:action>/<int:voting_id>', api.favourites),
-      path('api/remove/<str:model>/<int:model_id>', api.remove),
-
-      # Error 418 view )))
-      path('418', error.error_not_a_teapot),
-
-      # Media
+      # Media & static module
       re_path(r'^uploads/(?P<path>.*)$', serve, {
           'document_root': settings.MEDIA_ROOT,
       }),
