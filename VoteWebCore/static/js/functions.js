@@ -4,7 +4,7 @@ function CSRF_Token(){
 
 function AjaxForm(element, success, error, autoClose) {
     autoClose = autoClose || false;
-    // For forms in modal
+    // Для форм в модальных окнах - очищаем форму при закрытии окна
     if ($(element).parents(".modal").length) {
         $(element).parents(".modal").find(".close").click(function () {
             setTimeout(function () {
