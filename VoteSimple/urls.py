@@ -37,9 +37,9 @@ urlpatterns = [
       path('remove-account', auth.remove_account),
 
       # Voting module
-      path('voting/<int:voting_id>', voting.view),
-      path('voting/<int:voting_id>/<str:action>', voting.view),
-      path('voting/create', voting.create),
+      path('voting/<int:voting_id>', voting.view_voting),
+      path('voting/<int:voting_id>/<str:action>', voting.view_voting),
+      path('voting/create', voting.create_voting),
 
       # Media & static module
       re_path(r'^uploads/(?P<path>.*)$', serve, {

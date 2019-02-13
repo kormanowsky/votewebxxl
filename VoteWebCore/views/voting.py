@@ -26,7 +26,7 @@ def index(request, voting):
 
 
 @login_required
-def save(request):
+def save_voting(request):
     if request.method != 'POST':
         return error_method_not_allowed(request)
     form = SaveVotingForm(request.POST)
@@ -65,7 +65,7 @@ def save(request):
 
 
 @login_required
-def save_votes(request, voting):
+def save(request, voting):
     if request.method != "POST":
         return error_method_not_allowed(request)
     if voting.current_user_voted(request):
@@ -141,16 +141,15 @@ def comment(request, voting):
     return error_bad_request(request)
 
 
-def view(request, voting_id=0, action="index"):
-    try:
-        voting = get_voting(voting_id)
-        return globals[action](request, voting)
-    except (TypeError, NameError) as e:
-        return error_not_found(request)
+def view_voting(request, voting_id=0, action="index"):
+    voting = get_voting(voting_id)
+    if action in globals() and voting is not None:
+        return globals()[action](request, voting)
+    return error_not_found(request)
 
 
 @login_required
-def create(request):
+def create_voting(request):
     if request.method == "POST":
         return save(request)
     else:
