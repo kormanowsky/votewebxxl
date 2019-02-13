@@ -11,8 +11,8 @@
             <div class="row mx-0">
                 {% for answer in question.answers %}
                 <button onclick="return Votings.vote.setCurrentButtonAnswer(this);" data-question-id="{{ question.id }}" type="button" class="col-12 mb-3 btn btn-outline-primary" id="question_{{ question.id }}_answers_{{ forloop.counter }}">
-                                {{ answer }}
-                            </button> {% endfor %}
+                    {{ answer }}
+                </button> {% endfor %}
             </div>
             {% elif question.type == question.QUESTION_SINGLE_ANSWER %} {% for answer in question.answers %}
             <div class="custom-control custom-radio mb-3">
