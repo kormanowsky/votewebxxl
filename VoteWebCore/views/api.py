@@ -161,7 +161,12 @@ def remove(request, model="report", model_id=0):
     if model not in model_classes:
         return error_bad_request(request)
 
-    item = model_classes[model].objects.filter(id=model_id).exclude(is_active=False).get()
+    item = model_classes[model].objects.filter(id=model_id).exclude(is_active=False)
+
+    if not len(item):
+        return error_bad_request(request)
+
+    item = item[0]
 
     if not item.user == request.user:
         return error_forbidden(request)
