@@ -350,6 +350,10 @@ section#top {
     left: 45%;
 }
 
+.img_data{
+    cursor: pointer;
+}
+
 /* Сообщения */
 #messages {
     position: fixed;

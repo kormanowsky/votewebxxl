@@ -178,6 +178,6 @@ def remove(request, model="report", model_id=0):
     if model == "report":
         voting.banned = 0
         voting.save()
-        return redirect("/profile/{}".format(request.user.username))
+        return redirect("/profile/{}?after=remove_report&report_id={}".format(request.user.username, item.id))
     else:
-        return redirect("/voting/{}".format(voting.id))
+        return redirect("/voting/{}?after=remove_comment&comment_id={}".format(voting.id, item.id))

@@ -1,7 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.shortcuts import redirect
 
 from VoteWebCore.views.error import *
 from VoteWebCore.forms import *
@@ -18,6 +17,11 @@ def index(request):
 
 
 def votings(request):
+    after_remove = int(request.GET.get('after_remove', 0))
+    voting = Voting.objects.filter(id=after_remove)
+    if len(voting) and voting[0].user == request.user and voting[0].is_active == False:
+        messages.add_message(request, messages.SUCCESS, 'Voting was removed.')
+
     votings_items = Voting.objects.exclude(is_active=False)
     form = VotingsSearchForm(request.GET)
     if form.is_valid():
@@ -41,11 +45,13 @@ def votings(request):
 
 
 def profile(request, username=None):
-    if username is None:
-        if request.user.is_authenticated:
-            return redirect("/profile/" + request.user.username)
-        else:
-            return error_not_found(request)
+    after = request.GET.get('after')
+    if after == "remove_report":
+        report_id = int(request.GET.get('report_id', 0))
+        report = Report.objects.filter(id=report_id)
+        if len(report) and report[0].user == request.user and report[0].is_active == False:
+            messages.add_message(request, messages.SUCCESS, 'Report was deleted.')
+
     profile_user = User.objects.filter(username=username).exclude(is_active=False)
     if len(profile_user) == 1:
         profile_user = profile_user[0]

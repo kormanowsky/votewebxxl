@@ -26,16 +26,23 @@ def login(request):
     if request.user.is_authenticated:
         return redirect(LOGIN_REDIRECT_URL)
     else:
-        if int(request.GET.get('register_success', '0')) == 1:
-            messages.add_message(request, messages.SUCCESS,
-                                 'Your registration process has finished successfully. You may now log in.')
+        after = request.GET.get('after', '')
+        if len(after):
+            if after == "logout":
+                message = "You logged out."
+            elif after == "register":
+                message = 'Your registration process has finished successfully. You may now log in.'
+            else:
+                message = ""
+            if len(message):
+                messages.add_message(request, messages.SUCCESS, message)
         return render(request, 'login.html', context=csrf(request))
 
 
 @login_required
 def logout(request):
     auth_logout(request)
-    return redirect('/login')
+    return redirect('/login?after=logout')
 
 
 def register(request):
@@ -45,7 +52,7 @@ def register(request):
     if request.method == "POST":
         if context['form'].is_valid():
             context['form'].save()
-            return redirect('/login?register_success=1')
+            return redirect('/login?after=register')
         else:
             for error in form_errors(context['form']):
                 messages.add_message(request, messages.ERROR, error)

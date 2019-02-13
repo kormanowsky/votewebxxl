@@ -2,6 +2,7 @@ from django.shortcuts import redirect
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from .error import *
 from VoteWebCore.forms import VoteForm, ReportForm, CommentForm, SaveVotingForm
@@ -19,6 +20,23 @@ def get_voting(voting_id):
 
 
 def index(request, voting):
+    after = request.GET.get('after', '')
+    if len(after):
+        message = ""
+        if voting.user == request.user:
+            if after == "edit":
+                message = "Voting was updated."
+            elif after == "create":
+                message = "Voting was created."
+        elif after == "remove_comment":
+            comment_id = int(request.GET.get('comment_id', 0))
+            comment = Comment.objects.filter(id=comment_id)
+            if len(comment) and comment[0].user == request.user:
+                message = "Comment was removed."
+        elif after == "vote":
+            message = "Your votes were saved."
+        if len(message):
+            messages.add_message(request, messages.SUCCESS, message)
     return render(request, "voting_single.html", {
         "voting": voting,
         'html_title': voting,
@@ -37,8 +55,10 @@ def save_voting(request):
                             title=formdata['title'],
                             datetime_closed=formdata['datetime_closed'],
                             open_stats=formdata['open_stats'])
+            voting.save()
             activity_item = ActivityItem(user=request.user, voting=voting, type=ActivityItem.ACTIVITY_NEW_VOTING)
             activity_item.save()
+            after_action = "create"
         else:
             voting = Voting.objects.exclude(is_active=False).get(id=formdata['voting_id'])
             if voting.user != request.user:
@@ -46,7 +66,8 @@ def save_voting(request):
             voting.datetime_closed = formdata['datetime_closed']
             voting.title = formdata['title']
             voting.open_stats = formdata['open_stats']
-        voting.save()
+            voting.save()
+            after_action = "edit"
         # If questions of voting were changed (e.g a question was added or removed),
         # we remove all votes of this voting
         question_ids = []
@@ -60,7 +81,7 @@ def save_voting(request):
         # Here we add voting to new questions
         for question_id in formdata['questions']:
             Question.objects.filter(id=question_id).update(is_active=True, voting=voting)
-        return redirect("/voting/{}".format(voting.id))
+        return redirect("/voting/{}?after={}".format(voting.id, after_action))
     return error_bad_request(request)
 
 
@@ -83,7 +104,7 @@ def save(request, voting):
         vote.save()
     activity_item = ActivityItem(user=request.user, voting=voting, type=ActivityItem.ACTIVITY_VOTE)
     activity_item.save()
-    return redirect("/voting/{}".format(str(voting.id)))
+    return redirect("/voting/{}?after=vote".format(voting.id))
 
 
 @login_required
@@ -104,7 +125,7 @@ def remove(request, voting):
     if voting.user == request.user:
         voting.is_active = False
         voting.save()
-        return redirect('/votings')
+        return redirect('/votings?after_remove={}'.format(voting.id))
     else:
         return error_forbidden(request)
 
@@ -113,7 +134,7 @@ def remove(request, voting):
 def edit(request, voting):
     if voting.user == request.user:
         if request.method == "POST":
-            return save(request)
+            return save_voting(request)
         else:
             return render(request, "voting_edit.html", {
                 "html_title": "Edit | " + voting.title,
@@ -151,7 +172,7 @@ def view_voting(request, voting_id=0, action="index"):
 @login_required
 def create_voting(request):
     if request.method == "POST":
-        return save(request)
+        return save_voting(request)
     else:
         return render(request, "voting_create.html", {
             "html_title": "Create Voting",
