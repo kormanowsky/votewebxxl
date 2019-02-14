@@ -5,6 +5,7 @@ from django.template.loader import render_to_string
 
 from .error import *
 from VoteWebCore.forms import *
+from VoteWebCore.functions import check_file_mime
 
 
 # Get one question
@@ -101,9 +102,8 @@ def save_question(request):
 def upload(request, upload_as="avatar"):
     if request.method != 'POST':
         return error_method_not_allowed(request)
-
     form = LoadImgForm(request.POST, request.FILES)
-    if form.is_valid():
+    if form.is_valid() and check_file_mime(request.FILES['file']):
         role = Image.role_str_to_int(upload_as)
         image = Image(user=request.user, data=request.FILES['file'], role=role)
         image.save()

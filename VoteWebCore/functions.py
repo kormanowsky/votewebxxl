@@ -3,24 +3,39 @@ from random import randint
 from uuid import uuid4
 from datetime import *
 import magic
+import os
 
 from django.utils.safestring import mark_safe
 from django.utils.html import format_html
 
 from VoteWebCore.models import *
+from VoteWebCore.config import *
 
 
 # FILESYSTEM FUNCTIONS
 
 
 def generate_file_name(file, src_name):
-    return str(uuid4()).replace("-", "/") + '.' + src_name.split('.')[-1]
+    return "{}.{}".format(str(uuid4()).replace("-", "/"), src_name.split('.')[-1])
+
+
+def generate_tmp_file_name():
+    return "{}{}".format(SYSTEM_TMP_FOLDER, str(uuid4()).replace("-", ""))
 
 
 def check_file_mime(file):
-    mime = magic.from_buffer(file.read(), mime=True)
-    print(mime)
-    return mime
+    # First we save uploaded file to temp directory
+    path = generate_tmp_file_name()
+    with open(path, "wb+") as tmp_file:
+        for chunk in file.chunks():
+            tmp_file.write(chunk)
+    # Then we get file's MIME type
+    mime = magic.Magic(magic_file=MAGIC_FILE, mime=True).from_file(path)
+    # We remove temp file
+    os.remove(path)
+    # We check if MIME is allowed
+    return mime in ALLOWED_IMAGE_TYPES
+
 
 # Form errors to understandable format
 def form_errors(form):

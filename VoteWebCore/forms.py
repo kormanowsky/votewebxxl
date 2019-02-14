@@ -1,3 +1,7 @@
+from tempfile import gettempdir
+import os
+from uuid import uuid4
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
@@ -119,11 +123,7 @@ class QuestionForm(forms.Form):
 class LoadImgForm(forms.Form):
     file = forms.ImageField()
 
-    def is_valid(self):
-        print(self.data)
-        print(check_file_mime(self.data['file']))
 
-    
 
 class VotingsSearchForm(forms.Form):
     title = forms.CharField(max_length=100, required=False)
