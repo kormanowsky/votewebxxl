@@ -4,6 +4,7 @@ from django import template
 
 from ..models import Image, Voting
 from ..functions import date_human, datetime_human, date_process, time_human
+from ..config import VERSION
 
 
 register = template.Library()
@@ -48,3 +49,8 @@ def voting_added_to_favourites(voting, request, user=None):
             return False
         user = request.user
     return voting.user_added_to_favourites(user)
+
+
+@register.simple_tag
+def votewebxxl_version():
+    return VERSION
