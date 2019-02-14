@@ -116,7 +116,7 @@ def upload(request, upload_as="avatar"):
             "role": image.role,
             "datetime_created": image.datetime_created
         })
-    return error_bad_request(request)
+    return error_forbidden(request)
 
 
 # Add to favourites or remove from favourites
