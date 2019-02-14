@@ -1,20 +1,14 @@
 from tempfile import gettempdir
 import os
 from uuid import uuid4
+from querystring_parser import parser
 
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
 from VoteWebCore.models import *
 from VoteWebCore.functions import *
-
-
-from querystring_parser import parser
-
-
-# Shorten 'csrfmiddlewaretoken'
-CSRF_KEY = "csrfmiddlewaretoken"
-
+from VoteWebCore.config import CSRF_KEY
 
 class RegisterForm(UserCreationForm):
     email = forms.EmailField()
@@ -103,7 +97,7 @@ class QuestionForm(forms.Form):
     def __init__(self, raw_data, *args, **kwargs):
         super(QuestionForm, self).__init__(*args, **kwargs)
         parsed_data = parser.parse(raw_data.urlencode(), normalized=True)
-        del parsed_data['csrfmiddlewaretoken']
+        del parsed_data[CSRF_KEY]
         parsed_data['type'] = int(parsed_data['type'])
         parsed_data['question_id'] = int(parsed_data['question_id'])
         if len(parsed_data['image_id']):

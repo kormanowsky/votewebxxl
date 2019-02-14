@@ -8,7 +8,7 @@ import tempfile
 VERSION = "1.1"
 
 # CSRF token key
-CSRF_TOKEN = "csrfmiddlewaretoken"
+CSRF_KEY = "csrfmiddlewaretoken"
 
 # python-magic magic file path
 MAGIC_FILE = os.path.normpath(os.path.join(os.environ['VIRTUAL_ENV'], 'Lib\site-packages\magic\libmagic\magic.mgc'))
