@@ -29,7 +29,7 @@ Upload.init = function (input, success, error) {
             data = new FormData();
         data.append("file", file);
         data.append("csrfmiddlewaretoken", csrf_token);
-        if (label.length) {
+        if (typeof file === "object" && label.length) {
             label.text(file.name);
         }
         $.ajax({
