@@ -172,6 +172,7 @@ Votings.edit = {
         } else {
             $("#questionModalLabel").text("Add question");
             $("#questionModal .close").show();
+            $("#remove-current-image").addClass('d-none');
         }
         return false;
     },
