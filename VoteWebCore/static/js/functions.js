@@ -141,13 +141,19 @@ function TurnOnLeaveConfirmationModal() {
     });
 }
 
-function ShowMessage(type, message) {
+function ShowMessage(type, message, time) {
     var $message = $('<div class="alert alert-' + type + ' alert-dismissible fade show shadow"></div>'),
         $btn = $('<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'),
-        $text = $('');
-    $message.text(message);
+        $span = $('<span class="d-block mr-5"></span>');
+    $span.text(message);
+    $message.append($span);
     $message.append($btn);
     $("#messages").append($message);
+    if(typeof time === "number"){
+        setTimeout(function(){
+            $message.slideUp(500);
+        }, time)
+    }
 }
 
 function DefaultAjaxError() {
