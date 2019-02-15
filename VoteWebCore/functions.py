@@ -1,15 +1,12 @@
 from dateutil import *
-from random import randint
 from uuid import uuid4
 from datetime import *
 import magic
-import os
 
 from django.utils.safestring import mark_safe
 from django.utils.html import format_html
 
 from VoteSimple.settings import *
-from VoteWebCore.models import *
 
 # FILESYSTEM FUNCTIONS
 
@@ -136,7 +133,7 @@ def datetime_human(dt, add_at=True):
 
 # User html for admin page
 def user_html(user):
-    if not isinstance(user, User):
+    if not user:
         return "-"
     return format_html('<a href="/admin/auth/user/{0}/change/">{1} {2}</a><br/>@{3}',
                        mark_safe(user.id),

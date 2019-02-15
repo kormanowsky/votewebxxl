@@ -1,9 +1,7 @@
-from datetime import datetime
 from json import dumps as json_encode, loads as json_decode
 
 from django.contrib.auth.models import User
 from django.db import models
-from django.utils.safestring import mark_safe
 from django.db.models.signals import post_save
 
 from VoteWebCore.functions import *
@@ -144,6 +142,20 @@ class Voting(models.Model):
     def __str__(self):
         return "{} (#{})".format(self.title, self.id)
 
+    # Remove child objects on object remove
+    @staticmethod
+    def on_remove(sender, instance, **kwargs):
+        if instance.is_active:
+            return
+        model_types = [Question, ActivityItem, Comment, Report]
+
+        def do_remove(objects):
+            filtered = objects.filter(voting=instance.id)
+            filtered.update(is_active=False)
+
+        for model_type in model_types:
+            do_remove(model_type.objects)
+
 
 # Question
 class Question(models.Model):
@@ -210,6 +222,26 @@ class Question(models.Model):
     # Convert to string (for site admin panel)
     def __str__(self):
         return "{} (#{})".format(self.text, self.id)
+
+    # Remove child objects on object remove
+    @staticmethod
+    def on_remove(sender, instance, **kwargs):
+        if instance.is_active:
+            return
+        model_types = [Vote]
+
+        def do_remove(objects):
+            filtered = objects.filter(question=instance.id)
+            filtered.update(is_active=False)
+
+        if instance.image:
+            instance.image.is_active = False
+            instance.image.save()
+
+        for model_type in model_types:
+            do_remove(model_type.objects)
+
+
 
 
 # Vote
@@ -460,39 +492,13 @@ class Comment(models.Model):
         return "Comment #{}".format(self.id)
 
 
-# Remove child objects if parent object is being removed
-def remove_child_objects(sender, instance, **kwargs):
-    if instance.is_active:
-        return
+# User remove callback
+def user_on_remove(sender, instance, **kwargs):
+    model_types = [Voting, Question, Vote, Image, Report, Comment, ActivityItem]
 
-    if isinstance(instance, User):
-        model_types = [Voting, Question, Vote, Image, Report, Comment, ActivityItem]
-
-        def do_remove(objects):
-            filtered = objects.filter(user=instance.id)
-            filtered.update(is_active=False)
-    elif isinstance(instance, Voting):
-        model_types = [Question, ActivityItem, Comment, Report]
-
-        def do_remove(objects):
-            filtered = objects.filter(voting=instance.id)
-            filtered.update(is_active=False)
-
-    elif isinstance(instance, Question):
-        model_types = [Vote]
-
-        def do_remove(objects):
-            filtered = objects.filter(question=instance.id)
-            filtered.update(is_active=False)
-
-        if instance.image:
-            instance.image.is_active = False
-            instance.image.save()
-    else:
-        model_types = []
-
-        def do_remove(objects):
-            return
+    def do_remove(objects):
+        filtered = objects.filter(user=instance.id)
+        filtered.update(is_active=False)
 
     for model_type in model_types:
         do_remove(model_type.objects)
@@ -500,6 +506,6 @@ def remove_child_objects(sender, instance, **kwargs):
 
 # Connect callbacks to signals
 post_save.connect(Report.auto_ban_voting, sender=Report)
-post_save.connect(remove_child_objects, sender=User)
-post_save.connect(remove_child_objects, sender=Question)
-post_save.connect(remove_child_objects, sender=Voting)
+post_save.connect(user_on_remove, sender=User)
+post_save.connect(Question.on_remove, sender=Question)
+post_save.connect(Voting.on_remove, sender=Voting)

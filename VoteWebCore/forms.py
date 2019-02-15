@@ -1,13 +1,9 @@
-from tempfile import gettempdir
-import os
-from uuid import uuid4
 from querystring_parser import parser as qs_parser
 
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
 from VoteWebCore.models import *
-from VoteWebCore.functions import *
 from VoteSimple.settings import CSRF_KEY
 
 
