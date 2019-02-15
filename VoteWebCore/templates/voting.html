@@ -1,5 +1,5 @@
 {# Одно голосование. Для использования в циклах #} {% voting_status voting request as status %} {% voting_added_to_favourites voting request as added_to_favourites %} {% if status >= voting.VOTING_OPEN and not voting_small %}
-<form action="/voting/{{ voting.id }}/save" method="post" onsubmit="return Votings.vote.checkForm(this);">
+<form action="/voting/{{ voting.id }}/save" method="post" class="track-changes" onsubmit="return Votings.vote.checkForm(this);">
     {% csrf_token %} {% endif %}
     <div class="card shadow-sm">
         <div class="card-body">
