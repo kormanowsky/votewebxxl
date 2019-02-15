@@ -144,6 +144,7 @@ class Voting(models.Model):
     def __str__(self):
         return "{} (#{})".format(self.title, self.id)
 
+
 # Question
 class Question(models.Model):
 
@@ -312,10 +313,6 @@ class Report(models.Model):
             instance.voting.save()
 
 
-# Attach callback
-post_save.connect(Report.auto_ban_voting, sender=Report)
-
-
 # Activity item
 class ActivityItem(models.Model):
 
@@ -462,3 +459,10 @@ class Comment(models.Model):
     # Convert to string (for site admin panel)
     def __str__(self):
         return "Comment #{}".format(self.id)
+
+
+# Attach callbacks
+post_save.connect(Report.auto_ban_voting, sender=Report)
+post_save.connect(remove_child_objects, sender=User)
+post_save.connect(remove_child_objects, sender=Question)
+post_save.connect(remove_child_objects, sender=Voting)

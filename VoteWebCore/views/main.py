@@ -102,13 +102,9 @@ def settings(request):
                 if len(User.objects.filter(username=formdata['username'])):
                     messages.add_message(request, messages.ERROR, "Username is already in use")
                     return render(request, 'settings.html', context)
-            item = User.objects.filter(id=request.user.id)
-            if len(item):
-                item = item[0]
-                item.username = formdata['username']
-                item.first_name = formdata['first_name']
-                item.last_name = formdata['last_name']
-                item.email = formdata['email']
-                item.save()
-                request.user = item
+            request.user.username = formdata['username']
+            request.user.first_name = formdata['first_name']
+            request.user.last_name = formdata['last_name']
+            request.user.email = formdata['email']
+            request.user.save()
     return render(request, "settings.html", context)

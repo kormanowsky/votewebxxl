@@ -177,3 +177,38 @@ def questions_html(questions):
     for question in questions:
         html += _question_html().format(question.id, question.text)
     return mark_safe(html)
+
+
+# Remove child objects if parent object is being removed
+def remove_child_objects(sender, instance):
+    if isinstance(instance, User):
+        model_types = [Voting, Question, Vote, Image, Report, Comment, ActivityItem]
+
+        def do_remove(objects):
+            filtered = objects.filter(user=instance.id)
+            filtered.update(is_active=False)
+    elif isinstance(instance, Voting):
+        model_types = [Question, ActivityItem, Comment, Report]
+
+        def do_remove(objects):
+            filtered = objects.filter(voting=instance.id)
+            filtered.update(is_active=False)
+
+    elif isinstance(instance, Question):
+        model_types = [Vote]
+
+        def do_remove(objects):
+            filtered = objects.filter(question=instance.id)
+            filtered.update(is_active=False)
+
+        if instance.image:
+            instance.image.is_active = False
+            instance.image.save()
+    else:
+        model_types = []
+
+        def do_remove(objects):
+            return
+
+    for model_type in model_types:
+        do_remove(model_type.objects)
