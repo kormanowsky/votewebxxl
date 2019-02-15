@@ -154,6 +154,7 @@ Votings.edit = {
         if (question_id) {
             Votings.getQuestion(question_id, function (question) {
                 $("#questionModalLabel").text("Edit question #" + question.id);
+                $("#questionModal .close").hide();
                 $("#input-text").val(question.text);
                 $("#input-question_type_" + question.type).click();
                 Votings.edit.clearPossibleAnswers();
@@ -164,10 +165,13 @@ Votings.edit = {
                 if (question.image) {
                     $("#question-image").attr('src', question.image.data.url);
                     $("#question-image-id-input").attr('value', question.image.id);
+                }else{
+                    $("#remove-current-image").addClass('d-none');
                 }
             });
         } else {
             $("#questionModalLabel").text("Add question");
+            $("#questionModal .close").show();
         }
         return false;
     },

@@ -21,14 +21,16 @@
                         <div class="row">
                             <div class="col-12">
                                 <img src="" id="question-image" class="mb-3" height=150>
+                                <p><a href="#" class='dangerous-action text-danger remove-image' id="remove-current-image">Remove current image</a></p>
                             </div>
+
                         </div>
                         <div class="row">
                             <div class="col-12">
                                 <input type="hidden" name="image_id" id="question-image-id-input">
                                 <div class="custom-file">
                                     <div class="input-group">
-                                        <input type="file" accept="image/*" class="custom-file-input upload-image" data-input-id-selector="#question-image-id-input" data-upload-as="question_image" data-image-selector="#question-image" id="question-image-input">
+                                        <input type="file" accept="image/*" class="custom-file-input upload-image" data-remove-selector="#remove-current-image" data-input-id-selector="#question-image-id-input" data-upload-as="question_image" data-image-selector="#question-image" id="question-image-input">
                                         <label class="custom-file-label" for="question-image-input">Choose file</label>
                                     </div>
                                     <label class="mt-2 text-light">You can upload only PNG, JPEG, GIF and BMP files.</label>

@@ -108,9 +108,9 @@ def upload(request, upload_as="avatar"):
             items = Image.objects.filter(role=Image.IMAGE_ROLE_AVATAR).filter(user=request.user.id)\
                 .order_by("-datetime_created").exclude(is_active=False)
         elif upload_as == "question_image":
-            question_id = int(request.POST.get('id', 0))
-            question = Question.get(id=question_id)
-            if not question.image:
+            question_id = int(request.POST.get('question_id', 0))
+            question = Question.objects.get(id=question_id)
+            if not question.image or question.user != request.user:
                 return error_forbidden(request)
             items = Image.objects.filter(id=question.image.id).exclude(is_active=False)
             question.image = None

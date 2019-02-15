@@ -1,6 +1,6 @@
 {% extends "basic.html" %}
 {% block content %}
-<form action="/voting/{{ voting.id }}/edit" method="post" onsubmit="return Votings.edit.checkForm(this);" onchange="TurnOnLeaveConfirmationModal();">
+<form action="/voting/{{ voting.id }}/edit" method="post" onsubmit="return Votings.edit.checkForm(this);" class="track-changes">
     {% csrf_token %}
     <input type="hidden" name="voting_id" value="{{ voting.id }}">
     <div class="row mt-3">

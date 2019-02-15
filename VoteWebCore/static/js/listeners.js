@@ -9,6 +9,12 @@ jQuery(function ($) {
     $(".upload-image").each(function (index, input) {
         window.Upload.init($(input));
     });
+    // Запрет на закрытие моального окна кнопками
+    $('.modal').attr('data-keyboard', 'false').attr('data-backdrop', 'static');
+    // Улучшенная обработка изменеия формы
+    $("form.track-changes").each(function(i, form){
+        InitForm($(form));
+    });
     // Опасные действия
     $(".modal").last().css("z-index", "1059");
     InitConfirmationModal();

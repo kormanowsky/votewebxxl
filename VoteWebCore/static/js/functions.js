@@ -141,6 +141,21 @@ function TurnOnLeaveConfirmationModal() {
     });
 }
 
+function InitForm(form){
+    form.change(TurnOnLeaveConfirmationModal);
+    form.find('input').on('blur', TurnOnLeaveConfirmationModal);
+    var MutationObserver = window.MutationObserver;
+    if (typeof MutationObserver === "function") {
+        var observer = new MutationObserver(function (records) {
+            TurnOnLeaveConfirmationModal();
+        });
+        observer.observe(form[0], {
+            childList: true,
+            subtree: true
+        });
+    }
+}
+
 function ShowMessage(type, message) {
     var $message = $('<div class="alert alert-' + type + ' alert-dismissible fade show shadow"></div>'),
         $btn = $('<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'),

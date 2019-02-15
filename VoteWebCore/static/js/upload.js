@@ -54,7 +54,11 @@ Upload.init = function (input, success, error) {
             $.ajax({
             "type": "POST",
             "url": "/api/upload/" + upload_as,
-            "data": {'csrfmiddlewaretoken': CSRF_Token(), 'file': false},
+            "data": {
+                'csrfmiddlewaretoken': CSRF_Token(),
+                'file': false,
+                'question_id': parseInt($("[data-question-id]").attr('data-question-id'))
+            },
             "success": _success,
             "error": error,
         })
