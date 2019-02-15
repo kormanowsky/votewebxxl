@@ -128,7 +128,7 @@ LOGIN_REDIRECT_URL = '/votings'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 MEDIA_URL = '/uploads/'
 
-CSRF_FAILURE_VIEW = 'VoteWebCore.views.error_csrf'
+CSRF_FAILURE_VIEW = 'VoteWebCore.views.error.error_forbidden'
 
 # VoteWebXXL CONFIG
 # VoteWebXXL version

@@ -102,6 +102,32 @@ def save_question(request):
 def upload(request, upload_as="avatar"):
     if request.method != 'POST':
         return error_method_not_allowed(request)
+    # Image removal
+    if request.POST.get('file', True) == 'false':
+        if upload_as == "avatar":
+            items = Image.objects.filter(role=Image.IMAGE_ROLE_AVATAR).filter(user=request.user.id)\
+                .order_by("-datetime_created").exclude(is_active=False)
+        elif upload_as == "question_image":
+            question_id = int(request.POST.get('id', 0))
+            question = Question.get(id=question_id)
+            if not question.image:
+                return error_forbidden(request)
+            items = Image.objects.filter(id=question.image.id).exclude(is_active=False)
+            question.image = None
+            question.save()
+        if not len(items):
+            return error_forbidden(request)
+        for image in items:
+            image.is_active = False
+            image.save()
+        if upload_as == "avatar":
+            url = Image.get_avatar_url(request)
+        else:
+            url = ""
+        return JsonResponse({
+            "id": 0,
+            "url": url
+        })
     form = LoadImgForm(request.POST, request.FILES)
     if form.is_valid() and check_file_mime(request.FILES['file']):
         role = Image.role_str_to_int(upload_as)
@@ -109,12 +135,7 @@ def upload(request, upload_as="avatar"):
         image.save()
         return JsonResponse({
             "id": image.id,
-            "user": image.user.id,
-            "data": {
-                "url": image.data.url,
-            },
-            "role": image.role,
-            "datetime_created": image.datetime_created
+            "url": image.data.url,
         })
     return error_forbidden(request)
 

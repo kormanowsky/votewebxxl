@@ -141,7 +141,7 @@ function TurnOnLeaveConfirmationModal() {
     });
 }
 
-function ShowMessage(type, message, time) {
+function ShowMessage(type, message) {
     var $message = $('<div class="alert alert-' + type + ' alert-dismissible fade show shadow"></div>'),
         $btn = $('<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'),
         $span = $('<span class="d-block mr-5"></span>');
@@ -149,11 +149,9 @@ function ShowMessage(type, message, time) {
     $message.append($span);
     $message.append($btn);
     $("#messages").append($message);
-    if(typeof time === "number"){
-        setTimeout(function(){
-            $message.slideUp(500);
-        }, time)
-    }
+    setTimeout(function(){
+        $message.slideUp(500);
+    }, 2000)
 }
 
 function DefaultAjaxError() {
