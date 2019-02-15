@@ -4,7 +4,7 @@ from django import template
 
 from ..models import Image, Voting
 from ..functions import date_human, datetime_human, date_process, time_human
-from ..config import VERSION
+from VoteSimple.settings import VERSION
 
 
 register = template.Library()

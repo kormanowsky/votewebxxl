@@ -303,8 +303,7 @@ class Report(models.Model):
 
     # Automatic voting ban. Callback for post_save signal
     @staticmethod
-    def auto_ban_voting(sender, **kwargs):
-        instance = kwargs.get('instance')
+    def auto_ban_voting(sender, instance, **kwargs):
         if instance.status == Report.REPORT_ACCEPTED:
             instance.voting.banned = 1
             instance.voting.save()
@@ -461,7 +460,45 @@ class Comment(models.Model):
         return "Comment #{}".format(self.id)
 
 
-# Attach callbacks
+# Remove child objects if parent object is being removed
+def remove_child_objects(sender, instance, **kwargs):
+    if instance.is_active:
+        return
+
+    if isinstance(instance, User):
+        model_types = [Voting, Question, Vote, Image, Report, Comment, ActivityItem]
+
+        def do_remove(objects):
+            filtered = objects.filter(user=instance.id)
+            filtered.update(is_active=False)
+    elif isinstance(instance, Voting):
+        model_types = [Question, ActivityItem, Comment, Report]
+
+        def do_remove(objects):
+            filtered = objects.filter(voting=instance.id)
+            filtered.update(is_active=False)
+
+    elif isinstance(instance, Question):
+        model_types = [Vote]
+
+        def do_remove(objects):
+            filtered = objects.filter(question=instance.id)
+            filtered.update(is_active=False)
+
+        if instance.image:
+            instance.image.is_active = False
+            instance.image.save()
+    else:
+        model_types = []
+
+        def do_remove(objects):
+            return
+
+    for model_type in model_types:
+        do_remove(model_type.objects)
+
+
+# Connect callbacks to signals
 post_save.connect(Report.auto_ban_voting, sender=Report)
 post_save.connect(remove_child_objects, sender=User)
 post_save.connect(remove_child_objects, sender=Question)

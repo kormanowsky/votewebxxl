@@ -143,7 +143,8 @@ function TurnOnLeaveConfirmationModal() {
 
 function ShowMessage(type, message) {
     var $message = $('<div class="alert alert-' + type + ' alert-dismissible fade show shadow"></div>'),
-        $btn = $('<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>');
+        $btn = $('<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'),
+        $text = $('');
     $message.text(message);
     $message.append($btn);
     $("#messages").append($message);

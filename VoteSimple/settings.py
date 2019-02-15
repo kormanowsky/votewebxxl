@@ -9,11 +9,9 @@ https://docs.djangoproject.com/en/2.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
-####################################################
-# VoteWebXXL v1.1
-####################################################
 
 import os
+import tempfile
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -25,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'z*y=iaykh5$1scrva8jl52(t%t5%s_go%4xq4brsiyd@=_7v1t'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     '*'
@@ -132,3 +130,23 @@ MEDIA_URL = '/uploads/'
 
 CSRF_FAILURE_VIEW = 'VoteWebCore.views.error_csrf'
 
+# VoteWebXXL CONFIG
+# VoteWebXXL version
+VERSION = "1.1"
+
+# CSRF token key
+CSRF_KEY = "csrfmiddlewaretoken"
+
+# python-magic magic file path
+MAGIC_FILE = os.path.normpath(os.path.join(os.environ['VIRTUAL_ENV'], 'Lib\site-packages\magic\libmagic\magic.mgc'))
+
+# system folder for temporary files
+SYSTEM_TMP_FOLDER = tempfile.gettempdir()
+
+# image types allowed for upload
+ALLOWED_IMAGE_TYPES = [
+    'image/png',
+    'image/jpeg',
+    'image/bmp',
+    'image/gif'
+]

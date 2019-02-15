@@ -30,7 +30,7 @@
             <canvas id="question-{{ question.id }}-stats"></canvas>
             <script>jQuery(function($){ window.Votings.stats.init({{ question.id }}, {{question.type}}, {{question.stats|safe}}); });</script>
             {% else %}
-            <p class="text-muted text-center my-3 small">Nobody voted in this voting</p>
+            <p class="text-muted text-center my-3 small">Nobody voted in this question</p>
             {% endif %}
             {% endif %}
         </div>

@@ -1,14 +1,15 @@
 from tempfile import gettempdir
 import os
 from uuid import uuid4
-from querystring_parser import parser
+from querystring_parser import parser as qs_parser
 
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
 from VoteWebCore.models import *
 from VoteWebCore.functions import *
-from VoteWebCore.config import CSRF_KEY
+from VoteSimple.settings import CSRF_KEY
+
 
 class RegisterForm(UserCreationForm):
     email = forms.EmailField()
@@ -37,7 +38,7 @@ class VoteForm(forms.Form):
 
     def __init__(self, raw_data, *args, **kwargs):
         super(VoteForm, self).__init__(*args, **kwargs)
-        raw_answers = parser.parse(raw_data.urlencode(), normalized=True)
+        raw_answers = qs_parser.parse(raw_data.urlencode(), normalized=True)
         del raw_answers[CSRF_KEY]
         answers = []
         for answer_key in raw_answers:
@@ -68,7 +69,7 @@ class SaveVotingForm(forms.Form):
 
     def __init__(self, raw_data, *args, **kwargs):
         super(SaveVotingForm, self).__init__(*args, **kwargs)
-        parsed_data = parser.parse(raw_data.urlencode(), normalized=True)
+        parsed_data = qs_parser.parse(raw_data.urlencode(), normalized=True)
         del parsed_data[CSRF_KEY]
         if not isinstance(parsed_data['questions'], list):
             parsed_data['questions'] = [parsed_data['questions']]
@@ -96,7 +97,7 @@ class QuestionForm(forms.Form):
 
     def __init__(self, raw_data, *args, **kwargs):
         super(QuestionForm, self).__init__(*args, **kwargs)
-        parsed_data = parser.parse(raw_data.urlencode(), normalized=True)
+        parsed_data = qs_parser.parse(raw_data.urlencode(), normalized=True)
         del parsed_data[CSRF_KEY]
         parsed_data['type'] = int(parsed_data['type'])
         parsed_data['question_id'] = int(parsed_data['question_id'])
