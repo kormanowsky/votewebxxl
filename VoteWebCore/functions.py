@@ -181,6 +181,9 @@ def questions_html(questions):
 
 # Remove child objects if parent object is being removed
 def remove_child_objects(sender, instance):
+    if instance.is_active:
+        return
+
     if isinstance(instance, User):
         model_types = [Voting, Question, Vote, Image, Report, Comment, ActivityItem]
 
