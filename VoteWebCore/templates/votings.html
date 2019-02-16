@@ -34,9 +34,9 @@
                         <div class="form-group col-12 col-xl-6">
                             <label>Date of creation</label>
                             <div class="input-group input-daterange d-flex align-items-center" data-date-format="dd.mm.yyyy">
-                                <input type="text" class="form-control" name="datetime_created_from" placeholder="Start date of creation" value="{% if form.data.datetime_created_from %}{% formatted_date form.data.datetime_created_from %}{% elif form.data.datetime_created_from is None %}{% else %}{% formatted_date 'yesterday' %}{% endif %}">
+                                <input type="text" class="form-control" name="datetime_created_from" placeholder="Start date of creation" value="{% if form.data.datetime_created_from %}{% formatted_date form.data.datetime_created_from %}{% elif form.data.datetime_created_from is None %}{% else %}{% formatted_date 'yesterday' %}{% endif %}" autocomplete="off">
                                 <div class="input-group-addon px-3">to</div>
-                                <input type="text" class="form-control" name="datetime_created_to" placeholder="End date of creation" value="{% if form.data.datetime_created_to %}{% formatted_date form.data.datetime_created_to %}{% elif form.data.datetime_created_to is None %}{% else %}{% formatted_date %}{% endif %}">
+                                <input type="text" class="form-control" name="datetime_created_to" placeholder="End date of creation" value="{% if form.data.datetime_created_to %}{% formatted_date form.data.datetime_created_to %}{% elif form.data.datetime_created_to is None %}{% else %}{% formatted_date %}{% endif %}" autocomplete="off">
                             </div>
                         </div>
                     </div>
