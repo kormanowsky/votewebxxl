@@ -371,6 +371,11 @@ section#top {
 
 }
 
+/* Bootstrap Modal Fix */
+.modal{
+    overflow-y: auto !important;
+}
+
 /* ÐÐ´Ð°Ð¿Ñ‚Ð¸Ð²Ð½Ð¾ÑÑ‚ÑŒ */
 
 @media(min-width: 768px) {

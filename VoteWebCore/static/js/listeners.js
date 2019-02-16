@@ -29,7 +29,6 @@ jQuery(function ($) {
                 }
                 LayoutMasonry();
             });
-            $('body').has('.modal.show').addClass('modal-open');
         });
         observer.observe(document.body, {
             attributes: true,
