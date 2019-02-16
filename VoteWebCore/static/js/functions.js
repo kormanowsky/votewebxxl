@@ -129,6 +129,7 @@ function AddConfirmationModal(e, text) {
         openModalLink.click().remove();
         // Проверка, хочет ли пользователь совершить действие
         $('#confirmModalYes').click(function () {
+            window.onbeforeunload = undefined;
             for (var i in newEventListeners) {
                 newEventListeners[i](event);
             }
