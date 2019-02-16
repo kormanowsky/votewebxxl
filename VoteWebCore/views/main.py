@@ -1,12 +1,9 @@
-from datetime import timedelta
-
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 
 from VoteWebCore.views.error import *
 from VoteWebCore.forms import *
-#from VoteWebCore.functions import *
 
 
 # Main pages' views
@@ -32,10 +29,10 @@ def votings(request):
             Q(user__last_name__contains=form.data['user']) |
             Q(user__first_name__contains=form.data['user']) |
             Q(user__username__contains=form.data['user']))
-        if not form.data['datetime_created_from'] is None:
+        if form.data['datetime_created_from'] is not None:
             votings_items = votings_items.filter(datetime_created__gte=form.data['datetime_created_from'])
-        if not form.data['datetime_created_to'] is None:
-            votings_items = votings_items.filter(datetime_created__lte=form.data['datetime_created_to'] + timedelta(days=1) - timedelta(seconds=1))
+        if form.data['datetime_created_to'] is not None:
+            votings_items = votings_items.filter(datetime_created__lte=form.data['datetime_created_to'])
         votings_items = votings_items.exclude(banned=1)
     context = {
         "votings": votings_items,

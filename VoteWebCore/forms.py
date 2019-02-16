@@ -1,4 +1,5 @@
 from querystring_parser import parser as qs_parser
+from datetime import timedelta
 
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
@@ -125,8 +126,14 @@ class VotingsSearchForm(forms.Form):
         super(VotingsSearchForm, self).__init__(*args, **kwargs)
         self.data['title'] = raw_data.get('title', '')
         self.data['user'] = raw_data.get('user', '')
-        self.data['datetime_created_from'] = datetime_str_to_obj(raw_data.get("datetime_created_from", ''))
-        self.data['datetime_created_to'] = datetime_str_to_obj(raw_data.get("datetime_created_to", ''))
+        datetime_from_obj = datetime_str_to_obj(raw_data.get("datetime_created_from", ''))
+        if datetime_from_obj is not None:
+            datetime_from_obj = datetime_to_utc(datetime_from_obj)
+        self.data['datetime_created_from'] = datetime_from_obj
+        datetime_to_obj = datetime_str_to_obj(raw_data.get("datetime_created_to", ''))
+        if datetime_to_obj is not None:
+            datetime_to_obj = datetime_to_utc(datetime_to_obj) + timedelta(days=1) - timedelta(seconds=1)
+        self.data['datetime_created_to'] = datetime_to_obj
 
     def is_valid(self):
         return not len(self.errors.as_text())
