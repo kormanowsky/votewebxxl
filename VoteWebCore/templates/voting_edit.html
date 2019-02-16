@@ -37,13 +37,13 @@
                         <label for="input-title">Private voting stats</label>
                         <div class="input-group">
                             <div class="custom-control custom-radio mb-3">
-                                <input name="open_stats" class="custom-control-input" id="open_stats_yes" value="0" type="radio" required>
+                                <input name="open_stats" class="custom-control-input" id="open_stats_yes" value="0" type="radio" required{% if not voting.open_stats %} checked{% endif%}>
                                 <label class="custom-control-label" for="open_stats_yes">Enabled</label>
                             </div>
                         </div>
                         <div class="input-group">
                             <div class="custom-control custom-radio mb-3">
-                                <input name="open_stats" class="custom-control-input" id="open_stats_no" value="1" type="radio" required checked>
+                                <input name="open_stats" class="custom-control-input" id="open_stats_no" value="1" type="radio" required{% if voting.open_stats %} checked{% endif%}>
                                 <label class="custom-control-label" for="open_stats_no">Disabled</label>
                             </div>
                         </div>
