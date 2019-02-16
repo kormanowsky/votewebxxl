@@ -45,7 +45,7 @@ class ImageAdmin(admin.ModelAdmin):
 
 
 class ActivityItemAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user_html', 'datetime_created_str', 'voting', 'type', 'is_active')
+    list_display = ('id', 'user_html', 'datetime_created_str', 'voting_html', 'type', 'is_active')
     list_filter = ('datetime_created', 'type', 'is_active')
     search_fields = ('user__first_name', 'user__last_name', 'user__username', 'voting__title')
 
