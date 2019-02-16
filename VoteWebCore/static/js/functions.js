@@ -80,8 +80,14 @@ function AddConfirmationModal(e, text) {
     if (parseInt($(e).attr('data-dam-processed'))) {
         return;
     }
-    // Устанавливаем тип кнопки там, где его нет
-    if (e.nodeName === "BUTTON" && !$(e).attr('type')) {
+    // Проверка кнопок отпарвки формы и установка типа кнопки button
+    if (e.nodeName === "BUTTON") {
+        if ($(e).attr('type') == "submit") {
+            $(e).click(function (event) {
+                $(e).parents('form')[0].submit();
+            });
+        } 
+        
         $(e).attr('type', 'button');
     }
     // Сброс атрибута onclick
@@ -144,7 +150,7 @@ function TurnOnLeaveConfirmationModal() {
     });
 }
 
-function InitForm(form){
+function InitForm(form) {
     form.change(TurnOnLeaveConfirmationModal);
     form.find('input.datepicker, input.timepicker, .input-daterange input').on('blur', TurnOnLeaveConfirmationModal);
     form.find('button[type="button"]').on('click', TurnOnLeaveConfirmationModal);
