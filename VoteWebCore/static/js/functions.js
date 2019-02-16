@@ -148,6 +148,9 @@ function TurnOnLeaveConfirmationModal() {
     $("a").not(".dangerous-action").not("[href='#']").each(function (i, e) {
         AddConfirmationModal(e, 'You have unsaved changes. Do you really want to leave this page and lose them?');
     });
+    window.onbeforeunload = function(){
+        return 'Unsaved changes';
+    }
 }
 
 function InitForm(form) {
