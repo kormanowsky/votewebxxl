@@ -65,7 +65,7 @@ jQuery(function ($) {
         };
     $('#input-datetime_closed_time').datetimepicker(timepickerConfig);
     initialDate = $('#input-datetime_closed_date').datepicker('getDate');
-    if (initialDate) {
+    if ('getTime' in initialDate) {
         timepickerChecker(initialDate);
     }
     $('#input-datetime_closed_date').datepicker().on('changeDate', function (event) {
