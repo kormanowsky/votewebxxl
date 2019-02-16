@@ -29,7 +29,7 @@
                             <div class="d-flex align-items-center">
                                 <input value="{% if voting.datetime_closed %}{% formatted_date voting.datetime_closed %}{% endif %}" type="text" data-date-start-date="now" data-date-format="dd.mm.yyyy" class="form-control text-center datepicker" name="datetime_closed_date" id="input-datetime_closed_date">
                                 <span class="mx-4">at</span>
-                                <input value="{% if voting.datetime_closed %}{% formatted_time voting.datetime_closed %}{% endif %}" type="text" data-date-format="HH:mm" class="form-control text-center" name="datetime_closed_time" id="input-datetime_closed_time">
+                                <input value="{% if voting.datetime_closed %}{% formatted_time voting.datetime_closed %}{% endif %}" type="text" data-date-format="HH:mm" class="form-control text-center datepicker" name="datetime_closed_time" id="input-datetime_closed_time">
                             </div>
                         </div>
                     </div>
