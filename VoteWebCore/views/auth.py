@@ -39,8 +39,9 @@ def login(request):
         return render(request, 'login.html', context=csrf(request))
 
 
-@login_required
 def logout(request):
+    if not request.user.is_authenticated:
+        return redirect('/login')
     auth_logout(request)
     return redirect('/login?after=logout')
 
