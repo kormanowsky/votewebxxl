@@ -11,10 +11,6 @@ jQuery(function ($) {
     });
     // Запрет на закрытие моального окна кнопками
     $('.modal').attr('data-keyboard', 'false').attr('data-backdrop', 'static');
-    // Улучшенная обработка изменеия формы
-    $("form").each(function (i, form) {
-        InitForm($(form));
-    });
     // Опасные действия
     $(".modal").last().css("z-index", "1059");
     InitConfirmationModal();
@@ -87,5 +83,9 @@ jQuery(function ($) {
         temp_link.appendTo('body');
         temp_link.trigger('click');
         temp_link.remove();
+    });
+    // Улучшенная обработка изменеия формы
+    $("form").not('.ajax-form').each(function (i, form) {
+        InitForm($(form));
     });
 });

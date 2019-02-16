@@ -4,6 +4,7 @@ function CSRF_Token() {
 
 function AjaxForm(element, success, error, autoClose) {
     autoClose = autoClose || false;
+    element.addClass('ajax-form');
     // Для форм в модальных окнах - очищаем форму при закрытии окна
     if ($(element).parents(".modal").length) {
         $(element).parents(".modal").find(".close").click(function () {
@@ -28,6 +29,7 @@ function AjaxForm(element, success, error, autoClose) {
                         if (autoClose)
                             $(element).parents(".modal").find(".close").click();
                         ShowMessage("success", "Success!");
+                        ClearForm($(element));
                         if (typeof success === "function")
                             success(data);
                     }
@@ -46,10 +48,11 @@ function AjaxForm(element, success, error, autoClose) {
 }
 
 function ClearForm(element, afterClear) {
-    element.find(":input").not('[type="radio"], [type="checkbox"], [type="hidden"]').val("");
+    element[0].reset();
+    /*element.find(":input").not('[type="radio"], [type="checkbox"], [type="hidden"]').val("");
     element.find("input[type='radio'], input[type='checkbox']").each(function (i, e) {
         e.checked = false;
-    });
+    });*/
     if (typeof afterClear === "function") {
         afterClear();
     }
