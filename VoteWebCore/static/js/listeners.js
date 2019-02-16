@@ -12,7 +12,7 @@ jQuery(function ($) {
     // Запрет на закрытие моального окна кнопками
     $('.modal').attr('data-keyboard', 'false').attr('data-backdrop', 'static');
     // Улучшенная обработка изменеия формы
-    $("form").each(function(i, form){
+    $("form").each(function (i, form) {
         InitForm($(form));
     });
     // Опасные действия
@@ -43,26 +43,33 @@ jQuery(function ($) {
     // Выбор даты
     $('.input-daterange').datepicker();
     var timepickerConfig = {
-        useCurrent: true,
-        icons: {
-            time: 'la la-time',
-            date: 'la la-calendar',
-            up: 'la la-arrow-up',
-            down: 'la la-arrow-down',
-            previous: 'la la-arrow-left',
-            next: 'la la-arrow-right',
-            today: 'la la-screenshot',
-            clear: 'la la-trash',
-            close: 'la la-remove'
+            useCurrent: true,
+            icons: {
+                time: 'la la-time',
+                date: 'la la-calendar',
+                up: 'la la-arrow-up',
+                down: 'la la-arrow-down',
+                previous: 'la la-arrow-left',
+                next: 'la la-arrow-right',
+                today: 'la la-screenshot',
+                clear: 'la la-trash',
+                close: 'la la-remove'
+            },
         },
-    };
+        timepickerChecker = function (date) {
+            if (date.getTime() < Date.now()) {
+                $('#input-datetime_closed_time').data('DateTimePicker').minDate(new Date);
+            } else {
+                $('#input-datetime_closed_time').data('DateTimePicker').minDate(false);
+            }
+        };
     $('#input-datetime_closed_time').datetimepicker(timepickerConfig);
+    initialDate = $('#input-datetime_closed_date').datepicker('getDate');
+    if (initialDate) {
+        timepickerChecker(initialDate);
+    }
     $('#input-datetime_closed_date').datepicker().on('changeDate', function (event) {
-        if (event.date.getTime() < Date.now()) {
-            $('#input-datetime_closed_time').data('DateTimePicker').minDate(new Date);
-        } else {
-            $('#input-datetime_closed_time').data('DateTimePicker').minDate(false);
-        }
+        timepickerChecker(event.date);
     });
     // Ajax-формы
     AjaxForm($("#report-form"), false, false, true);
