@@ -2,6 +2,7 @@ var Upload = window.Upload = {};
 Upload.init = function (input, success, error) {
     error = error || DefaultAjaxError;
     var image = false,
+        image_id = 0,
         id_input = false,
         remove_link = false,
         upload_as = input.attr('data-upload-as'),
@@ -13,11 +14,13 @@ Upload.init = function (input, success, error) {
                         return error(data);
                     }
                 }
+            console.log(data, remove_link);
                 if(remove_link){
                     if(data.id){
-                        remove_link.show();
+                        remove_link.removeClass('d-none');
+                        image_id = data.id;
                     }else{
-                        remove_link.hide();
+                        remove_link.addClass('d-none');
                     }
                 }
                 if (image) {
@@ -57,7 +60,8 @@ Upload.init = function (input, success, error) {
             "data": {
                 'csrfmiddlewaretoken': CSRF_Token(),
                 'file': false,
-                'question_id': parseInt($("[data-question-id]").attr('data-question-id'))
+                'question_id': parseInt($("[data-question-id]").attr('data-question-id')),
+                'image_id': image_id,
             },
             "success": _success,
             "error": error,

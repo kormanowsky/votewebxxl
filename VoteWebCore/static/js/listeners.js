@@ -29,6 +29,7 @@ jQuery(function ($) {
                 }
                 LayoutMasonry();
             });
+            $('body').has('.modal.show').addClass('modal-open');
         });
         observer.observe(document.body, {
             attributes: true,
@@ -61,7 +62,7 @@ jQuery(function ($) {
         };
     $('#input-datetime_closed_time').datetimepicker(timepickerConfig);
     initialDate = $('#input-datetime_closed_date').datepicker('getDate');
-    if ('getTime' in initialDate) {
+    if (initialDate instanceof Date) {
         timepickerChecker(initialDate);
     }
     $('#input-datetime_closed_date').datepicker().on('changeDate', function (event) {

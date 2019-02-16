@@ -109,15 +109,26 @@ def upload(request, upload_as="avatar"):
                 .order_by("-datetime_created").exclude(is_active=False)
         elif upload_as == "question_image":
             question_id = int(request.POST.get('question_id', 0))
-            question = Question.objects.get(id=question_id)
-            if not question.image or question.user != request.user:
-                return error_forbidden(request)
-            items = Image.objects.filter(id=question.image.id).exclude(is_active=False)
-            question.image = None
-            question.save()
+            if question_id:
+                question = Question.objects.filter(id=question_id).exclude(is_active=False)
+                if not len(question):
+                    return error_forbidden(request)
+                question = question[0]
+                if not question.image or question.user != request.user:
+                    return error_forbidden(request)
+                items = Image.objects.filter(id=question.image.id).exclude(is_active=False)
+                question.image = None
+                question.save()
+            else:
+                image_id = int(request.POST.get('image_id', 0))
+                if not image_id:
+                    return error_forbidden(request)
+                items = Image.objects.filter(id=image_id).exclude(is_active=False)
         if not len(items):
             return error_forbidden(request)
         for image in items:
+            if image.user != request.user:
+                return error_forbidden(request)
             image.is_active = False
             image.save()
         if upload_as == "avatar":
