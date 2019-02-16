@@ -167,7 +167,7 @@ function ShowMessage(type, message) {
     $("#messages").append($message);
     setTimeout(function(){
         $message.slideUp(500);
-    }, 2000)
+    }, 3500)
 }
 
 function DefaultAjaxError() {
