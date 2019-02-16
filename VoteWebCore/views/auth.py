@@ -59,10 +59,13 @@ def register(request):
                 messages.add_message(request, messages.ERROR, error)
     return render(request, 'registration.html', context)
 
-@login_required
+
 def remove_account(request):
+    if not request.user.is_authenticated:
+        return redirect('/login')
     request.user.is_active = False
     request.user.save()
+    auth_logout(request)
     return render(request, "remove_account.html", {
         "html_title": "Remove Account"
     })
