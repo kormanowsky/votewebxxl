@@ -143,7 +143,7 @@ function TurnOnLeaveConfirmationModal() {
 
 function InitForm(form){
     form.change(TurnOnLeaveConfirmationModal);
-    form.find('input.datepicker, .input-daterange input').on('blur', TurnOnLeaveConfirmationModal);
+    form.find('input.datepicker, input.timepicker, .input-daterange input').on('blur', TurnOnLeaveConfirmationModal);
     form.find('button[type="button"]').on('click', TurnOnLeaveConfirmationModal);
     var MutationObserver = window.MutationObserver;
     if (typeof MutationObserver === "function") {
