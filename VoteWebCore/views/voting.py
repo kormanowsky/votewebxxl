@@ -39,7 +39,7 @@ def index(request, voting):
             messages.add_message(request, messages.SUCCESS, message)
     return render(request, "voting_single.html", {
         "voting": voting,
-        'html_title': voting,
+        'html_title': voting.title,
     })
 
 
