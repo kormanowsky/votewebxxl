@@ -105,7 +105,7 @@ def upload(request, upload_as="avatar"):
     if request.method != 'POST':
         return error_method_not_allowed(request)
     # Image removal
-    if request.POST.get('file', True) == 'false':
+    if request.POST.get('file', '') == 'false':
         if upload_as == "avatar":
             items = Image.objects.filter(role=Image.IMAGE_ROLE_AVATAR).filter(user=request.user.id)\
                 .order_by("-datetime_created").exclude(is_active=False)
