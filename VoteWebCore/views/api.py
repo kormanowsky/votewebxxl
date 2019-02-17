@@ -49,8 +49,9 @@ def get_question(request, question_id=0):
 
 
 # Save question
-@login_required
 def save_question(request):
+    if not request.user.is_authenticated:
+        return error_forbidden(request)
     if request.method != "POST":
         return error_method_not_allowed(request)
 
@@ -98,8 +99,9 @@ def save_question(request):
 
 
 # Upload file
-@login_required
 def upload(request, upload_as="avatar"):
+    if not request.user.is_authenticated:
+        return error_forbidden(request)
     if request.method != 'POST':
         return error_method_not_allowed(request)
     # Image removal
@@ -152,8 +154,9 @@ def upload(request, upload_as="avatar"):
 
 
 # Add to favourites or remove from favourites
-@login_required
 def favourites(request, action="add", voting_id=0):
+    if not request.user.is_authenticated:
+        return error_forbidden(request)
     if request.method != "POST":
         return error_method_not_allowed(request)
 
@@ -183,9 +186,11 @@ def favourites(request, action="add", voting_id=0):
     return error_bad_request(request)
 
 
-# Remove reports and comments
-@login_required
 def remove(request, model="report", model_id=0):
+    if not request.user.is_authenticated:
+        return error_forbidden(request)
+    if not request.user.is_authenticated:
+        return error_forbidden(request)
     model_classes = {
         "comment": Comment,
         "report": Report
