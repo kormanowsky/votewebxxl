@@ -82,14 +82,12 @@ function AddConfirmationModal(e, text) {
     }
     // Проверка кнопок отпарвки формы и установка типа кнопки button
     if (e.nodeName === "BUTTON") {
-        if(!$(e).attr('type')){
-            $(e).attr('type', 'submit');
-        }
         if ($(e).attr('type') == "submit") {
             $(e).click(function (event) {
                 $(e).parents('form')[0].submit();
             });
         }
+        $(e).attr('type', 'button');
     }
     // Сброс атрибута onclick
     if (e.onclick) {
