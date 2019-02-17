@@ -82,13 +82,14 @@ function AddConfirmationModal(e, text) {
     }
     // Проверка кнопок отпарвки формы и установка типа кнопки button
     if (e.nodeName === "BUTTON") {
+        if(!$(e).attr('type')){
+            $(e).attr('type', 'submit');
+        }
         if ($(e).attr('type') == "submit") {
             $(e).click(function (event) {
                 $(e).parents('form')[0].submit();
             });
-        } 
-        
-        $(e).attr('type', 'button');
+        }
     }
     // Сброс атрибута onclick
     if (e.onclick) {
@@ -149,9 +150,6 @@ function TurnOnLeaveConfirmationModal() {
     $("a").not(".dangerous-action").not("[href='#']").each(function (i, e) {
         AddConfirmationModal(e, 'You have unsaved changes. Do you really want to leave this page and lose them?');
     });
-    window.onbeforeunload = function(){
-        return 'Unsaved changes';
-    }
 }
 
 function InitForm(form) {
