@@ -115,52 +115,52 @@
                                         <ul class="navbar-nav{% if request.user.is_authenticated %} border-top mt-4 pt-4{% endif %} ml--4 mr--4 pl-4 pr-4">
                                             {% if request.user.is_authenticated %}
                                             <li class="nav-item">
-                                                <a href="/profile/{{ request.user.username }}" title="Go to my profile page" class="d-flex pb-3 align-items-center">
+                                                <a href="/profile/{{ request.user.username }}" class="d-flex pb-3 align-items-center">
                                                     <i class="la la-user"></i>
                                                     <p class="h6 small text-muted m-0 pl-3">Profile</p>
                                                 </a>
                                             </li>
                                             <li class="nav-item">
-                                                <a href="/votings" title="Go to vote list page" class="d-flex pb-3 align-items-center">
+                                                <a href="/votings" class="d-flex pb-3 align-items-center">
                                                     <i class="la la-question"></i>
                                                     <p class="h6 small text-muted m-0 pl-3">Votings</p>
                                                 </a>
                                             </li>
                                             <li class="nav-item">
-                                                <a href="/settings" title="Go to newsfeed page" class="d-flex pb-3 align-items-center">
+                                                <a href="/settings" class="d-flex pb-3 align-items-center">
                                                     <i class="la la-cog"></i>
                                                     <p class="h6 small text-muted m-0 pl-3">Settings</p>
                                                 </a>
                                             </li>
                                             {% if request.user.is_staff %}
                                             <li class="nav-item">
-                                                <a href="/admin" title="Go to newsfeed page" class="d-flex pb-3 align-items-center">
+                                                <a href="/admin" class="d-flex pb-3 align-items-center">
                                                     <i class="la la-edit"></i>
                                                     <p class="h6 small text-muted m-0 pl-3">Admin panel</p>
                                                 </a>
                                             </li>
                                             {% endif %}
                                             <li class="nav-item">
-                                                <a href="/logout" title="Go to vote list page" class="d-flex align-items-center">
+                                                <a href="/logout" class="d-flex align-items-center">
                                                     <i class="la la-sign-out"></i>
                                                     <p class="h6 small text-muted m-0 pl-3">Log out</p>
                                                 </a>
                                             </li>
                                             {% else %}
                                             <li class="nav-item">
-                                                <a href="/votings" title="Go to vote list page" class="d-flex pb-3 align-items-center">
+                                                <a href="/votings" class="d-flex pb-3 align-items-center">
                                                     <i class="la la-question"></i>
                                                     <p class="h6 small text-muted m-0 pl-3">Votings</p>
                                                 </a>
                                             </li>
                                             <li class="nav-item">
-                                                <a href="/logout" title="Log in" class="d-flex pb-3 align-items-center">
+                                                <a href="/login" class="d-flex pb-3 align-items-center">
                                                     <i class="la la-sign-in"></i>
                                                     <p class="h6 small text-muted m-0 pl-3">Log in</p>
                                                 </a>
                                             </li>
                                             <li class="nav-item">
-                                                <a href="/register" title="Register on this website" class="d-flex align-items-center">
+                                                <a href="/register" class="d-flex align-items-center">
                                                     <i class="la la-user-plus"></i>
                                                     <p class="h6 small text-muted m-0 pl-3">Register</p>
                                                 </a>
