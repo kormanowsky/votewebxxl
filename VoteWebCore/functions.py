@@ -26,7 +26,11 @@ def check_file_mime(file):
         for chunk in file.chunks():
             tmp_file.write(chunk)
     # Then we get file's MIME type
-    mime = magic.Magic(magic_file=MAGIC_FILE, mime=True).from_file(path)
+    if os.name == 'nt':
+        m = magic.Magic(magic_file=MAGIC_FILE, mime=True)
+    else:
+        m = magic.Magic(mime=True)
+    mime = m.from_file(path)
     # We remove temp file
     os.remove(path)
     # We check if MIME is allowed
