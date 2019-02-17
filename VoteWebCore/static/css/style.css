@@ -6,7 +6,8 @@ html,
 body {
     background: #fafafa;
     min-width: 375px;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 header {
@@ -379,6 +380,9 @@ section#top {
 /* ÐÐ´Ð°Ð¿Ñ‚Ð¸Ð²Ð½Ð¾ÑÑ‚ÑŒ */
 
 @media(min-width: 768px) {
+    html, body{
+        overflow: hidden;
+    }
     header {
         padding: 0 16px;
     }
