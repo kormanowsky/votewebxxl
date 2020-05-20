@@ -15,15 +15,16 @@ import tempfile
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+CONF_DIR = BASE_DIR.replace(BASE_DIR.split('/')[-1], "vwxconf")
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'z*y=iaykh5$1scrva8jl52(t%t5%s_go%4xq4brsiyd@=_7v1t'
+with open(os.path.join(CONF_DIR, 'secret.txt')) as secret_file:
+	SECRET_KEY = secret_file.readline()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True#False
 
 ALLOWED_HOSTS = [
     '*'
@@ -79,11 +80,16 @@ WSGI_APPLICATION = 'VoteSimple.wsgi.application'
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'OPTIONS': {
+                'read_default_file': os.path.join(CONF_DIR, "mysql.conf"),
+                'connect_timeout': 5
+            },
+            'CONN_MAX_AGE': 500
+        }
     }
-}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -138,7 +144,7 @@ VERSION = "1.1"
 CSRF_KEY = "csrfmiddlewaretoken"
 
 # python-magic magic file path
-MAGIC_FILE = os.path.normpath(os.path.join(os.environ['VIRTUAL_ENV'], 'Lib\site-packages\magic\libmagic\magic.mgc'))
+MAGIC_FILE = '/usr/share/misc/magic.mgc'
 
 # system folder for temporary files
 SYSTEM_TMP_FOLDER = tempfile.gettempdir()

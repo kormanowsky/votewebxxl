@@ -1,3 +1,4 @@
+from os.path import join
 from dateutil import *
 from uuid import uuid4
 from datetime import *
@@ -16,7 +17,7 @@ def generate_file_name(file, src_name):
 
 
 def generate_tmp_file_name():
-    return "{}{}".format(SYSTEM_TMP_FOLDER, str(uuid4()).replace("-", ""))
+    return os.path.join(SYSTEM_TMP_FOLDER, str(uuid4()).replace("-", ""))
 
 
 def check_file_mime(file):
