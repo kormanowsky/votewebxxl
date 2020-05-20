@@ -500,9 +500,9 @@ def user_on_remove(sender, instance, **kwargs):
     def do_remove(objects):
         filtered = objects.filter(user=instance.id)
         filtered.update(is_active=False)
-
-    for model_type in model_types:
-        do_remove(model_type.objects)
+    if not instance.is_active:
+        for model_type in model_types:
+            do_remove(model_type.objects)
 
 
 # Connect callbacks to signals
